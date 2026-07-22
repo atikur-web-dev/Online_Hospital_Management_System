@@ -1,29 +1,15 @@
+// Backend/eslint.config.mts
+import js from "@eslint/js";
 import globals from "globals";
-import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
+export default defineConfig([
   {
-    files: ["**/*.{js,mjs,cjs,ts}"],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.es2021
-      },
-      ecmaVersion: 2022,
-      sourceType: "module",
-    },
-    rules: {
-      // Add your custom rules here
-      "no-unused-vars": "warn",
-      "no-console": "warn",
-      "semi": ["error", "always"],
-      "quotes": ["error", "double"],
-    },
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
+    plugins: { js },
+    extends: ["js/recommended"],
+    languageOptions: { globals: globals.node },
   },
-  // JavaScript recommended rules
-  pluginJs.configs.recommended,
-  // TypeScript recommended rules
-  ...tseslint.configs.recommended,
-];
+  tseslint.configs.recommended,
+]);

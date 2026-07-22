@@ -1,1 +1,1 @@
-# Online_Hospital_Ecosystem_Management
+# Online Hospital Management System
