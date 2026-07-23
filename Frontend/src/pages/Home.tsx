@@ -14,10 +14,21 @@ import {
   Award,
   Activity,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/common";
 import hospitalBg from "../assets/hospital-bg.jpg";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const isLoggedIn = false; // later auth state theke nibe
+
+  const handleGetStarted = () => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    } else {
+      navigate("/dashboard");
+    }
+  };
   return (
     <div className="min-h-screen bg-emerald-50">
       {/* ===== Hero Section ===== */}
@@ -54,6 +65,7 @@ const Home = () => {
               icon={ArrowRight}
               iconPosition="right"
               className="shadow-2xl shadow-emerald-500/30 hover:shadow-emerald-500/50 text-lg px-8 py-4"
+              onClick={handleGetStarted}
             >
               Get Started
             </Button>
@@ -96,7 +108,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Why Choose Us Section ===== */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <span className="inline-block px-5 py-2 bg-emerald-100 text-emerald-700 text-base font-semibold rounded-full tracking-wide">
@@ -216,7 +227,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== CTA Section ===== */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="bg-emerald-700 rounded-3xl p-8 sm:p-12 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
@@ -282,7 +292,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Footer ===== */}
       <footer className="bg-white border-t border-emerald-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -292,7 +301,7 @@ const Home = () => {
                   <Heart className="w-7 h-7 text-white" />
                 </div>
                 <span className="text-3xl font-bold text-emerald-800">
-                  Medi<span className="text-emerald-600">Care</span>
+                  Care<span className="text-emerald-600">Plus</span>
                 </span>
               </div>
               <p className="mt-4 text-base text-emerald-700 leading-relaxed">
@@ -326,15 +335,12 @@ const Home = () => {
                 </a>
               </div>
             </div>
-
             <div>
               <h5 className="text-xl font-semibold text-emerald-900 mb-4">
                 Quick Links
               </h5>{" "}
-              {/* Increased text size */}
               <ul className="space-y-3 text-base text-emerald-700">
                 {" "}
-                {/* Increased text size */}
                 <li>
                   <a
                     href="#"
@@ -369,15 +375,12 @@ const Home = () => {
                 </li>
               </ul>
             </div>
-
             <div>
               <h5 className="text-xl font-semibold text-emerald-900 mb-4">
                 Patient Care
               </h5>{" "}
-              {/* Increased text size */}
               <ul className="space-y-3 text-base text-emerald-700">
                 {" "}
-                {/* Increased text size */}
                 <li>
                   <a
                     href="#"
@@ -417,18 +420,15 @@ const Home = () => {
               <h5 className="text-xl font-semibold text-emerald-900 mb-4">
                 Contact Us
               </h5>{" "}
-              {/* Increased text size */}
               <ul className="space-y-3 text-base text-emerald-700">
                 {" "}
-                {/* Increased text size */}
                 <li className="flex items-start gap-2">
-                  <MapPin className="w-5 h-5 mt-0.5 text-emerald-600" />{" "}
-                  {/* Increased icon size */}
-                  123 Healthcare Ave, Medical City
+                  <MapPin className="w-5 h-5 mt-0.5 text-emerald-600" /> 123
+                  Healthcare Ave, Medical City
                 </li>
                 <li className="flex items-start gap-2">
                   <Phone className="w-5 h-5 mt-0.5 text-emerald-600" />
-                  +1 (555) 123-4567
+                  +880 123 456 7890
                 </li>
                 <li className="flex items-start gap-2">
                   <Mail className="w-5 h-5 mt-0.5 text-emerald-600" />
@@ -439,7 +439,7 @@ const Home = () => {
           </div>
 
           <div className="mt-12 pt-8 border-t border-emerald-100 text-center text-base text-emerald-700">
-            <p>&copy; 2026 MediCare. All rights reserved.</p>
+            <p>&copy; 2026 CarePlus. All rights reserved.</p>
           </div>
         </div>
       </footer>

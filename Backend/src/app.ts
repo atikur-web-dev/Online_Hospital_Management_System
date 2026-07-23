@@ -1,3 +1,4 @@
+// D:\Hospital_Management_System\Backend\src\app.ts
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -38,23 +39,29 @@ app.use(hpp());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// XSS Sanitization
+// XSS Sanitization - শুধু body স্যানিটাইজ করুন (Express 5 compatible)
 app.use((req, res, next) => {
     const sanitize = (obj: any): any => {
         if (typeof obj === 'string') {
             return xss(obj);
         }
+        if (Array.isArray(obj)) {
+            return obj.map(item => sanitize(item));
+        }
         if (typeof obj === 'object' && obj !== null) {
+            const result: any = {};
             Object.keys(obj).forEach(key => {
-                obj[key] = sanitize(obj[key]);
+                result[key] = sanitize(obj[key]);
             });
+            return result;
         }
         return obj;
     };
 
-    if (req.body) req.body = sanitize(req.body);
-    if (req.query) req.query = sanitize(req.query);
-    if (req.params) req.params = sanitize(req.params);
+    if (req.body) {
+        req.body = sanitize(req.body);
+    }
+    // query এবং params স্পর্শ করবেন না - এগুলো read-only
     next();
 });
 
