@@ -36,20 +36,18 @@ const Navbar = ({
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-emerald-100 w-full">
       <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           
-          {/* ===== লোগো ===== */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <div className="bg-emerald-600 p-2 rounded-lg">
-              <Home className="w-6 h-6 text-white" />
+              <Home className="w-7 h-7 text-white" />
             </div>
-            <span className="text-2xl font-bold text-emerald-800 tracking-tight">
+            <span className="text-3xl font-bold text-emerald-800 tracking-tight">
               Medi<span className="text-emerald-600">Care</span>
             </span>
           </div>
 
-          {/* ===== নেভ লিংক ===== */}
-          <div className="hidden md:flex items-center gap-1 lg:gap-2 flex-1 justify-center">
+          <div className="hidden md:flex items-center gap-1 lg:gap-3 flex-1 justify-center">
             {navLinks.map((link) => {
               if (link.show === false) return null;
               const Icon = link.icon;
@@ -57,19 +55,17 @@ const Navbar = ({
                 <a
                   key={link.name}
                   href={link.href}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:bg-emerald-50 hover:text-emerald-900 transition-all duration-200 flex items-center gap-2"
+                  className="px-5 py-3 rounded-lg text-xl font-medium text-emerald-700 hover:bg-emerald-50 hover:text-emerald-900 transition-all duration-200 flex items-center gap-2"
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-5 h-5" />
                   {link.name}
                 </a>
               );
             })}
           </div>
 
-          {/* ===== ডান পাশে (বাটন ব্যবহার করলাম) ===== */}
-          <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+          <div className="hidden md:flex items-center gap-3 shrink-0">
             {isLoggedIn ? (
-              // ✅ লগইন থাকলে প্রোফাইল
               <div className="relative">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -78,57 +74,54 @@ const Navbar = ({
                   <img
                     src={userImage}
                     alt="Profile"
-                    className="w-10 h-10 rounded-full border-2 border-emerald-500 object-cover hover:border-emerald-700 transition-all"
+                    className="w-12 h-12 rounded-full border-2 border-emerald-500 object-cover hover:border-emerald-700 transition-all"
                   />
-                  <span className="text-sm font-medium text-emerald-800">John</span>
-                  <ChevronDown className="w-4 h-4 text-emerald-600" />
+                  <span className="text-xl font-medium text-emerald-800">John</span>
+                  <ChevronDown className="w-5 h-5 text-emerald-600" />
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-emerald-100 py-1 z-50">
-                    <a href="/profile" className="block px-4 py-2 text-sm text-emerald-700 hover:bg-emerald-50">
+                  <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-lg border border-emerald-100 py-1 z-50">
+                    <a href="/profile" className="block px-4 py-2 text-lg text-emerald-700 hover:bg-emerald-50">
                       👤 Profile
                     </a>
-                    <a href="/settings" className="block px-4 py-2 text-sm text-emerald-700 hover:bg-emerald-50">
+                    <a href="/settings" className="block px-4 py-2 text-lg text-emerald-700 hover:bg-emerald-50">
                       ⚙️ Settings
                     </a>
                     <hr className="my-1 border-emerald-100" />
-                    <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                    <button className="w-full text-left px-4 py-2 text-lg text-red-600 hover:bg-red-50">
                       🚪 Logout
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              // ❌ লগইন না থাকলে বাটন
               <>
-                <Button variant="ghost" size="sm" icon={User}>
+                <Button variant="ghost" size="md" icon={User}>
                   Login
                 </Button>
-                <Button variant="primary" size="sm" icon={CalendarDays}>
+                <Button variant="primary" size="md" icon={CalendarDays}>
                   Register
                 </Button>
               </>
             )}
           </div>
 
-          {/* ===== মোবাইল মেনু বাটন ===== */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 rounded-lg text-emerald-700 hover:bg-emerald-50"
             >
               {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
+                <X className="w-7 h-7" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-7 h-7" />
               )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* ===== মোবাইল মেনু ===== */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-emerald-100 py-2 px-4">
           {navLinks.map((link) => {
@@ -138,9 +131,10 @@ const Navbar = ({
               <a
                 key={link.name}
                 href={link.href}
-                className="block px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:bg-emerald-50 transition-all flex items-center gap-3"
+                className="block px-3 py-3 rounded-lg text-xl font-medium text-emerald-700 hover:bg-emerald-50 transition-all flex items-center gap-3"
               >
-                <Icon className="w-5 h-5" /> {link.name}
+                <Icon className="w-6 h-6" />
+                {link.name}
               </a>
             );
           })}
@@ -148,14 +142,14 @@ const Navbar = ({
           <hr className="my-2 border-emerald-100" />
           
           {isLoggedIn ? (
-            <div className="flex items-center gap-3 px-3 py-2">
+            <div className="flex items-center gap-3 px-3 py-3">
               <img
                 src={userImage}
                 alt="Profile"
-                className="w-8 h-8 rounded-full border-2 border-emerald-500"
+                className="w-10 h-10 rounded-full border-2 border-emerald-500"
               />
-              <span className="text-sm font-medium text-emerald-800">John Doe</span>
-              <button className="ml-auto text-sm text-red-600 hover:text-red-800">
+              <span className="text-base font-medium text-emerald-800">John Doe</span>
+              <button className="ml-auto text-base text-red-600 hover:text-red-800">
                 Logout
               </button>
             </div>
