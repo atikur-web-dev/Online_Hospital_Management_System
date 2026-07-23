@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String?   // NULL for Google Login users
+  role          UserRole  @default(PATIENT)
+  isActive      Boolean   @default(true)
+  isEmailVerified Boolean @default(false)
+  googleId      String?   @unique // For Google Login
+  profileImage  String?
+  lastLogin     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  patientProfile PatientProfile?
+  doctorProfile  DoctorProfile?
+  adminProfile   AdminProfile?
+  sessions       Session[]
+
+  @@map("users")
+}
+
+model PatientProfile {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  name          String
+  phone         String?
+  dateOfBirth   DateTime?
+  gender        String?
+  address       String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+
+  @@map("patient_profiles")
+}
+
+model DoctorProfile {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  name          String
+  phone         String?
+  specialization String?
+  qualification String?
+  experience    Int?
+  consultationFee Float?
+  isAvailable   Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+
+  @@map("doctor_profiles")
+}
+
+model AdminProfile {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  name          String
+  phone         String?
+  permissions   String[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+
+  @@map("admin_profiles")
+}
+
+model Session {
+  id            String    @id @default(cuid())
+  userId        String
+  token         String    @unique
+  expiresAt     DateTime
+  createdAt     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
+}

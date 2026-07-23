@@ -57,3 +57,5 @@ temp/
 # Uploads (optional)
 uploads/
 /generated/prisma
+
+/src/generated/prisma
