@@ -1,3 +1,4 @@
+// Backend/src/services/auth.service.ts
 import prisma from '../lib/prisma.js';
 import { hashPassword, comparePassword } from '../utils/bcrypt.js';
 import { generateToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
@@ -56,7 +57,7 @@ export const registerUser = async (data: RegisterInput) => {
 
   const refreshToken = generateRefreshToken({ id: user.id });
 
-  await prisma.refreshToken.create({
+  await prisma.refreshTokens.create({
     data: {
       userId: user.id,
       token: refreshToken,
@@ -119,7 +120,7 @@ export const loginUser = async (data: LoginInput) => {
 
   const refreshToken = generateRefreshToken({ id: user.id });
 
-  await prisma.refreshToken.create({
+  await prisma.refreshTokens.create({
     data: {
       userId: user.id,
       token: refreshToken,
@@ -154,7 +155,7 @@ export const refreshTokenService = async (refreshToken: string) => {
     // verifyRefreshToken will throw if invalid; no need to keep the returned value
     verifyRefreshToken(refreshToken);
     
-    const storedToken = await prisma.refreshToken.findUnique({
+    const storedToken = await prisma.refreshTokens.findUnique({
       where: { token: refreshToken },
       include: { user: true },
     });
@@ -164,7 +165,7 @@ export const refreshTokenService = async (refreshToken: string) => {
     }
 
     // Delete old refresh token
-    await prisma.refreshToken.delete({
+    await prisma.refreshTokens.delete({
       where: { id: storedToken.id },
     });
 
@@ -177,7 +178,7 @@ export const refreshTokenService = async (refreshToken: string) => {
 
     const newRefreshToken = generateRefreshToken({ id: storedToken.user.id });
 
-    await prisma.refreshToken.create({
+    await prisma.refreshTokens.create({
       data: {
         userId: storedToken.user.id,
         token: newRefreshToken,
@@ -196,7 +197,7 @@ export const refreshTokenService = async (refreshToken: string) => {
 
 // ============ LOGOUT ============
 export const logoutUser = async (userId: string) => {
-  await prisma.refreshToken.deleteMany({
+  await prisma.refreshTokens.deleteMany({
     where: { userId },
   });
   

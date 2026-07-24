@@ -1,15 +1,15 @@
+// Backend/src/middleware/auth.middleware.ts
 import type { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt.js';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-        role: string;
-      };
-    }
+// Fixed: Switched from namespace to preferred module augmentation
+declare module 'express-serve-static-core' {
+  interface Request {
+    user?: {
+      id: string;
+      email: string;
+      role: string;
+    };
   }
 }
 
@@ -25,6 +25,15 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
     }
 
     const token = authHeader.split(' ')[1];
+    
+    // Fixed: Handled potential undefined by ensuring token exists
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: 'Malformed token structure',
+      });
+    }
+
     const decoded = verifyToken(token);
     
     req.user = {
@@ -34,7 +43,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
     };
     
     next();
-  } catch (error) {
+  } catch {
     return res.status(401).json({
       success: false,
       message: 'Invalid or expired token',
@@ -44,7 +53,8 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
 export const authorize = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    if (!req.user) {
+    // Fixed: The type guard now ensures TypeScript recognizes the custom user shape
+    if (!req.user || !('role' in req.user)) {
       return res.status(401).json({
         success: false,
         message: 'Unauthorized',

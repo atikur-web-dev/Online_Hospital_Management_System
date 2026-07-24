@@ -1,15 +1,26 @@
+// Backend/src/routes/auth.routes.ts
 import express from 'express';
-import { 
-  registerUser, 
-  loginUser, 
-  refreshTokenService, 
-  logoutUser, 
-  getMe 
+import {
+  registerUser,
+  loginUser,
+  refreshTokenService,
+  logoutUser,
+  getMe
 } from '../services/auth.service.js';
 import { registerSchema, loginSchema, refreshTokenSchema } from '../validators/auth.validator.js';
 import { authenticate } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
+
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === 'string') {
+    return error;
+  }
+  return 'An unexpected error occurred';
+};
 
 // ============ Public Routes ============
 
@@ -23,10 +34,10 @@ router.post('/register', async (req, res) => {
       message: 'Registration successful',
       data: result,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(400).json({
       success: false,
-      message: error.message || 'Registration failed',
+      message: getErrorMessage(error) || 'Registration failed',
     });
   }
 });
@@ -41,10 +52,10 @@ router.post('/login', async (req, res) => {
       message: 'Login successful',
       data: result,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(401).json({
       success: false,
-      message: error.message || 'Login failed',
+      message: getErrorMessage(error) || 'Login failed',
     });
   }
 });
@@ -58,10 +69,10 @@ router.post('/refresh-token', async (req, res) => {
       success: true,
       data: result,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(401).json({
       success: false,
-      message: error.message || 'Refresh token failed',
+      message: getErrorMessage(error) || 'Refresh token failed',
     });
   }
 });
@@ -71,15 +82,19 @@ router.post('/refresh-token', async (req, res) => {
 // Get Current User
 router.get('/me', authenticate, async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
     const user = await getMe(req.user.id);
     res.json({
       success: true,
       data: user,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(404).json({
       success: false,
-      message: error.message || 'User not found',
+      message: getErrorMessage(error) || 'User not found',
     });
   }
 });
@@ -87,15 +102,19 @@ router.get('/me', authenticate, async (req, res) => {
 // Logout
 router.post('/logout', authenticate, async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
     await logoutUser(req.user.id);
     res.json({
       success: true,
       message: 'Logged out successfully',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     res.status(500).json({
       success: false,
-      message: error.message || 'Logout failed',
+      message: getErrorMessage(error) || 'Logout failed',
     });
   }
 });
