@@ -1,3 +1,4 @@
+// Backend/src/validators/auth.validator.ts
 import { z } from 'zod';
 
 // Registration Validation
@@ -5,7 +6,7 @@ export const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  role: z.enum(['PATIENT', 'DOCTOR']).default('PATIENT'),
+  role: z.enum(['PATIENT', 'DOCTOR', 'ADMIN']).default('PATIENT'),
   phone: z.string().optional(),
 });
 

@@ -18,12 +18,13 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "patient" as "patient" | "doctor",
-  });
+  name: "",
+  email: "",
+  phone: "",
+  password: "",
+  confirmPassword: "",
+  role: "PATIENT" as "PATIENT" | "DOCTOR" | "ADMIN",
+});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

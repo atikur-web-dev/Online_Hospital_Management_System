@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -21,101 +20,129 @@ enum Gender {
 }
 
 model User {
-  id              String          @id @default(cuid())
-  email           String          @unique
-  password        String?
-  role            UserRole        @default(PATIENT)
-  isActive        Boolean         @default(true)
-  isEmailVerified Boolean         @default(false)
-  googleId        String?         @unique
-  profileImage    String?
-  lastLogin       DateTime?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  id                String   @id @default(cuid())
+  email             String   @unique
+  password          String?
+  role              UserRole @default(PATIENT)
+
+  isActive          Boolean  @default(true)
+  isEmailVerified   Boolean  @default(false)
+
+  googleId          String?  @unique
+  profileImage      String?
+
+  lastLogin         DateTime?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   // Relations
-  patientProfile  PatientProfile?
-  doctorProfile   DoctorProfile?
-  adminProfile    AdminProfile?
-  sessions        Session[]
-  refreshTokens   RefreshToken[]
+  patientProfile    PatientProfile?
+  doctorProfile     DoctorProfile?
+  adminProfile      AdminProfile?
+
+  sessions          Session[]
+  refreshTokens     RefreshToken[]
 
   @@map("users")
 }
 
 model PatientProfile {
-  id            String    @id @default(cuid())
-  userId        String    @unique
+  id            String   @id @default(cuid())
+
+  userId        String   @unique
+
   name          String
   phone         String?
+
   dateOfBirth   DateTime?
   gender        Gender?
   address       String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Relations
-  user          User      @relation(fields: [userId], references: [id], onDelete: CASCADE)
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("patient_profiles")
 }
 
 model DoctorProfile {
-  id              String    @id @default(cuid())
-  userId          String    @unique
-  name            String
-  phone           String?
-  specialization  String?
-  qualification   String?
-  experience      Int?
-  consultationFee Float?
-  isAvailable     Boolean   @default(true)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                String   @id @default(cuid())
+
+  userId            String   @unique
+
+  name              String
+  phone             String?
+
+  specialization    String?
+  qualification     String?
+
+  experience        Int?
+
+  consultationFee   Float?
+
+  isAvailable       Boolean  @default(true)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   // Relations
-  user            User      @relation(fields: [userId], references: [id], onDelete: CASCADE)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("doctor_profiles")
 }
 
 model AdminProfile {
-  id            String    @id @default(cuid())
-  userId        String    @unique
+  id            String   @id @default(cuid())
+
+  userId        String   @unique
+
   name          String
   phone         String?
+
   permissions   String[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Relations
-  user          User      @relation(fields: [userId], references: [id], onDelete: CASCADE)
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("admin_profiles")
 }
 
 model Session {
-  id            String    @id @default(cuid())
+  id            String   @id @default(cuid())
+
   userId        String
-  token         String    @unique
+
+  token         String   @unique
+
   expiresAt     DateTime
-  createdAt     DateTime  @default(now())
+
+  createdAt     DateTime @default(now())
 
   // Relations
-  user          User      @relation(fields: [userId], references: [id], onDelete: CASCADE)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
 model RefreshToken {
-  id        String   @id @default(cuid())
-  userId    String
-  token     String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  id            String   @id @default(cuid())
+
+  userId        String
+
+  token         String   @unique
+
+  expiresAt     DateTime
+
+  createdAt     DateTime @default(now())
 
   // Relations
-  user      User     @relation(fields: [userId], references: [id], onDelete: CASCADE)
+ user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("refresh_tokens")
 }

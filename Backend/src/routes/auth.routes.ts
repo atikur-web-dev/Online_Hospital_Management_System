@@ -5,9 +5,13 @@ import {
   loginUser,
   refreshTokenService,
   logoutUser,
-  getMe
+  getMe,
 } from '../services/auth.service.js';
-import { registerSchema, loginSchema, refreshTokenSchema } from '../validators/auth.validator.js';
+import {
+  registerSchema,
+  loginSchema,
+  refreshTokenSchema,
+} from '../validators/auth.validator.js';
 import { authenticate } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
@@ -80,42 +84,55 @@ router.post('/refresh-token', async (req, res) => {
 // ============ Protected Routes ============
 
 // Get Current User
-router.get('/me', authenticate, async (req, res) => {
+router.get('/me', authenticate, async (req, res): Promise<void> => {
   try {
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        message: 'Unauthorized',
+      });
+      return;
     }
 
     const user = await getMe(req.user.id);
+
     res.json({
       success: true,
       data: user,
     });
+    return;
   } catch (error: unknown) {
     res.status(404).json({
       success: false,
-      message: getErrorMessage(error) || 'User not found',
+      message: getErrorMessage(error),
     });
+    return;
   }
 });
-
 // Logout
-router.post('/logout', authenticate, async (req, res) => {
+router.post('/logout', authenticate, async (req, res): Promise<void> => {
   try {
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        message: 'Unauthorized',
+      });
+      return;
     }
 
     await logoutUser(req.user.id);
+
     res.json({
       success: true,
       message: 'Logged out successfully',
     });
+    return;
   } catch (error: unknown) {
     res.status(500).json({
       success: false,
-      message: getErrorMessage(error) || 'Logout failed',
+      message: getErrorMessage(error),
     });
+    return;
   }
 });
 

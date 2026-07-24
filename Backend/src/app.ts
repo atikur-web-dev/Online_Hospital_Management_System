@@ -7,6 +7,7 @@ import hpp from 'hpp';
 import session from 'express-session';
 import passport from 'passport';
 import dotenv from 'dotenv';
+import cookieParser from "cookie-parser";
 
 import authRoutes from './routes/auth.routes.js';
 
@@ -56,6 +57,7 @@ app.use(passport.session());
 
 // Body parser
 app.use(express.json({ limit: '10mb' }));
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ============ Routes ============
@@ -63,7 +65,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/auth', authRoutes);
 
 // Health Check
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (_req, res) => {
   res.json({
     success: true,
     message: 'Server is running',
@@ -73,7 +75,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Error Handler
-app.use((err: Error & { status?: number }, req: express.Request, res: express.Response) => {
+app.use((err: Error & { status?: number }, _req: express.Request, res: express.Response) => {
   console.error('Error:', err.stack);
   res.status((err as Error & { status?: number }).status || 500).json({
     success: false,
@@ -83,7 +85,7 @@ app.use((err: Error & { status?: number }, req: express.Request, res: express.Re
 });
 
 // 404 Handler
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404).json({
     success: false,
     message: 'Route not found',

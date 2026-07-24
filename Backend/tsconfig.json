@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    /* ==========================
+       Project Structure
+    ========================== */
+    "rootDir": ".",
+    "outDir": "./dist",
+
+    /* ==========================
+       Language
+    ========================== */
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    /* ==========================
+       TypeScript
+    ========================== */
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "allowJs": false,
+
+    /* ==========================
+       Types
+    ========================== */
+    "types": ["node"],
+
+    /* ==========================
+       Source Maps
+    ========================== */
+    "sourceMap": true,
+
+    /* ==========================
+       Declaration Files
+    ========================== */
+    "declaration": true,
+    "declarationMap": true,
+
+    /* ==========================
+       Code Quality
+    ========================== */
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true
+  },
+
+  "include": [
+    "server.ts",
+    "src/**/*.ts",
+    "src/**/*.d.ts"
+  ],
+
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

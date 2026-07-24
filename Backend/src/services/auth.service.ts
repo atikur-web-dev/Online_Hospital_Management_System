@@ -1,5 +1,6 @@
 // Backend/src/services/auth.service.ts
 import prisma from '../lib/prisma.js';
+// import type { PatientProfile, DoctorProfile, AdminProfile } from '@prisma/client';
 import { hashPassword, comparePassword } from '../utils/bcrypt.js';
 import { generateToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
 import type { RegisterInput, LoginInput } from '../validators/auth.validator.js';
@@ -206,7 +207,7 @@ export const loginUser = async (data: LoginInput) => {
   const refreshToken = generateRefreshToken({ id: user.id });
 
   console.log('📝 9. Saving refresh token...');
-  // ✅ CORRECT: refreshToken (singular), NOT refreshTokens
+  
   await prisma.refreshToken.create({
     data: {
       userId: user.id,
@@ -224,7 +225,7 @@ export const loginUser = async (data: LoginInput) => {
     profileName = user.doctorProfile.name;
   }
 
-  console.log('✅ Login successful!');
+  console.log('Login successful!');
   return {
     user: {
       id: user.id,
@@ -239,54 +240,74 @@ export const loginUser = async (data: LoginInput) => {
 };
 
 // ============ REFRESH TOKEN ============
+// ============ REFRESH TOKEN ============
 export const refreshTokenService = async (refreshToken: string) => {
   try {
-    // verifyRefreshToken will throw if invalid; no need to keep the returned value
-    verifyRefreshToken(refreshToken);
-    
-    const storedToken = await prisma.refreshTokens.findUnique({
+    // Verify JWT and get payload
+    const payload = verifyRefreshToken(refreshToken);
+
+    // Find token in database
+    const storedToken = await prisma.refreshToken.findUnique({
       where: { token: refreshToken },
       include: { user: true },
     });
 
-    if (!storedToken || storedToken.expiresAt < new Date()) {
-      throw new Error('Invalid or expired refresh token');
+    if (!storedToken) {
+      throw new Error("Refresh token not found");
     }
 
-    // Delete old refresh token
-    await prisma.refreshTokens.delete({
+    // Check token expiry
+    if (storedToken.expiresAt <= new Date()) {
+      await prisma.refreshToken.delete({
+        where: { id: storedToken.id },
+      });
+
+      throw new Error("Refresh token has expired");
+    }
+
+    // Extra security: Ensure JWT belongs to the same user
+    if (storedToken.user.id !== payload.id) {
+      throw new Error("Invalid refresh token");
+    }
+
+    // Delete old refresh token (Rotation)
+    await prisma.refreshToken.delete({
       where: { id: storedToken.id },
     });
 
-    // Generate new tokens
-    const newToken = generateToken({
+    // Generate new access token
+    const token = generateToken({
       id: storedToken.user.id,
       email: storedToken.user.email,
       role: storedToken.user.role,
     });
 
-    const newRefreshToken = generateRefreshToken({ id: storedToken.user.id });
+    // Generate new refresh token
+    const newRefreshToken = generateRefreshToken({
+      id: storedToken.user.id,
+    });
 
-    await prisma.refreshTokens.create({
+    // Save new refresh token
+    await prisma.refreshToken.create({
       data: {
         userId: storedToken.user.id,
         token: newRefreshToken,
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 Days
       },
     });
 
     return {
-      token: newToken,
+      token,
       refreshToken: newRefreshToken,
     };
   } catch {
-    throw new Error('Invalid refresh token');
+    throw new Error("Invalid or expired refresh token");
   }
 };
 
 // ============ LOGOUT ============
 export const logoutUser = async (userId: string) => {
-  await prisma.refreshTokens.deleteMany({
+  await prisma.refreshToken.deleteMany({
     where: { userId },
   });
   
@@ -311,7 +332,11 @@ export const getMe = async (userId: string) => {
     throw new Error('User not found');
   }
 
-  let profile = null;
+ let profile:
+  | typeof user.patientProfile
+  | typeof user.doctorProfile
+  | typeof user.adminProfile
+  | null = null;
   if (user.role === 'PATIENT' && user.patientProfile) {
     profile = user.patientProfile;
   } else if (user.role === 'DOCTOR' && user.doctorProfile) {
