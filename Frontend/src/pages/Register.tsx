@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/common";
 import hospitalBg from "../assets/hospital-bg.jpg";
+import axios from "axios";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,9 +25,24 @@ const Register = () => {
     role: "patient" as "patient" | "doctor",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Registration form submitted", formData);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/v1/auth/register",
+        {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        },
+      );
+      console.log(response.data);
+      alert("Registration Successful");
+    } catch (error) {
+      console.log(error);
+      alert("Registration Failed");
+    }
   };
 
   const handleGoogleRegister = () => {
