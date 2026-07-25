@@ -30,18 +30,31 @@ const getErrorMessage = (error: unknown): string => {
 
 // Register
 router.post('/register', async (req, res) => {
+console.log("RAW BODY:", req.body);
+console.log("RAW ROLE:", req.body.role);
+  console.log(req.body);
+
   try {
     const data = registerSchema.parse(req.body);
+
+    console.log("Validation Passed");
+
     const result = await registerUser(data);
-    res.status(201).json({
+
+    console.log("Registration Success");
+
+    return res.status(201).json({
       success: true,
       message: 'Registration successful',
       data: result,
     });
-  } catch (error: unknown) {
-    res.status(400).json({
+  } catch (error) {
+    console.error("REGISTER ERROR:");
+    console.error(error);
+
+    return res.status(400).json({
       success: false,
-      message: getErrorMessage(error) || 'Registration failed',
+      message: getErrorMessage(error),
     });
   }
 });

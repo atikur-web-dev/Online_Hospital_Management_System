@@ -2,7 +2,6 @@
 import app from './src/app.js';
 import dotenv from 'dotenv';
 
-// এনভায়রনমেন্ট ভেরিয়েবল লোড করুন
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;

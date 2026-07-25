@@ -18,13 +18,13 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-  name: "",
-  email: "",
-  phone: "",
-  password: "",
-  confirmPassword: "",
-  role: "PATIENT" as "PATIENT" | "DOCTOR" | "ADMIN",
-});
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    role: "PATIENT" as "PATIENT" | "DOCTOR" | "ADMIN",
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,9 +40,14 @@ const Register = () => {
       );
       console.log(response.data);
       alert("Registration Successful");
-    } catch (error) {
-      console.log(error);
-      alert("Registration Failed");
+    } catch (error: any) {
+      console.error("REGISTER ERROR:", error);
+
+      console.log(error.response);
+
+      console.log(error.response?.data);
+
+      alert(error.response?.data?.message ?? "Registration Failed");
     }
   };
 
@@ -180,9 +185,14 @@ const Register = () => {
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
-                onClick={() => setFormData({ ...formData, role: "patient" })}
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    role: "PATIENT",
+                  })
+                }
                 className={`py-3 rounded-xl border-2 transition-all duration-200 ${
-                  formData.role === "patient"
+                  formData.role === "PATIENT"
                     ? "border-emerald-600 bg-emerald-50 text-emerald-800"
                     : "border-emerald-200 hover:border-emerald-400 text-emerald-600"
                 }`}
@@ -191,9 +201,9 @@ const Register = () => {
               </button>
               <button
                 type="button"
-                onClick={() => setFormData({ ...formData, role: "doctor" })}
+                onClick={() => setFormData({ ...formData, role: "DOCTOR" })}
                 className={`py-3 rounded-xl border-2 transition-all duration-200 ${
-                  formData.role === "doctor"
+                  formData.role === "DOCTOR"
                     ? "border-emerald-600 bg-emerald-50 text-emerald-800"
                     : "border-emerald-200 hover:border-emerald-400 text-emerald-600"
                 }`}

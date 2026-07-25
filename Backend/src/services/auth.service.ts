@@ -311,10 +311,7 @@ export const logoutUser = async (userId: string) => {
     where: { userId },
   });
   
-  // Session table থাকলে
-  // await prisma.session.deleteMany({
-  //   where: { userId },
-  // });
+
 };
 
 // ============ GET CURRENT USER ============

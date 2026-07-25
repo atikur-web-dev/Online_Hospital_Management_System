@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { type NextFunction, type Request, type Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -7,7 +7,7 @@ import hpp from 'hpp';
 import session from 'express-session';
 import passport from 'passport';
 import dotenv from 'dotenv';
-import cookieParser from "cookie-parser";
+import cookieParser from 'cookie-parser';
 
 import authRoutes from './routes/auth.routes.js';
 
@@ -15,13 +15,16 @@ dotenv.config();
 
 const app = express();
 
-// ============ Middleware ============
+// ================= Middleware =================
 
 // CORS
-app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin:
+      process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
+    credentials: true,
+  }),
+);
 
 // Helmet
 app.use(helmet());
@@ -29,44 +32,47 @@ app.use(helmet());
 // Compression
 app.use(compression());
 
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: 'Too many requests from this IP',
-});
-app.use(limiter);
+// Rate Limiter
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: 'Too many requests from this IP',
+  }),
+);
 
 // HPP
 app.use(hpp());
 
-// Session (for Passport)
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'session-secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-  },
-}));
+// Session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'session-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  }),
+);
 
 // Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Body parser
+// Body Parser
 app.use(express.json({ limit: '10mb' }));
-app.use(cookieParser());
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(cookieParser());
 
-// ============ Routes ============
+// ================= Routes =================
 
-app.use('/api/auth', authRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 // Health Check
-app.get('/api/health', (_req, res) => {
-  res.json({
+app.get('/api/health', (_req: Request, res: Response) => {
+  return res.json({
     success: true,
     message: 'Server is running',
     timestamp: new Date().toISOString(),
@@ -74,22 +80,34 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
-// Error Handler
-app.use((err: Error & { status?: number }, _req: express.Request, res: express.Response) => {
-  console.error('Error:', err.stack);
-  res.status((err as Error & { status?: number }).status || 500).json({
-    success: false,
-    message: err.message || 'Internal Server Error',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-  });
-});
+// ================= 404 =================
 
-// 404 Handler
-app.use((_req, res) => {
-  res.status(404).json({
+app.use((_req: Request, res: Response) => {
+  return res.status(404).json({
     success: false,
     message: 'Route not found',
   });
 });
+
+// ================= Error Handler =================
+
+app.use(
+  (
+    err: Error & { status?: number },
+    _req: Request,
+    res: Response,
+    _next: NextFunction,
+  ) => {
+    console.error(err);
+
+    return res.status(err.status ?? 500).json({
+      success: false,
+      message: err.message ?? 'Internal Server Error',
+      ...(process.env.NODE_ENV === 'development' && {
+        stack: err.stack,
+      }),
+    });
+  },
+);
 
 export default app;
