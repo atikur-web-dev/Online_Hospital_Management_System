@@ -1,20 +1,53 @@
 // src/pages/Login.tsx
 
 import { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, LogIn } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, LogIn, User, Shield } from 'lucide-react';
 import { Button } from '../components/common';
 import hospitalBg from '../assets/hospital-bg.jpg';
+import { loginUser } from "../api/auth.api";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loginType, setLoginType] = useState<'user' | 'admin'>('user');
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login form submitted', formData);
+
+    // Fixed Admin Login (No API Call)
+    if (loginType === 'admin') {
+      if (formData.email === 'atikuradmin@gmail.com' && formData.password === 'atikur123') {
+        alert("Admin Login Successful");
+        localStorage.setItem("token", "admin-fixed-token");
+        localStorage.setItem("role", "ADMIN");
+        // navigate("/admin/dashboard");
+        return;
+      } else {
+        alert("Invalid Admin Credentials");
+        return;
+      }
+    }
+
+    // User Login (API Call)
+    try {
+      const response = await loginUser({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      console.log(response);
+      alert("Login Successful");
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
+      localStorage.setItem("role", response.data.user?.role || "USER");
+      // navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      alert("Login Failed");
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -36,12 +69,45 @@ const Login = () => {
       <div className="relative z-10 bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl w-full max-w-md p-8 border border-white/20">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-2xl mb-4">
-          <LogIn className="w-8 h-8 text-emerald-600" />
-
-            
+            {loginType === 'admin' ? (
+              <Shield className="w-8 h-8 text-emerald-600" />
+            ) : (
+              <LogIn className="w-8 h-8 text-emerald-600" />
+            )}
           </div>
-          <h2 className="text-2xl font-bold text-emerald-900">Welcome Back</h2>
-          <p className="mt-2 text-emerald-700">Sign in to your account</p>
+          <h2 className="text-2xl font-bold text-emerald-900">
+            {loginType === 'admin' ? 'Admin Login' : 'Welcome Back'}
+          </h2>
+          <p className="mt-2 text-emerald-700">
+            {loginType === 'admin' ? 'Sign in as Administrator' : 'Sign in to your account'}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <button
+            type="button"
+            onClick={() => setLoginType('user')}
+            className={`py-2.5 rounded-xl border-2 transition-all duration-200 flex items-center justify-center gap-2 ${
+              loginType === 'user'
+                ? 'border-emerald-600 bg-emerald-50 text-emerald-800'
+                : 'border-emerald-200 hover:border-emerald-400 text-emerald-600'
+            }`}
+          >
+            <User className="w-4 h-4" />
+            User
+          </button>
+          <button
+            type="button"
+            onClick={() => setLoginType('admin')}
+            className={`py-2.5 rounded-xl border-2 transition-all duration-200 flex items-center justify-center gap-2 ${
+              loginType === 'admin'
+                ? 'border-emerald-600 bg-emerald-50 text-emerald-800'
+                : 'border-emerald-200 hover:border-emerald-400 text-emerald-600'
+            }`}
+          >
+            <Shield className="w-4 h-4" />
+            Admin
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -56,7 +122,7 @@ const Login = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full pl-10 pr-4 py-3 bg-white/95 border border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-emerald-900 placeholder-emerald-400"
-                placeholder="you@example.com"
+                placeholder={loginType === 'admin' ? 'admin@example.com' : 'you@example.com'}
                 required
               />
             </div>

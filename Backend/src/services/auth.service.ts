@@ -2,8 +2,15 @@
 import prisma from '../lib/prisma.js';
 // import type { PatientProfile, DoctorProfile, AdminProfile } from '@prisma/client';
 import { hashPassword, comparePassword } from '../utils/bcrypt.js';
-import { generateToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
-import type { RegisterInput, LoginInput } from '../validators/auth.validator.js';
+import {
+  generateToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from '../utils/jwt.js';
+import type {
+  RegisterInput,
+  LoginInput,
+} from '../validators/auth.validator.js';
 
 // ============ REGISTER ============
 export const registerUser = async (data: RegisterInput) => {
@@ -14,13 +21,19 @@ export const registerUser = async (data: RegisterInput) => {
 
   // Check if prisma is working
   console.log('📝 3. Checking prisma object:', typeof prisma);
-  console.log('📝 4. Prisma models:', Object.keys(prisma).filter(k => !k.startsWith('_')));
+  console.log(
+    '📝 4. Prisma models:',
+    Object.keys(prisma).filter((k) => !k.startsWith('_')),
+  );
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
   });
 
-  console.log('📝 5. Existing user check:', existingUser ? 'Found' : 'Not found');
+  console.log(
+    '📝 5. Existing user check:',
+    existingUser ? 'Found' : 'Not found',
+  );
 
   if (existingUser) {
     throw new Error('User already exists');
@@ -32,7 +45,10 @@ export const registerUser = async (data: RegisterInput) => {
   try {
     const user = await prisma.$transaction(async (tx) => {
       console.log('📝 7. Transaction started');
-      console.log('📝 8. Available models in tx:', Object.keys(tx).filter(k => !k.startsWith('_')));
+      console.log(
+        '📝 8. Available models in tx:',
+        Object.keys(tx).filter((k) => !k.startsWith('_')),
+      );
 
       // 1. Create User
       const newUser = await tx.user.create({
@@ -49,8 +65,11 @@ export const registerUser = async (data: RegisterInput) => {
       // 2. Create Profile based on role
       if (role === 'PATIENT') {
         console.log('📝 10. Creating Patient Profile...');
-        console.log('📝 11. Does tx.patientProfile exist?', !!tx.patientProfile);
-        
+        console.log(
+          '📝 11. Does tx.patientProfile exist?',
+          !!tx.patientProfile,
+        );
+
         if (tx.patientProfile) {
           await tx.patientProfile.create({
             data: {
@@ -64,11 +83,10 @@ export const registerUser = async (data: RegisterInput) => {
           console.error('❌ tx.patientProfile is undefined!');
           throw new Error('patientProfile model not found in Prisma schema');
         }
-      } 
-      else if (role === 'DOCTOR') {
+      } else if (role === 'DOCTOR') {
         console.log('📝 10. Creating Doctor Profile...');
         console.log('📝 11. Does tx.doctorProfile exist?', !!tx.doctorProfile);
-        
+
         if (tx.doctorProfile) {
           await tx.doctorProfile.create({
             data: {
@@ -82,11 +100,10 @@ export const registerUser = async (data: RegisterInput) => {
           console.error('❌ tx.doctorProfile is undefined!');
           throw new Error('doctorProfile model not found in Prisma schema');
         }
-      }
-      else if (role === 'ADMIN') {
+      } else if (role === 'ADMIN') {
         console.log('📝 10. Creating Admin Profile...');
         console.log('📝 11. Does tx.adminProfile exist?', !!tx.adminProfile);
-        
+
         if (tx.adminProfile) {
           await tx.adminProfile.create({
             data: {
@@ -145,7 +162,6 @@ export const registerUser = async (data: RegisterInput) => {
   }
 };
 
-
 // ============ LOGIN ============
 export const loginUser = async (data: LoginInput) => {
   const { email, password } = data;
@@ -186,7 +202,8 @@ export const loginUser = async (data: LoginInput) => {
 
   console.log('📝 6. Email verified:', user.isEmailVerified);
 
-  if (!user.isEmailVerified) {
+  // ✅ Admin always skips email verification
+  if (user.role !== 'ADMIN' && !user.isEmailVerified) {
     console.log('❌ Email not verified');
     throw new Error('Please verify your email first');
   }
@@ -194,7 +211,9 @@ export const loginUser = async (data: LoginInput) => {
   console.log('📝 7. Updating last login...');
   await prisma.user.update({
     where: { id: user.id },
-    data: { lastLogin: new Date() },
+    data: {
+      lastLogin: new Date(),
+    },
   });
 
   console.log('📝 8. Generating tokens...');
@@ -204,10 +223,12 @@ export const loginUser = async (data: LoginInput) => {
     role: user.role,
   });
 
-  const refreshToken = generateRefreshToken({ id: user.id });
+  const refreshToken = generateRefreshToken({
+    id: user.id,
+  });
 
   console.log('📝 9. Saving refresh token...');
-  
+
   await prisma.refreshToken.create({
     data: {
       userId: user.id,
@@ -217,15 +238,20 @@ export const loginUser = async (data: LoginInput) => {
   });
 
   console.log('📝 10. Getting profile info...');
+
   // Get profile info
   let profileName = user.email;
+
   if (user.role === 'PATIENT' && user.patientProfile) {
     profileName = user.patientProfile.name;
   } else if (user.role === 'DOCTOR' && user.doctorProfile) {
     profileName = user.doctorProfile.name;
+  } else if (user.role === 'ADMIN' && user.adminProfile) {
+    profileName = user.adminProfile.name;
   }
 
-  console.log('Login successful!');
+  console.log('✅ Login successful!');
+
   return {
     user: {
       id: user.id,
@@ -233,13 +259,14 @@ export const loginUser = async (data: LoginInput) => {
       role: user.role,
       name: profileName,
       profileImage: user.profileImage,
+      isEmailVerified: user.isEmailVerified,
+      isAdmin: user.role === 'ADMIN', // ✅ Added
     },
     token,
     refreshToken,
   };
 };
 
-// ============ REFRESH TOKEN ============
 // ============ REFRESH TOKEN ============
 export const refreshTokenService = async (refreshToken: string) => {
   try {
@@ -253,7 +280,7 @@ export const refreshTokenService = async (refreshToken: string) => {
     });
 
     if (!storedToken) {
-      throw new Error("Refresh token not found");
+      throw new Error('Refresh token not found');
     }
 
     // Check token expiry
@@ -262,12 +289,12 @@ export const refreshTokenService = async (refreshToken: string) => {
         where: { id: storedToken.id },
       });
 
-      throw new Error("Refresh token has expired");
+      throw new Error('Refresh token has expired');
     }
 
     // Extra security: Ensure JWT belongs to the same user
     if (storedToken.user.id !== payload.id) {
-      throw new Error("Invalid refresh token");
+      throw new Error('Invalid refresh token');
     }
 
     // Delete old refresh token (Rotation)
@@ -301,7 +328,7 @@ export const refreshTokenService = async (refreshToken: string) => {
       refreshToken: newRefreshToken,
     };
   } catch {
-    throw new Error("Invalid or expired refresh token");
+    throw new Error('Invalid or expired refresh token');
   }
 };
 
@@ -310,8 +337,6 @@ export const logoutUser = async (userId: string) => {
   await prisma.refreshToken.deleteMany({
     where: { userId },
   });
-  
-
 };
 
 // ============ GET CURRENT USER ============
@@ -329,11 +354,11 @@ export const getMe = async (userId: string) => {
     throw new Error('User not found');
   }
 
- let profile:
-  | typeof user.patientProfile
-  | typeof user.doctorProfile
-  | typeof user.adminProfile
-  | null = null;
+  let profile:
+    | typeof user.patientProfile
+    | typeof user.doctorProfile
+    | typeof user.adminProfile
+    | null = null;
   if (user.role === 'PATIENT' && user.patientProfile) {
     profile = user.patientProfile;
   } else if (user.role === 'DOCTOR' && user.doctorProfile) {

@@ -61,6 +61,9 @@ console.log("RAW ROLE:", req.body.role);
 
 // Login
 router.post('/login', async (req, res) => {
+  console.log("========== LOGIN ==========");
+  console.log(req.body);
+
   try {
     const data = loginSchema.parse(req.body);
     const result = await loginUser(data);

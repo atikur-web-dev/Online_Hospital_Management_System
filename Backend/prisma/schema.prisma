@@ -96,19 +96,14 @@ model DoctorProfile {
 
 model AdminProfile {
   id            String   @id @default(cuid())
-
   userId        String   @unique
-
   name          String
   phone         String?
-
   permissions   String[]
-
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  // Relations
- user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("admin_profiles")
 }

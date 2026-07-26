@@ -3,14 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/server.ts",
-  "scripts": {
-    "dev": "nodemon src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "security-check": "npm audit",
-    "security-fix": "npm audit fix",
-    "lint": "eslint ."
-  },
+"scripts": {
+  "dev": "nodemon src/server.ts",
+  "build": "tsc",
+  "start": "node dist/server.js",
+  "lint": "eslint .",
+  "security-check": "npm audit",
+  "security-fix": "npm audit fix",
+  "prisma:generate": "prisma generate",
+  "prisma:migrate": "prisma migrate dev",
+  "prisma:studio": "prisma studio",
+  "prisma:seed": "tsx prisma/seed.ts",
+  "prisma:reset": "prisma migrate reset --force && npm run prisma:seed"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
