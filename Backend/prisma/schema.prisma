@@ -24,23 +24,17 @@ model User {
   email             String   @unique
   password          String?
   role              UserRole @default(PATIENT)
-
   isActive          Boolean  @default(true)
   isEmailVerified   Boolean  @default(false)
-
   googleId          String?  @unique
   profileImage      String?
-
   lastLogin         DateTime?
-
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  // Relations
   patientProfile    PatientProfile?
   doctorProfile     DoctorProfile?
   adminProfile      AdminProfile?
-
   sessions          Session[]
   refreshTokens     RefreshToken[]
 
@@ -49,47 +43,34 @@ model User {
 
 model PatientProfile {
   id            String   @id @default(cuid())
-
   userId        String   @unique
-
   name          String
   phone         String?
-
   dateOfBirth   DateTime?
   gender        Gender?
   address       String?
-
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  // Relations
- user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("patient_profiles")
 }
 
 model DoctorProfile {
   id                String   @id @default(cuid())
-
   userId            String   @unique
-
   name              String
   phone             String?
-
   specialization    String?
   qualification     String?
-
   experience        Int?
-
   consultationFee   Float?
-
   isAvailable       Boolean  @default(true)
-
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("doctor_profiles")
 }
@@ -110,34 +91,24 @@ model AdminProfile {
 
 model Session {
   id            String   @id @default(cuid())
-
   userId        String
-
   token         String   @unique
-
   expiresAt     DateTime
-
   createdAt     DateTime @default(now())
 
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
 model RefreshToken {
   id            String   @id @default(cuid())
-
   userId        String
-
   token         String   @unique
-
   expiresAt     DateTime
-
   createdAt     DateTime @default(now())
 
-  // Relations
- user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("refresh_tokens")
 }

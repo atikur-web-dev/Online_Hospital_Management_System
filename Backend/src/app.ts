@@ -7,6 +7,7 @@ import hpp from 'hpp';
 import session from 'express-session';
 import passport from 'passport';
 import dotenv from 'dotenv';
+import adminRoutes from './routes/admin.routes.js';
 import cookieParser from 'cookie-parser';
 
 import authRoutes from './routes/auth.routes.js';
@@ -69,6 +70,7 @@ app.use(cookieParser());
 // ================= Routes =================
 
 app.use("/api/v1/auth", authRoutes);
+app.use('/api/v1/admin', adminRoutes); 
 
 // Health Check
 app.get('/api/health', (_req: Request, res: Response) => {
