@@ -11,18 +11,13 @@ import {
 
 import { authenticate } from '../middleware/auth.middleware.js';
 
-console.log("✅ auth.routes loaded");
-
 const router = Router();
 
 // ============ Public Routes ============
 router.post('/register', register);
 router.post('/login', login);
 router.post('/refresh-token', refreshToken);
-router.get("/verify/:token", (req, res) => {
-  console.log("VERIFY ROUTE HIT");
-  res.send("Verify route working");
-});
+router.get("/verify/:token", emailVerify);
 
 // ============ Protected Routes ============
 router.get('/me', authenticate, me);

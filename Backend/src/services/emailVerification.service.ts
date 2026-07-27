@@ -61,6 +61,7 @@ export async function emailVerificationService(
   }
 
   // ================= Update Verification =================
+  console.log("Before update:", user.isEmailVerified);
   await prisma.user.update({
     where: {
       id: user.id,
@@ -69,6 +70,6 @@ export async function emailVerificationService(
       isEmailVerified: true,
     },
   });
-
+console.log("User updated successfully");
   return 'Email verified successfully!';
 }

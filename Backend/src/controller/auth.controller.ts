@@ -18,6 +18,7 @@ import {
 
 // import { ValidationError } from '../utils/errors/httpErrors.js';
 import { emailVerificationService } from '../services/emailVerification.service.js';
+import { env } from '../config/env.js';
 
 // ==============================
 // Register
@@ -171,14 +172,11 @@ export const emailVerify = async (
     const { token } = req.params;
 
     await emailVerificationService(token);
-console.log("APP_URL =", process.env.APP_URL);
+
     return res.redirect(
-  `${env.CLIENT_URL}/email-verified?status=success`
-);
+      `${env.CLIENT_URL}/email-verified?status=success`
+    );
   } catch (error) {
-    console.log("Error : ", error)
-    return res.redirect(
-  `${env.CLIENT_URL}/email-verified?status=failed`
-);
+    next(error);
   }
 };
