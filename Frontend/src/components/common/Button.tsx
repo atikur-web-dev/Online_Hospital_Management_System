@@ -1,148 +1,171 @@
 // src/components/common/Button.tsx
 
-import React from 'react';
-import { LucideIcon } from 'lucide-react';
+import React, { forwardRef } from "react";
+import type { LucideIcon } from "lucide-react";
 
-// বাটনের ভেরিয়েন্ট (টাইপ)
-export type ButtonVariant = 
-  | 'primary' 
-  | 'secondary' 
-  | 'outline' 
-  | 'ghost' 
-  | 'danger' 
-  | 'success' 
-  | 'warning'
-  | 'dark'
-  | 'white';
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "danger"
+  | "success"
+  | "warning"
+  | "dark"
+  | "white";
 
-// বাটনের সাইজ
-export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
-// বাটনের স্টেট
-export type ButtonState = 'default' | 'loading' | 'disabled';
+export type ButtonState = "default" | "loading" | "disabled";
 
-// Modern Interface (children is automatically extended from React.ButtonHTMLAttributes)
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   state?: ButtonState;
   icon?: LucideIcon;
-  iconPosition?: 'left' | 'right';
+  iconPosition?: "left" | "right";
   fullWidth?: boolean;
   isLoading?: boolean;
 }
 
-// 1. Cleaned up LoadingSpinner component isolated from the main component render loop
 const LoadingSpinner = () => (
-  <svg 
-    className="animate-spin h-4 w-4 shrink-0" 
-    xmlns="http://www.w3.org/2000/svg" 
-    fill="none" 
+  <svg
+    className="h-4 w-4 animate-spin shrink-0"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
     viewBox="0 0 24 24"
+    aria-hidden="true"
   >
-    <circle 
-      className="opacity-25" 
-      cx="12" 
-      cy="12" 
-      r="10" 
-      stroke="currentColor" 
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
       strokeWidth="4"
+      className="opacity-25"
     />
-    <path 
-      className="opacity-75" 
-      fill="currentColor" 
-      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+    <path
+      fill="currentColor"
+      className="opacity-75"
+      d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4zm2 5.29A7.96 7.96 0 014 12H0c0 3.04 1.14 5.82 3 7.94l3-2.65z"
     />
   </svg>
 );
 
-// 2. Modern Function Component typing without React.FC
-export const Button = ({
-  variant = 'primary',
-  size = 'md',
-  state = 'default',
-  icon: Icon,
-  iconPosition = 'left',
-  children,
-  fullWidth = false,
-  className = '',
-  isLoading = false,
-  disabled = false,
-  type = 'button',
-  ...props
-}: ButtonProps) => {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      variant = "primary",
+      size = "md",
+      state = "default",
+      icon: Icon,
+      iconPosition = "left",
+      children,
+      fullWidth = false,
+      className = "",
+      isLoading = false,
+      disabled = false,
+      type = "button",
+      ...props
+    },
+    ref
+  ) => {
+    const sizeClasses: Record<ButtonSize, string> = {
+      xs: "px-2.5 py-1.5 text-xs gap-1.5",
+      sm: "px-3 py-2 text-sm gap-2",
+      md: "px-4 py-2.5 text-sm gap-2",
+      lg: "px-6 py-3 text-base gap-2.5",
+      xl: "px-8 py-4 text-lg gap-3",
+    };
 
-  // সাইজ অনুযায়ী ক্লাস
-  const sizeClasses: Record<ButtonSize, string> = {
-    xs: 'px-2.5 py-1.5 text-xs gap-1.5',
-    sm: 'px-3 py-2 text-sm gap-2',
-    md: 'px-4 py-2.5 text-sm gap-2',
-    lg: 'px-6 py-3 text-base gap-2.5',
-    xl: 'px-8 py-4 text-lg gap-3',
-  };
+    const variantClasses: Record<ButtonVariant, string> = {
+      primary:
+        "bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 shadow-sm hover:shadow",
 
-  // ভেরিয়েন্ট অনুযায়ী ক্লাস
-  const variantClasses: Record<ButtonVariant, string> = {
-    primary: 'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 shadow-sm hover:shadow',
-    secondary: 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 active:bg-emerald-300',
-    outline: 'border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 active:bg-emerald-100',
-    ghost: 'text-emerald-700 hover:bg-emerald-50 active:bg-emerald-100',
-    danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-sm hover:shadow',
-    success: 'bg-green-600 text-white hover:bg-green-700 active:bg-green-800 shadow-sm hover:shadow',
-    warning: 'bg-amber-500 text-white hover:bg-amber-600 active:bg-amber-700 shadow-sm hover:shadow',
-    dark: 'bg-gray-800 text-white hover:bg-gray-900 active:bg-gray-950 shadow-sm hover:shadow',
-    white: 'bg-white text-emerald-700 border border-emerald-200 hover:bg-emerald-50 active:bg-emerald-100 shadow-sm',
-  };
+      secondary:
+        "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 active:bg-emerald-300",
 
-  // স্টেট অনুযায়ী ক্লাস
-  const stateClasses: Record<ButtonState, string> = {
-    default: '',
-    loading: 'cursor-wait opacity-70 pointer-events-none',
-    disabled: 'cursor-not-allowed opacity-50 pointer-events-none',
-  };
+      outline:
+        "border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 active:bg-emerald-100",
 
-  // বর্তমান স্টেট ডিটেক্ট
-  const isActualLoading = isLoading || state === 'loading';
-  const isActualDisabled = disabled || state === 'disabled' || isActualLoading;
-  const currentState: ButtonState = isActualLoading ? 'loading' : isActualDisabled ? 'disabled' : 'default';
+      ghost:
+        "text-emerald-700 hover:bg-emerald-50 active:bg-emerald-100",
 
-  // বেইস ক্লাস
-  const baseClasses = `
-    inline-flex items-center justify-center
-    font-medium rounded-xl
-    transition-all duration-200 ease-in-out
-    focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
-    ${sizeClasses[size]}
-    ${variantClasses[variant]}
-    ${stateClasses[currentState]}
-    ${fullWidth ? 'w-full' : ''}
-    ${className}
-  `.trim().replace(/\s+/g, ' '); // Cleans up unnecessary spacing breaks
+      danger:
+        "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-sm hover:shadow",
 
-  return (
-    <button
-      type={type}
-      className={baseClasses}
-      disabled={isActualDisabled}
-      {...props}
-    >
-      {/* লোডিং স্টেট */}
-      {isActualLoading && <LoadingSpinner />}
+      success:
+        "bg-green-600 text-white hover:bg-green-700 active:bg-green-800 shadow-sm hover:shadow",
 
-      {/* আইকন (বামে) */}
-      {Icon && iconPosition === 'left' && !isActualLoading && (
-        <Icon className="h-4 w-4 shrink-0" />
-      )}
+      warning:
+        "bg-amber-500 text-white hover:bg-amber-600 active:bg-amber-700 shadow-sm hover:shadow",
 
-      {/* টেক্সট */}
-      {children && <span>{children}</span>}
+      dark:
+        "bg-slate-800 text-white hover:bg-slate-900 active:bg-black shadow-sm hover:shadow",
 
-      {/* আইকন (ডানে) */}
-      {Icon && iconPosition === 'right' && !isActualLoading && (
-        <Icon className="h-4 w-4 shrink-0" />
-      )}
-    </button>
-  );
-};
+      white:
+        "bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-50 shadow-sm",
+    };
+
+    const stateClasses: Record<ButtonState, string> = {
+      default: "",
+      loading: "cursor-wait opacity-70 pointer-events-none",
+      disabled: "cursor-not-allowed opacity-50 pointer-events-none",
+    };
+
+    const loading = isLoading || state === "loading";
+    const buttonDisabled =
+      disabled || state === "disabled" || loading;
+
+    const currentState: ButtonState = loading
+      ? "loading"
+      : buttonDisabled
+      ? "disabled"
+      : "default";
+
+    const classes = `
+      inline-flex items-center justify-center
+      rounded-xl font-medium
+      transition-all duration-200
+      focus:outline-none
+      focus:ring-2
+      focus:ring-emerald-500
+      focus:ring-offset-2
+      ${sizeClasses[size]}
+      ${variantClasses[variant]}
+      ${stateClasses[currentState]}
+      ${fullWidth ? "w-full" : ""}
+      ${className}
+    `
+      .trim()
+      .replace(/\s+/g, " ");
+
+    return (
+      <button
+        ref={ref}
+        type={type}
+        disabled={buttonDisabled}
+        aria-busy={loading}
+        className={classes}
+        {...props}
+      >
+        {loading && <LoadingSpinner />}
+
+        {!loading && Icon && iconPosition === "left" && (
+          <Icon className="h-4 w-4 shrink-0" />
+        )}
+
+        {children && <span>{children}</span>}
+
+        {!loading && Icon && iconPosition === "right" && (
+          <Icon className="h-4 w-4 shrink-0" />
+        )}
+      </button>
+    );
+  }
+);
+
+Button.displayName = "Button";
 
 export default Button;

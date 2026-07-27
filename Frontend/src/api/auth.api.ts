@@ -5,17 +5,16 @@ export interface RegisterPayload {
   name: string;
   email: string;
   password: string;
-
   phone?: string;
-
   role: "PATIENT" | "DOCTOR";
-
   // Patient
+
   dateOfBirth?: string;
   gender?: "MALE" | "FEMALE" | "OTHER";
   address?: string;
 
   // Doctor
+
   specialization?: string;
   qualification?: string;
   experience?: number;
