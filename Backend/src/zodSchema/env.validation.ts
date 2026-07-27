@@ -1,7 +1,8 @@
-import z from "zod";
+// Backend/src/zodSchema/env.validation.ts
+import z from 'zod';
 export const envSchema = z.object({
   //Node environment
-  NODE_ENV: z.enum(["development", "production"]).default("development"),
+  NODE_ENV: z.enum(['development', 'production']).default('development'),
   PORT: z.coerce.number().default(8000),
   DATABASE_URL: z.string().url(),
   JWT_SECRET: z.string().min(8),
@@ -36,8 +37,14 @@ export const envSchema = z.object({
   SSL_IPN_URL: z.string().url(),
 
   // Client URL for Frontend
-  CLIENT_URL: z.string().url().default("http://localhost:3000"),
+  CLIENT_URL: z.string().url().default('http://localhost:3000'),
 
-  REDIS_URL: z.string().url().default("redis://localhost:6379"),
+  REDIS_URL: z.string().url().default('redis://localhost:6379'),
   CACHE_TTL: z.coerce.number().default(300),
+
+  RESEND_API_KEY: z.string(),
+
+  EMAIL_VERIFICATION_SECRET: z.string(),
+
+  EMAIL_VERIFICATION_EXPIRE: z.string(),
 });

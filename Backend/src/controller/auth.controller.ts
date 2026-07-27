@@ -13,6 +13,8 @@ import {
   loginSchema,
   refreshTokenSchema,
 } from "../validators/auth.validator.js";
+import { ValidationError } from "../utils/errors/httpErrors.js";
+import { emailVerificationService } from "../services/emailVerification.service.js";
 
 // ===============================
 // Register
@@ -174,5 +176,28 @@ const user = await getMe(req.user.id);
     });
   } catch (error) {
     return next(error);
+  }
+};
+
+export const emailVerify = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { token } = req.params;
+
+    if (!token || Array.isArray(token)) {
+      throw new ValidationError(
+        {},
+        'Invalid verification link. No token provided.',
+      );
+    }
+
+    const message = await emailVerificationService(token);
+
+    res.status(200).json({
+      success: true,
+      message: message,
+      redirectTo: '/login?verified=true',
+    });
+  } catch (error) {
+    next(error);
   }
 };

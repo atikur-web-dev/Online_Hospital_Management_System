@@ -143,6 +143,17 @@ export const registerUser = async (data: RegisterInput) => {
     });
 
     console.log('📝 14. Tokens generated!');
+    const verificationLink =
+generateVerificationLink(email);
+
+await sendMail(
+    email,
+    "Verify Your Email",
+    emailVerificationTemplate(
+        verificationLink,
+        name,
+    ),
+);
 
     return {
       user: {
@@ -376,3 +387,4 @@ export const getMe = async (userId: string) => {
     profile,
   };
 };
+

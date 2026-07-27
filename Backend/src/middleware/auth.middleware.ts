@@ -2,6 +2,7 @@
 
 import type { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt.js';
+import { UnauthorizeError } from '../utils/errors/httpErrors.js';
 
 export const authenticate = (
   req: Request,
@@ -68,3 +69,21 @@ export const authorize =
 
     next();
   };
+
+  // Email verification Check Middleware
+export const requiredEmailVerification = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  // since we already run the authenticate middleware, so req.user is already set
+  const user = req.user as { isEmailVerified?: boolean } | undefined;
+
+  if (!user?.isEmailVerified) {
+    throw new UnauthorizeError(
+      {},
+      'Please Verify your email address to access this feature',
+    );
+  }
+  next();
+};
