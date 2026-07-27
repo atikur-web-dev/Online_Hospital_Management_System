@@ -7,9 +7,10 @@ const JWT_REFRESH_SECRET: Secret =
   process.env.JWT_REFRESH_SECRET ?? "change-this-refresh-secret";
 
 export interface AccessTokenPayload {
-  id: string;
+   id: string;
   email: string;
   role: "PATIENT" | "DOCTOR" | "ADMIN";
+  isEmailVerified: boolean;
 }
 
 export interface RefreshTokenPayload {

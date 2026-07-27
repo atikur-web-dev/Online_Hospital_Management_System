@@ -11,128 +11,81 @@ import type {
   RegisterInput,
   LoginInput,
 } from '../validators/auth.validator.js';
+import { generateVerificationLink } from '../utils/generateVerificationLink.js';
+import { sendMail } from '../config/mailConfig.js';
+import { emailVerificationTemplate } from '../templates/emailVerification.js';
+import { InternalServerError } from '../utils/errors/httpErrors.js';
 
-// ============ REGISTER ============
 export const registerUser = async (data: RegisterInput) => {
   const { email, password, name, role, phone } = data;
-
-  console.log('📝 1. Starting registration...');
-  console.log('📝 2. Data:', { email, name, role, phone });
-
-  // Check if prisma is working
-  console.log('📝 3. Checking prisma object:', typeof prisma);
-  console.log(
-    '📝 4. Prisma models:',
-    Object.keys(prisma).filter((k) => !k.startsWith('_')),
-  );
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
   });
-
-  console.log(
-    '📝 5. Existing user check:',
-    existingUser ? 'Found' : 'Not found',
-  );
 
   if (existingUser) {
     throw new Error('User already exists');
   }
 
   const hashedPassword = await hashPassword(password);
-  console.log('📝 6. Password hashed');
 
   try {
     const user = await prisma.$transaction(async (tx) => {
-      console.log('📝 7. Transaction started');
-      console.log(
-        '📝 8. Available models in tx:',
-        Object.keys(tx).filter((k) => !k.startsWith('_')),
-      );
-
-      // 1. Create User
       const newUser = await tx.user.create({
         data: {
           email,
           password: hashedPassword,
           role,
-          isEmailVerified: true,
+          isEmailVerified: role === 'ADMIN',
         },
       });
 
-      console.log('📝 9. User created:', newUser.id);
-
-      // 2. Create Profile based on role
-      if (role === 'PATIENT') {
-        console.log('📝 10. Creating Patient Profile...');
-        console.log(
-          '📝 11. Does tx.patientProfile exist?',
-          !!tx.patientProfile,
-        );
-
-        if (tx.patientProfile) {
+      switch (role) {
+        case 'PATIENT':
           await tx.patientProfile.create({
             data: {
               userId: newUser.id,
               name,
-              phone: phone || null,
+              phone: phone ?? null,
             },
           });
-          console.log('📝 12. Patient Profile created');
-        } else {
-          console.error('❌ tx.patientProfile is undefined!');
-          throw new Error('patientProfile model not found in Prisma schema');
-        }
-      } else if (role === 'DOCTOR') {
-        console.log('📝 10. Creating Doctor Profile...');
-        console.log('📝 11. Does tx.doctorProfile exist?', !!tx.doctorProfile);
+          break;
 
-        if (tx.doctorProfile) {
+        case 'DOCTOR':
           await tx.doctorProfile.create({
             data: {
               userId: newUser.id,
               name,
-              phone: phone || null,
+              phone: phone ?? null,
             },
           });
-          console.log('📝 12. Doctor Profile created');
-        } else {
-          console.error('❌ tx.doctorProfile is undefined!');
-          throw new Error('doctorProfile model not found in Prisma schema');
-        }
-      } else if (role === 'ADMIN') {
-        console.log('📝 10. Creating Admin Profile...');
-        console.log('📝 11. Does tx.adminProfile exist?', !!tx.adminProfile);
+          break;
 
-        if (tx.adminProfile) {
+        case 'ADMIN':
           await tx.adminProfile.create({
             data: {
               userId: newUser.id,
               name,
-              phone: phone || null,
+              phone: phone ?? null,
               permissions: ['MANAGE_USERS', 'VIEW_ANALYTICS'],
             },
           });
-          console.log('📝 12. Admin Profile created');
-        } else {
-          console.error('❌ tx.adminProfile is undefined!');
-          throw new Error('adminProfile model not found in Prisma schema');
-        }
+          break;
       }
 
       return newUser;
     });
 
-    console.log('📝 13. Transaction completed!');
-
-    // Generate tokens
     const token = generateToken({
-      id: user.id,
-      email: user.email,
-      role: user.role,
+       id: user.id,
+  email: user.email,
+  role: user.role,
+  isEmailVerified: user.isEmailVerified,
     });
 
-    const refreshToken = generateRefreshToken({ id: user.id });
+    const refreshToken = generateRefreshToken({
+      id: user.id,
+    });
 
     await prisma.refreshToken.create({
       data: {
@@ -142,18 +95,16 @@ export const registerUser = async (data: RegisterInput) => {
       },
     });
 
-    console.log('📝 14. Tokens generated!');
-    const verificationLink =
-generateVerificationLink(email);
+    // Skip email verification for admin
+    if (user.role !== 'ADMIN') {
+      const verificationLink = generateVerificationLink(user.email);
 
-await sendMail(
-    email,
-    "Verify Your Email",
-    emailVerificationTemplate(
-        verificationLink,
-        name,
-    ),
-);
+      await sendMail(
+        [user.email],
+        'Verify Your Email',
+        emailVerificationTemplate(verificationLink, name),
+      );
+    }
 
     return {
       user: {
@@ -166,18 +117,18 @@ await sendMail(
       refreshToken,
     };
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.error('❌ Error in transaction:', error);
-    // Preserve the original caught error as the cause for better debugging
-    throw new Error(message || 'Registration failed', { cause: error });
+    console.error(error);
+
+    throw new InternalServerError(
+      {},
+      error instanceof Error ? error.message : 'Registration failed',
+    );
   }
 };
 
-// ============ LOGIN ============
+// Login
 export const loginUser = async (data: LoginInput) => {
   const { email, password } = data;
-
-  console.log('📝 1. Login attempt for:', email);
 
   const user = await prisma.user.findUnique({
     where: { email },
@@ -188,57 +139,43 @@ export const loginUser = async (data: LoginInput) => {
     },
   });
 
-  console.log('📝 2. User found:', user ? 'Yes' : 'No');
-
   if (!user) {
-    console.log('❌ User not found');
     throw new Error('Invalid credentials');
   }
 
-  console.log('📝 3. Has password:', user.password ? 'Yes' : 'No');
-
   if (!user.password) {
-    console.log('❌ No password (Google user)');
     throw new Error('Please login with Google');
   }
 
-  console.log('📝 4. Comparing password...');
   const isValid = await comparePassword(password, user.password);
-  console.log('📝 5. Password valid:', isValid);
 
   if (!isValid) {
-    console.log('❌ Invalid password');
     throw new Error('Invalid credentials');
   }
 
-  console.log('📝 6. Email verified:', user.isEmailVerified);
-
-  // ✅ Admin always skips email verification
   if (user.role !== 'ADMIN' && !user.isEmailVerified) {
-    console.log('❌ Email not verified');
     throw new Error('Please verify your email first');
   }
 
-  console.log('📝 7. Updating last login...');
   await prisma.user.update({
-    where: { id: user.id },
+    where: {
+      id: user.id,
+    },
     data: {
       lastLogin: new Date(),
     },
   });
 
-  console.log('📝 8. Generating tokens...');
   const token = generateToken({
-    id: user.id,
-    email: user.email,
-    role: user.role,
+     id: user.id,
+  email: user.email,
+  role: user.role,
+  isEmailVerified: user.isEmailVerified,
   });
 
   const refreshToken = generateRefreshToken({
     id: user.id,
   });
-
-  console.log('📝 9. Saving refresh token...');
 
   await prisma.refreshToken.create({
     data: {
@@ -248,20 +185,21 @@ export const loginUser = async (data: LoginInput) => {
     },
   });
 
-  console.log('📝 10. Getting profile info...');
-
-  // Get profile info
   let profileName = user.email;
 
-  if (user.role === 'PATIENT' && user.patientProfile) {
-    profileName = user.patientProfile.name;
-  } else if (user.role === 'DOCTOR' && user.doctorProfile) {
-    profileName = user.doctorProfile.name;
-  } else if (user.role === 'ADMIN' && user.adminProfile) {
-    profileName = user.adminProfile.name;
-  }
+  switch (user.role) {
+    case 'PATIENT':
+      profileName = user.patientProfile?.name ?? user.email;
+      break;
 
-  console.log('✅ Login successful!');
+    case 'DOCTOR':
+      profileName = user.doctorProfile?.name ?? user.email;
+      break;
+
+    case 'ADMIN':
+      profileName = user.adminProfile?.name ?? user.email;
+      break;
+  }
 
   return {
     user: {
@@ -271,7 +209,7 @@ export const loginUser = async (data: LoginInput) => {
       name: profileName,
       profileImage: user.profileImage,
       isEmailVerified: user.isEmailVerified,
-      isAdmin: user.role === 'ADMIN', // ✅ Added
+      isAdmin: user.role === 'ADMIN',
     },
     token,
     refreshToken,
@@ -314,11 +252,12 @@ export const refreshTokenService = async (refreshToken: string) => {
     });
 
     // Generate new access token
-    const token = generateToken({
-      id: storedToken.user.id,
-      email: storedToken.user.email,
-      role: storedToken.user.role,
-    });
+ const token = generateToken({
+  id: storedToken.user.id,
+  email: storedToken.user.email,
+  role: storedToken.user.role,
+  isEmailVerified: storedToken.user.isEmailVerified,
+});
 
     // Generate new refresh token
     const newRefreshToken = generateRefreshToken({
@@ -387,4 +326,3 @@ export const getMe = async (userId: string) => {
     profile,
   };
 };
-

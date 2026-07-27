@@ -7,7 +7,10 @@ type AdminParams = {
 };
 
 // ============ CREATE NEW ADMIN ============
-export const createAdmin = async (req: Request, res: Response) => {
+export const createAdmin = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const { email, password, name, phone } = req.body;
 
@@ -66,7 +69,7 @@ export const createAdmin = async (req: Request, res: Response) => {
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: message || 'Failed to create admin',
     });
@@ -74,7 +77,10 @@ export const createAdmin = async (req: Request, res: Response) => {
 };
 
 // ============ GET ALL ADMINS ============
-export const getAllAdmins = async (req: Request, res: Response) => {
+export const getAllAdmins = async (
+  _req: Request,
+  res: Response
+): Promise<Response> => {
   try {
     const admins = await prisma.user.findMany({
       where: {
@@ -102,7 +108,7 @@ export const getAllAdmins = async (req: Request, res: Response) => {
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: message || 'Failed to get admins',
     });
@@ -112,8 +118,8 @@ export const getAllAdmins = async (req: Request, res: Response) => {
 // ============ TOGGLE ADMIN STATUS ============
 export const toggleAdminStatus = async (
   req: Request<AdminParams>,
-  res: Response,
-) => {
+  res: Response
+): Promise<Response> => {
   try {
     const adminId = req.params.adminId;
 
@@ -169,7 +175,10 @@ export const toggleAdminStatus = async (
 };
 
 // ============ DELETE ADMIN ============
-export const deleteAdmin = async (req: Request<AdminParams>, res: Response) => {
+export const deleteAdmin = async (
+  req: Request<AdminParams>,
+  res: Response
+): Promise<Response> => {
   try {
     const adminId = req.params.adminId;
 

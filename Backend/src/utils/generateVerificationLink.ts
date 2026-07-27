@@ -1,18 +1,15 @@
-// Backend/src/utils/generateVerificationLink.ts
 import jwt from "jsonwebtoken";
+import type { StringValue } from "ms";
+import { env } from "../config/env.js";
 
-export const generateVerificationLink = (
-  email: string,
-) => {
+export const generateVerificationLink = (email: string): string => {
   const token = jwt.sign(
     { email },
-    process.env.EMAIL_VERIFICATION_SECRET!,
+    env.EMAIL_VERIFICATION_SECRET,
     {
-      expiresIn:
-        process.env.EMAIL_VERIFICATION_EXPIRE ||
-        "10m",
+      expiresIn: env.EMAIL_VERIFICATION_EXPIRE as StringValue,
     },
   );
 
-  return `${process.env.APP_URL}/api/v1/auth/verify/${token}`;
+  return `${env.APP_URL}/api/v1/auth/verify/${token}`;
 };

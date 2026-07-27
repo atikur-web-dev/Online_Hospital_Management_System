@@ -47,4 +47,6 @@ export const envSchema = z.object({
   EMAIL_VERIFICATION_SECRET: z.string(),
 
   EMAIL_VERIFICATION_EXPIRE: z.string(),
+
+  APP_URL: z.string().url(),
 });

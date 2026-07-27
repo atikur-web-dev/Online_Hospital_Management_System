@@ -7,11 +7,12 @@ declare global {
     interface User {
       id: string;
       email: string;
-      role: string;
+      role: "PATIENT" | "DOCTOR" | "ADMIN";
+      isEmailVerified: boolean;
     }
 
     interface Request {
-      user: User;
+      user?: User;
     }
   }
 }
