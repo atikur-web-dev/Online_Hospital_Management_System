@@ -8,8 +8,8 @@ export const generateVerificationLink = (email: string): string => {
     env.EMAIL_VERIFICATION_SECRET,
     {
       expiresIn: env.EMAIL_VERIFICATION_EXPIRE as StringValue,
-    },
+    }
   );
 
-  return `${env.APP_URL}/api/v1/auth/verify/${token}`;
+  return `${env.SERVER_URL}/api/v1/auth/verify/${token}`;
 };

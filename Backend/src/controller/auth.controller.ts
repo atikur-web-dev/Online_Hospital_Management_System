@@ -47,8 +47,8 @@ export const register = async (
         token: result.token,
       },
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -80,8 +80,8 @@ export const login = async (
         token: result.token,
       },
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -114,8 +114,8 @@ export const refreshToken = async (
         token: result.token,
       },
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -136,8 +136,8 @@ export const logout = async (
       success: true,
       message: 'Logged out successfully',
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -152,8 +152,8 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
       success: true,
       data: user,
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -170,14 +170,15 @@ export const emailVerify = async (
   try {
     const { token } = req.params;
 
-    const message = await emailVerificationService(token);
-
-    res.status(200).json({
-      success: true,
-      message,
-      redirectTo: "/login?verified=true",
-    });
+    await emailVerificationService(token);
+console.log("APP_URL =", process.env.APP_URL);
+    return res.redirect(
+  `${env.CLIENT_URL}/email-verified?status=success`
+);
   } catch (error) {
-    next(error);
+    console.log("Error : ", error)
+    return res.redirect(
+  `${env.CLIENT_URL}/email-verified?status=failed`
+);
   }
 };
