@@ -1,157 +1,125 @@
-import { Mail, MapPin, Phone, User } from "lucide-react";
+import type { ChangeEvent } from "react";
+import type { RegisterFormData } from "../../types/auth.types";
 
 interface PatientFormProps {
-  formData: {
-    name: string;
-    email: string;
-    phone: string;
-    dateOfBirth: string;
-    gender: "MALE" | "FEMALE" | "OTHER" | "";
-    address: string;
-  };
-
+  formData: RegisterFormData;
   onChange: (
-    field: keyof PatientFormProps["formData"],
-    value: string
+    e: ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => void;
 }
 
-const PatientForm = ({
+export default function PatientForm({
   formData,
   onChange,
-}: PatientFormProps) => {
+}: PatientFormProps) {
   return (
-    <div className="space-y-4">
+    <>
+      {/* Full Name */}
 
-      {/* Name */}
       <div>
-        <label className="block text-sm font-medium text-emerald-800 mb-1.5">
+        <label className="mb-1 block text-sm font-medium text-emerald-800">
           Full Name
         </label>
 
-        <div className="relative">
-          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400" />
-
-          <input
-            type="text"
-            required
-            value={formData.name}
-            placeholder="John Doe"
-            onChange={(e) => onChange("name", e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-emerald-200
-            focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          />
-        </div>
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={onChange}
+          required
+          placeholder="John Doe"
+          className="w-full rounded-xl border border-emerald-200 px-4 py-3 focus:border-emerald-500 focus:outline-none"
+        />
       </div>
 
       {/* Email */}
 
       <div>
-        <label className="block text-sm font-medium text-emerald-800 mb-1.5">
-          Email Address
+        <label className="mb-1 block text-sm font-medium text-emerald-800">
+          Email
         </label>
 
-        <div className="relative">
-          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400" />
-
-          <input
-            type="email"
-            required
-            value={formData.email}
-            placeholder="john@example.com"
-            onChange={(e) => onChange("email", e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-emerald-200
-            focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          />
-        </div>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={onChange}
+          required
+          placeholder="john@gmail.com"
+          className="w-full rounded-xl border border-emerald-200 px-4 py-3 focus:border-emerald-500 focus:outline-none"
+        />
       </div>
 
       {/* Phone */}
 
       <div>
-        <label className="block text-sm font-medium text-emerald-800 mb-1.5">
-          Phone Number
+        <label className="mb-1 block text-sm font-medium text-emerald-800">
+          Phone
         </label>
 
-        <div className="relative">
-          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400" />
-
-          <input
-            type="tel"
-            value={formData.phone}
-            placeholder="+8801XXXXXXXXX"
-            onChange={(e) => onChange("phone", e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-emerald-200
-            focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          />
-        </div>
+        <input
+          type="text"
+          name="phone"
+          value={formData.phone}
+          onChange={onChange}
+          placeholder="+8801XXXXXXXXX"
+          className="w-full rounded-xl border border-emerald-200 px-4 py-3 focus:border-emerald-500 focus:outline-none"
+        />
       </div>
 
-      {/* Date + Gender */}
+      {/* Date of Birth */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label className="mb-1 block text-sm font-medium text-emerald-800">
+          Date of Birth
+        </label>
 
-        <div>
-          <label className="block text-sm font-medium text-emerald-800 mb-1.5">
-            Date of Birth
-          </label>
+        <input
+          type="date"
+          name="dateOfBirth"
+          value={formData.dateOfBirth}
+          onChange={onChange}
+          className="w-full rounded-xl border border-emerald-200 px-4 py-3 focus:border-emerald-500 focus:outline-none"
+        />
+      </div>
 
-          <input
-            type="date"
-            value={formData.dateOfBirth}
-            onChange={(e) =>
-              onChange("dateOfBirth", e.target.value)
-            }
-            className="w-full px-4 py-3 rounded-xl border border-emerald-200
-            focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          />
-        </div>
+      {/* Gender */}
 
-        <div>
-          <label className="block text-sm font-medium text-emerald-800 mb-1.5">
-            Gender
-          </label>
+      <div>
+        <label className="mb-1 block text-sm font-medium text-emerald-800">
+          Gender
+        </label>
 
-          <select
-            value={formData.gender}
-            onChange={(e) =>
-              onChange("gender", e.target.value)
-            }
-            className="w-full px-4 py-3 rounded-xl border border-emerald-200
-            focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          >
-            <option value="">Select Gender</option>
-            <option value="MALE">Male</option>
-            <option value="FEMALE">Female</option>
-            <option value="OTHER">Other</option>
-          </select>
-        </div>
-
+        <select
+          name="gender"
+          value={formData.gender}
+          onChange={onChange}
+          className="w-full rounded-xl border border-emerald-200 px-4 py-3 focus:border-emerald-500 focus:outline-none"
+        >
+          <option value="MALE">Male</option>
+          <option value="FEMALE">Female</option>
+          <option value="OTHER">Other</option>
+        </select>
       </div>
 
       {/* Address */}
 
       <div>
-        <label className="block text-sm font-medium text-emerald-800 mb-1.5">
+        <label className="mb-1 block text-sm font-medium text-emerald-800">
           Address
         </label>
 
-        <div className="relative">
-          <MapPin className="absolute left-3 top-4 w-5 h-5 text-emerald-400" />
-
-          <textarea
-            rows={3}
-            value={formData.address}
-            placeholder="Enter your address"
-            onChange={(e) => onChange("address", e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-emerald-200
-            focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
-          />
-        </div>
+        <textarea
+          rows={3}
+          name="address"
+          value={formData.address}
+          onChange={onChange}
+          placeholder="Your address"
+          className="w-full rounded-xl border border-emerald-200 px-4 py-3 focus:border-emerald-500 focus:outline-none"
+        />
       </div>
-
-    </div>
+    </>
   );
-};
-
-export default PatientForm;
+}

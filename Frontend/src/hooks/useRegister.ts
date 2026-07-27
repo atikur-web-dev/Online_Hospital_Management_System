@@ -1,44 +1,34 @@
-// Frontend/src/hooks/useRegister.ts
 import { useState } from "react";
-import axios from "axios";
+import { AxiosError } from "axios";
 
-import {
-  registerUser,
-  type RegisterPayload,
-} from "../api/auth.api";
+import { registerUser } from "../api/auth.api";
+import type { RegisterPayload } from "../api/auth.api";
 
 export function useRegister() {
   const [loading, setLoading] = useState(false);
-
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-
-  const [success, setSuccess] = useState("");
-
-  const register = async (data: RegisterPayload) => {
+  const register = async (payload: RegisterPayload) => {
     try {
       setLoading(true);
       setError("");
-      setSuccess("");
 
-      const response = await registerUser(data);
+      await registerUser(payload);
 
-      setSuccess(
-        response.message ??
-          "Registration successful. Please verify your email."
+      setSuccess(true);
+
+      return true;
+    } catch (err) {
+      const error = err as AxiosError<{
+        message?: string;
+      }>;
+
+      setError(
+        error.response?.data?.message ??
+          "Registration failed. Please try again."
       );
 
-      return response;
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(
-          err.response?.data?.message ??
-            "Registration failed."
-        );
-      } else {
-        setError("Something went wrong.");
-      }
-
-      return null;
+      return false;
     } finally {
       setLoading(false);
     }
@@ -47,7 +37,9 @@ export function useRegister() {
   return {
     register,
     loading,
-    error,
     success,
+    setSuccess,
+    error,
+    setError,
   };
 }
