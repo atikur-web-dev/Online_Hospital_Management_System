@@ -1,4 +1,4 @@
-import express, { type NextFunction, type Request, type Response } from 'express';
+import express, {  type Request, type Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -6,6 +6,7 @@ import rateLimit from 'express-rate-limit';
 import hpp from 'hpp';
 import session from 'express-session';
 import passport from 'passport';
+import { errorHandler } from "./middleware/error.middleware.js";
 import dotenv from 'dotenv';
 import adminRoutes from './routes/admin.routes.js';
 import cookieParser from 'cookie-parser';
@@ -91,25 +92,8 @@ app.use((_req: Request, res: Response) => {
   });
 });
 
-// ================= Error Handler =================
+// Error Handler 
 
-app.use(
-  (
-    err: Error & { status?: number },
-    _req: Request,
-    res: Response,
-    _next: NextFunction,
-  ) => {
-    console.error(err);
-
-    return res.status(err.status ?? 500).json({
-      success: false,
-      message: err.message ?? 'Internal Server Error',
-      ...(process.env.NODE_ENV === 'development' && {
-        stack: err.stack,
-      }),
-    });
-  },
-);
+app.use(errorHandler);
 
 export default app;
