@@ -14,78 +14,103 @@ import type {
 import { generateVerificationLink } from '../utils/generateVerificationLink.js';
 import { sendMail } from '../config/mailConfig.js';
 import { emailVerificationTemplate } from '../templates/emailVerification.js';
-import { InternalServerError } from '../utils/errors/httpErrors.js';
+import { InternalServerError, ConflictError } from '../utils/errors/httpErrors.js';
 
 export const registerUser = async (data: RegisterInput) => {
-  const { email, password, name, role, phone } = data;
+  const {
+    email,
+    password,
+    name,
+    role,
+    phone,
+
+    // Patient
+    dateOfBirth,
+    gender,
+    address,
+
+    // Doctor
+    specialization,
+    qualification,
+    experience,
+    consultationFee,
+  } = data;
+
+  // ================= Check Existing User =================
 
   const existingUser = await prisma.user.findUnique({
-    where: { email },
+    where: {
+      email,
+    },
   });
 
   if (existingUser) {
-    throw new Error('User already exists');
+    throw new ConflictError({}, 'User already exists');
   }
+
+  // ================= Hash Password =================
 
   const hashedPassword = await hashPassword(password);
 
   try {
+    // ================= Transaction =================
+
     const user = await prisma.$transaction(async (tx) => {
-      const newUser = await tx.user.create({
+      const createdUser = await tx.user.create({
         data: {
           email,
           password: hashedPassword,
           role,
-          isEmailVerified: role === 'ADMIN',
+          isEmailVerified: false,
         },
       });
 
-      switch (role) {
-        case 'PATIENT':
-          await tx.patientProfile.create({
-            data: {
-              userId: newUser.id,
-              name,
-              phone: phone ?? null,
-            },
-          });
-          break;
+      if (role === 'PATIENT') {
+        await tx.patientProfile.create({
+          data: {
+            userId: createdUser.id,
+            name,
+            phone: phone ?? null,
 
-        case 'DOCTOR':
-          await tx.doctorProfile.create({
-            data: {
-              userId: newUser.id,
-              name,
-              phone: phone ?? null,
-            },
-          });
-          break;
-
-        case 'ADMIN':
-          await tx.adminProfile.create({
-            data: {
-              userId: newUser.id,
-              name,
-              phone: phone ?? null,
-              permissions: ['MANAGE_USERS', 'VIEW_ANALYTICS'],
-            },
-          });
-          break;
+            dateOfBirth: dateOfBirth ?? null,
+            gender: gender ?? null,
+            address: address ?? null,
+          },
+        });
       }
 
-      return newUser;
+      if (role === 'DOCTOR') {
+        await tx.doctorProfile.create({
+          data: {
+            userId: createdUser.id,
+            name,
+            phone: phone ?? null,
+
+            specialization: specialization ?? null,
+            qualification: qualification ?? null,
+            experience: experience ?? null,
+            consultationFee: consultationFee ?? null,
+          },
+        });
+      }
+
+      return createdUser;
     });
 
+    // ================= JWT =================
+
     const token = generateToken({
-       id: user.id,
-  email: user.email,
-  role: user.role,
-  isEmailVerified: user.isEmailVerified,
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      isEmailVerified: user.isEmailVerified,
     });
 
     const refreshToken = generateRefreshToken({
       id: user.id,
     });
+
+    // ================= Store Refresh Token =================
 
     await prisma.refreshToken.create({
       data: {
@@ -95,16 +120,24 @@ export const registerUser = async (data: RegisterInput) => {
       },
     });
 
-    // Skip email verification for admin
-    if (user.role !== 'ADMIN') {
-      const verificationLink = generateVerificationLink(user.email);
+    // ================= Send Verification Email =================
 
-      await sendMail(
-        [user.email],
-        'Verify Your Email',
-        emailVerificationTemplate(verificationLink, name),
-      );
-    }
+    const verificationLink = generateVerificationLink(user.email);
+
+try {
+  await sendMail(
+    [user.email],
+    "Verify Your Email",
+    emailVerificationTemplate(
+      verificationLink,
+      name,
+    ),
+  );
+} catch (error) {
+  console.error("Email sending failed:", error);
+}
+
+    // ================= Response =================
 
     return {
       user: {
@@ -116,7 +149,7 @@ export const registerUser = async (data: RegisterInput) => {
       token,
       refreshToken,
     };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error);
 
     throw new InternalServerError(
@@ -167,10 +200,10 @@ export const loginUser = async (data: LoginInput) => {
   });
 
   const token = generateToken({
-     id: user.id,
-  email: user.email,
-  role: user.role,
-  isEmailVerified: user.isEmailVerified,
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    isEmailVerified: user.isEmailVerified,
   });
 
   const refreshToken = generateRefreshToken({
@@ -252,12 +285,12 @@ export const refreshTokenService = async (refreshToken: string) => {
     });
 
     // Generate new access token
- const token = generateToken({
-  id: storedToken.user.id,
-  email: storedToken.user.email,
-  role: storedToken.user.role,
-  isEmailVerified: storedToken.user.isEmailVerified,
-});
+    const token = generateToken({
+      id: storedToken.user.id,
+      email: storedToken.user.email,
+      role: storedToken.user.role,
+      isEmailVerified: storedToken.user.isEmailVerified,
+    });
 
     // Generate new refresh token
     const newRefreshToken = generateRefreshToken({

@@ -5,8 +5,21 @@ export interface RegisterPayload {
   name: string;
   email: string;
   password: string;
+
   phone?: string;
-  role: "PATIENT" | "DOCTOR" | "ADMIN";
+
+  role: "PATIENT" | "DOCTOR";
+
+  // Patient
+  dateOfBirth?: string;
+  gender?: "MALE" | "FEMALE" | "OTHER";
+  address?: string;
+
+  // Doctor
+  specialization?: string;
+  qualification?: string;
+  experience?: number;
+  consultationFee?: number;
 }
 
 export interface LoginPayload {
@@ -17,7 +30,6 @@ export interface LoginPayload {
 export const registerUser = async (
   data: RegisterPayload
 ) => {
-  console.log(data);
   const response = await api.post(
     "/auth/register",
     data
@@ -37,4 +49,3 @@ export const logoutUser = async () => {}
 
 export const forgotPassword = async () => {}
 
-export const verifyEmail = async () => {}
