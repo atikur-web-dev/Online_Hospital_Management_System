@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 import {
   register,
   login,
@@ -8,7 +7,10 @@ import {
   me,
   emailVerify,
 } from '../controller/auth.controller.js';
-import { googleLogin } from "../controller/google.controller.js";
+import {
+  googleLogin,
+  googleCallback,
+} from '../controller/auth-google.controller.js';
 import { authenticate } from '../middleware/auth.middleware.js';
 
 const router = Router();
@@ -16,9 +18,11 @@ const router = Router();
 // ============ Public Routes ============
 router.post('/register', register);
 router.post('/login', login);
-router.get("/google", googleLogin);
+router.get('/google', googleLogin);
 router.post('/refresh-token', refreshToken);
-router.get("/verify/:token", emailVerify);
+router.get('/verify/:token', emailVerify);
+router.get('/google', googleLogin);
+router.get('/google/callback', googleCallback);
 
 // ============ Protected Routes ============
 router.get('/me', authenticate, me);
