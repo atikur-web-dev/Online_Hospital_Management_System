@@ -10,7 +10,7 @@ import {
 import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/layout/Navbar";
-
+import GoogleCallback from "./pages/GoogleCallback";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -52,6 +52,7 @@ function Layout() {
         <Route path="/register" element={<Register />} />
 
         <Route path="/email-verified" element={<EmailVerificationResult />} />
+        <Route path="/callback" element={<GoogleCallback />} />
 
         {/* Protected Routes */}
         <Route
