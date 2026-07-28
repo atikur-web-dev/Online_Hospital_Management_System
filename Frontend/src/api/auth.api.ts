@@ -26,9 +26,11 @@ export interface LoginPayload {
   password: string;
 }
 
+
 export const registerUser = async (
   data: RegisterPayload
 ) => {
+  console.log(JSON.stringify(data, null, 2));
   const response = await api.post(
     "/auth/register",
     data

@@ -28,7 +28,10 @@ export const registerSchema = z.object({
 
   // ================= Patient Fields =================
 
-  dateOfBirth: z.coerce.date().optional(),
+  dateOfBirth: z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.coerce.date().optional()
+),
 
   gender: z.enum(["MALE", "FEMALE", "OTHER"]).optional(),
 

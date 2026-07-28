@@ -1,7 +1,7 @@
 // Backend/src/controller/auth.controller.ts
 
 import type { Request, Response, NextFunction } from 'express';
-
+import { ZodError } from "zod";
 import {
   registerUser,
   loginUser,
@@ -29,6 +29,7 @@ export const register = async (
   next: NextFunction,
 ) => {
   try {
+    console.log(req.body);
     const payload = registerSchema.parse(req.body);
 
     const result = await registerUser(payload);
@@ -49,8 +50,12 @@ res.cookie("refreshToken", result.refreshToken, {
       },
     });
   } catch (err) {
-    next(err);
+  if (err instanceof ZodError) {
+    console.log(err.flatten());
   }
+
+  next(err);
+}
 };
 
 // ==============================

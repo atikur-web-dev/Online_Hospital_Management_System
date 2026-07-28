@@ -8,7 +8,7 @@ import {
   me,
   emailVerify,
 } from '../controller/auth.controller.js';
-
+import { googleLogin } from "../controller/google.controller.js";
 import { authenticate } from '../middleware/auth.middleware.js';
 
 const router = Router();
@@ -16,6 +16,7 @@ const router = Router();
 // ============ Public Routes ============
 router.post('/register', register);
 router.post('/login', login);
+router.get("/google", googleLogin);
 router.post('/refresh-token', refreshToken);
 router.get("/verify/:token", emailVerify);
 

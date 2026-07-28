@@ -2,15 +2,20 @@ import { Eye, EyeOff, Lock } from "lucide-react";
 
 interface PasswordFieldProps {
   label: string;
+  name: string;
   value: string;
-  placeholder: string;
+  placeholder?: string;
   showPassword: boolean;
   onToggle: () => void;
-  onChange: (value: string) => void;
+
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void;
 }
 
 const PasswordField = ({
-  label,
+   label,
+  name,
   value,
   placeholder,
   showPassword,
@@ -27,12 +32,13 @@ const PasswordField = ({
         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400" />
 
         <input
-          type={showPassword ? "text" : "password"}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          minLength={8}
-          required
+          name={name}
+  type={showPassword ? "text" : "password"}
+  value={value}
+  onChange={onChange}
+  placeholder={placeholder}
+  minLength={8}
+  required
           className="w-full pl-10 pr-12 py-3 bg-white border border-emerald-200 rounded-xl
           focus:outline-none focus:ring-2 focus:ring-emerald-500
           focus:border-emerald-500 text-emerald-900
