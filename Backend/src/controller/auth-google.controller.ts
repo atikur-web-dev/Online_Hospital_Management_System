@@ -192,7 +192,7 @@ export const googleCallback = async (
 
 
     const redirectUrl =
-      `${frontendUrl}/auth/google/callback?token=${accessToken}`;
+      `${frontendUrl}/auth/google/callback?accessToken=${accessToken}`
 
 
 

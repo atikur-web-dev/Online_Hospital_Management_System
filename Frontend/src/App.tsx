@@ -52,7 +52,7 @@ function Layout() {
         <Route path="/register" element={<Register />} />
 
         <Route path="/email-verified" element={<EmailVerificationResult />} />
-        <Route path="/callback" element={<GoogleCallback />} />
+        <Route path="/auth/google/callback" element={<GoogleCallback />} />
 
         {/* Protected Routes */}
         <Route
