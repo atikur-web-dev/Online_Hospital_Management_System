@@ -1,68 +1,67 @@
 // Frontend/src/pages/Profile.tsx
-import { Loader2 } from "lucide-react";
+import { Navigate } from "react-router-dom";
 import { useProfile } from "../hooks/useProfile";
 import ProfileHeader from "../components/profile/ProfileHeader";
-import AvatarUploader from "../components/profile/AvatarUploader";
+import ProfileAvatar from "../components/profile/ProfileAvatar";
+import AdminProfileForm from "../components/profile/AdminProfileForm";
+import DoctorProfileForm from "../components/profile/DoctorProfileForm";
 import PatientProfileForm from "../components/profile/PatientProfileForm";
+import type {
+  Profile,
+  PatientProfile,
+  DoctorProfile,
+  AdminProfile,
+} from "../types/profile.types";
 
-const Profile = () => {
-  const {
-    profile,
-    loading,
-    uploadAvatar,
-    updateProfile,
-  } = useProfile();
+function isPatientProfile(profile: Profile): profile is PatientProfile {
+  return profile.user.role === "PATIENT";
+}
 
-  if (loading && !profile) {
+function isDoctorProfile(profile: Profile): profile is DoctorProfile {
+  return profile.user.role === "DOCTOR";
+}
+
+function isAdminProfile(profile: Profile): profile is AdminProfile {
+  return profile.user.role === "ADMIN";
+}
+
+export default function Profile() {
+  const { profile, loading, updateMyProfile, uploadAvatar } = useProfile();
+
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Loader2
-          size={42}
-          className="animate-spin text-emerald-600"
-        />
+        <p className="text-lg font-medium text-slate-600">Loading profile...</p>
       </div>
     );
   }
 
   if (!profile) {
-    return (
-      <div className="mx-auto mt-20 max-w-xl rounded-xl border bg-white p-8 text-center shadow-sm">
-        <h2 className="text-xl font-semibold">
-          Profile not found
-        </h2>
-
-        <p className="mt-2 text-gray-500">
-          Unable to load your profile.
-        </p>
-      </div>
-    );
+    return <Navigate to="/login" replace />;
   }
 
   return (
-    <section className="mx-auto max-w-5xl p-6">
+    <main className="min-h-screen bg-slate-100 py-10">
+      <div className="mx-auto max-w-5xl space-y-8 px-6">
+        <ProfileHeader />
 
-      <ProfileHeader profile={profile} />
-
-      <div className="mt-8 grid gap-8 lg:grid-cols-3">
-
-        <AvatarUploader
-          profile={profile}
+        <ProfileAvatar
+          image={profile.user.profileImage}
           onUpload={uploadAvatar}
         />
 
-        <div className="lg:col-span-2">
+        {isPatientProfile(profile) && (
+          <PatientProfileForm profile={profile} onSubmit={updateMyProfile} />
+        )}
 
-          <PatientProfileForm
-            profile={profile}
-            onSubmit={updateProfile}
-          />
+        {isDoctorProfile(profile) && (
+          <DoctorProfileForm profile={profile} onSubmit={updateMyProfile} />
+        )}
 
-        </div>
-
+        {isAdminProfile(profile) && (
+          <AdminProfileForm profile={profile} onSubmit={updateMyProfile} />
+        )}
       </div>
-
-    </section>
+    </main>
   );
-};
-
-export default Profile;
+}
