@@ -6,7 +6,8 @@ import {
   updateDoctorProfileSchema,
   updatePatientProfileSchema,
 } from "../validators/profile.validator.js";
-
+import { v2 as cloudinary } from "cloudinary";
+import streamifier from "streamifier";
 import type { UserRole } from "../generated/prisma/index.js";
 
 /**
@@ -187,4 +188,92 @@ export const updateMyProfile = async (
     default:
       throw new Error("Invalid user role");
   }
+};
+
+/**
+ * Upload Profile Image
+ */
+export const uploadProfileImage = async (
+  userId: string,
+  file: Express.Multer.File
+) => {
+  if (!file) {
+    throw new Error("Profile image is required.");
+  }
+
+  // Find user
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      profileImage: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not found.");
+  }
+
+  // Upload image to Cloudinary
+  const uploadResult = await new Promise<{
+    secure_url: string;
+    public_id: string;
+  }>((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "careplus/profile-images",
+        resource_type: "image",
+      },
+      (error, result) => {
+        if (error || !result) {
+          return reject(error);
+        }
+
+        resolve({
+          secure_url: result.secure_url,
+          public_id: result.public_id,
+        });
+      }
+    );
+
+    streamifier.createReadStream(file.buffer).pipe(uploadStream);
+  });
+
+  // Delete previous image
+  if (
+    user.profileImage &&
+    user.profileImage.includes("cloudinary")
+  ) {
+    try {
+      const parts = user.profileImage.split("/");
+
+      const fileName = parts.pop()?.split(".")[0];
+
+      const folder = parts.slice(parts.indexOf("upload") + 2).join("/");
+
+      const publicId = `${folder}/${fileName}`;
+
+      await cloudinary.uploader.destroy(publicId);
+    } catch (error) {
+      console.error("Failed to delete old image:", error);
+    }
+  }
+
+  // Save new image URL
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      profileImage: uploadResult.secure_url,
+    },
+    select: {
+      id: true,
+      email: true,
+      profileImage: true,
+    },
+  });
+
+  return updatedUser;
 };
