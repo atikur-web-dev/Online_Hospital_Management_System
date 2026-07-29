@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 import { Toaster } from "react-hot-toast";
-
+import Profile from "./pages/Profile";
 import Navbar from "./components/layout/Navbar";
 import GoogleCallback from "./pages/GoogleCallback";
 import Home from "./pages/Home";
@@ -78,6 +78,14 @@ function Layout() {
           element={
             <ProtectedRoute>
               <div>Appointments</div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
