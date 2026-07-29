@@ -9,7 +9,7 @@ import {
 import { v2 as cloudinary } from "cloudinary";
 import streamifier from "streamifier";
 import type { UserRole } from "../generated/prisma/index.js";
-
+import { uploadImage, deleteImage } from "./cloudinary.service.js";
 /**
  * Get Logged In User Profile
  */
@@ -272,6 +272,61 @@ export const uploadProfileImage = async (
       id: true,
       email: true,
       profileImage: true,
+    },
+  });
+
+  return updatedUser;
+};
+
+/**
+ * Upload Logged In User Profile Image
+ */
+export const uploadMyProfileImage = async (
+  userId: string,
+  file: Express.Multer.File
+) => {
+  // Find user
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      profileImage: true,
+      profileImagePublicId: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not found.");
+  }
+
+  // Delete old image if exists
+  if (user.profileImagePublicId) {
+    await deleteImage(user.profileImagePublicId);
+  }
+
+  // Upload new image
+  const uploadedImage = await uploadImage(
+    file,
+    "careplus/profile-images"
+  );
+
+  // Update database
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      profileImage: uploadedImage.secure_url,
+      profileImagePublicId: uploadedImage.public_id,
+    },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      profileImage: true,
+      profileImagePublicId: true,
     },
   });
 

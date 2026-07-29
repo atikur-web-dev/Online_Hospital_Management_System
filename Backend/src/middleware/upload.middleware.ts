@@ -1,29 +1,49 @@
 // Backend/src/middleware/upload.middleware.ts
 import multer from "multer";
 
+/**
+ * Store file in memory
+ * (We upload directly to Cloudinary)
+ */
 const storage = multer.memoryStorage();
 
+/**
+ * Allow only image files
+ */
 const fileFilter: multer.Options["fileFilter"] = (
   _req,
   file,
   cb
 ) => {
-  if (file.mimetype.startsWith("image/")) {
-    cb(null, true);
-    return;
+  const allowedMimeTypes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+  ];
+
+  if (
+    allowedMimeTypes.includes(file.mimetype)
+  ) {
+    return cb(null, true);
   }
 
-  cb(
-    new Error("Only image files are allowed.")
+  return cb(
+    new Error(
+      "Only JPG, JPEG, PNG and WEBP images are allowed."
+    )
   );
 };
 
+/**
+ * Multer Upload Middleware
+ */
 export const upload = multer({
   storage,
 
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-  },
-
   fileFilter,
+
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5 MB
+  },
 });

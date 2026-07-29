@@ -4,21 +4,20 @@ import type { Request, Response } from "express";
 import {
   getMyProfile,
   updateMyProfile,
+  uploadMyProfileImage,
 } from "../services/profile.service.js";
 
 /**
- * GET /api/v1/profile/me
+ * Get Logged In User Profile
  */
 export const getProfile = async (
   req: Request,
   res: Response
 ) => {
   try {
-    const user = req.user!;
-
     const profile = await getMyProfile(
-      user.id,
-      user.role
+      req.user!.id,
+      req.user!.role
     );
 
     return res.status(200).json({
@@ -26,9 +25,8 @@ export const getProfile = async (
       message: "Profile fetched successfully.",
       data: profile,
     });
-
   } catch (error) {
-    console.error("Get Profile Error:", error);
+    console.error(error);
 
     return res.status(500).json({
       success: false,
@@ -38,18 +36,16 @@ export const getProfile = async (
 };
 
 /**
- * PATCH /api/v1/profile
+ * Update Logged In User Profile
  */
 export const updateProfile = async (
   req: Request,
   res: Response
 ) => {
   try {
-    const user = req.user!;
-
     const profile = await updateMyProfile(
-      user.id,
-      user.role,
+      req.user!.id,
+      req.user!.role,
       req.body
     );
 
@@ -58,13 +54,49 @@ export const updateProfile = async (
       message: "Profile updated successfully.",
       data: profile,
     });
-
   } catch (error) {
-    console.error("Update Profile Error:", error);
+    console.error(error);
 
     return res.status(500).json({
       success: false,
       message: "Failed to update profile.",
+    });
+  }
+};
+
+/**
+ * Upload Profile Image
+ */
+export const uploadProfileImage = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Please select an image.",
+      });
+    }
+
+    const user = await uploadMyProfileImage(
+      req.user!.id,
+      req.file
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile image uploaded successfully.",
+      data: {
+        profileImage: user.profileImage,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to upload profile image.",
     });
   }
 };
