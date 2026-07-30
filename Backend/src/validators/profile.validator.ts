@@ -10,10 +10,10 @@ export const updatePatientProfileSchema = z.object({
     .max(20)
     .optional(),
 
-  dateOfBirth: z
-    .string()
-    .datetime()
-    .optional(),
+  dateOfBirth: z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.coerce.date().optional()
+),
 
   gender: z
     .enum([

@@ -1,5 +1,5 @@
 // Backend/src/services/cloudinary.service.ts
-import { v2 as cloudinary } from "cloudinary";
+import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
 import type { UploadApiResponse } from "cloudinary";
