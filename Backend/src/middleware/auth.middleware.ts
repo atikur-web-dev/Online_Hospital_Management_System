@@ -27,7 +27,8 @@ export const authenticate = (
       });
       return;
     }
-
+console.log("AUTH HEADER =", req.headers.authorization);
+console.log("TOKEN =", token);
     const decoded = verifyToken(token);
 
     req.user = {
