@@ -14,7 +14,7 @@ import {
 import { Button } from "../common";
 
 interface NavbarProps {
-  userRole?: "patient" | "doctor" | null;
+  userRole?: string | null;
   isLoggedIn?: boolean;
   userImage?: string;
 }
@@ -28,25 +28,57 @@ const Navbar = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const handleLogout = () => {
-  localStorage.clear();
-  navigate("/login");
-};
-
-  const navLinks = [
+    localStorage.clear();
+    navigate("/login");
+  };
+  const visitorLinks = [
     { name: "Home", path: "/", icon: Home },
-    {
-      name: "Doctors",
-      path: "/doctors",
-      icon: Stethoscope,
-      show: userRole === "patient" || !userRole,
-    },
+    { name: "Doctors", path: "/doctors", icon: Stethoscope },
+  ];
+
+  const patientLinks = [
+    { name: "Home", path: "/", icon: Home },
+    { name: "Doctors", path: "/doctors", icon: Stethoscope },
     {
       name: "Appointments",
       path: "/appointments",
       icon: CalendarDays,
-      show: true,
     },
   ];
+
+  const doctorLinks = [
+    { name: "Dashboard", path: "/doctor/dashboard", icon: Home },
+    {
+      name: "Appointments",
+      path: "/doctor/appointments",
+      icon: CalendarDays,
+    },
+  ];
+
+  const adminLinks = [
+    { name: "Dashboard", path: "/admin/dashboard", icon: Home },
+    { name: "Doctors", path: "/admin/doctors", icon: Stethoscope },
+  ];
+  let navLinks = visitorLinks;
+
+  if (isLoggedIn) {
+    switch (userRole?.toUpperCase()) {
+      case "PATIENT":
+        navLinks = patientLinks;
+        break;
+
+      case "DOCTOR":
+        navLinks = doctorLinks;
+        break;
+
+      case "ADMIN":
+        navLinks = adminLinks;
+        break;
+
+      default:
+        navLinks = visitorLinks;
+    }
+  }
 
   const handleNavigation = (path: string) => {
     if (!isLoggedIn && path !== "/") {
@@ -71,7 +103,6 @@ const Navbar = ({
 
           <div className="hidden md:flex items-center gap-1 lg:gap-2 flex-1 justify-center">
             {navLinks.map((link) => {
-              if (link.show === false) return null;
               const Icon = link.icon;
               return (
                 <button
@@ -96,9 +127,10 @@ const Navbar = ({
                   <img
                     src={userImage}
                     alt="Profile"
-                    className="w-14 h-14 rounded-full border-2 border-emerald-500 object-cover hover:border-emerald-700 transition-all"
+                    className="w-14 h-14 rounded-full object-cover border-2 border-emerald-500"
                   />
-                  <span className="text-4xl font-medium text-emerald-800">
+
+                  <span className="text-xl font-semibold text-emerald-800 max-w-[140px] truncate">
                     {localStorage.getItem("name") ?? "User"}
                   </span>
                   <ChevronDown className="w-8 h-8 text-emerald-600" />
@@ -120,11 +152,11 @@ const Navbar = ({
                     </Link> */}
                     <hr className="my-1 border-emerald-100" />
                     <button
-  onClick={handleLogout}
-  className="w-full text-left px-4 py-3 text-4xl text-red-600 hover:bg-red-50"
->
-  Logout
-</button>
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-3 text-4xl text-red-600 hover:bg-red-50"
+                    >
+                      Logout
+                    </button>
                   </div>
                 )}
               </div>
@@ -162,7 +194,6 @@ const Navbar = ({
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-emerald-100 py-2 px-4">
           {navLinks.map((link) => {
-            if (link.show === false) return null;
             const Icon = link.icon;
             return (
               <button
@@ -187,15 +218,15 @@ const Navbar = ({
                 alt="Profile"
                 className="w-12 h-12 rounded-full border-2 border-emerald-500"
               />
-              <span className="text-4xl font-medium text-emerald-800">
+              <span className="text-lg font-semibold text-emerald-800 truncate">
                 {localStorage.getItem("name") ?? "User"}
               </span>
-             <button
-  onClick={handleLogout}
-  className="ml-auto text-3xl text-red-600 hover:text-red-800"
->
-  Logout
-</button>
+              <button
+                onClick={handleLogout}
+                className="ml-auto text-3xl text-red-600 hover:text-red-800"
+              >
+                Logout
+              </button>
             </div>
           ) : (
             <div className="flex flex-col gap-2 px-3 py-2">

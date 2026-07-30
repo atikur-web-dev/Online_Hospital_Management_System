@@ -20,7 +20,6 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function Layout() {
   const location = useLocation();
-
   const hideNavbarRoutes = [
     "/email-verified",
     "/forgot-password",
@@ -28,42 +27,39 @@ function Layout() {
   ];
 
   const hideNavbar = hideNavbarRoutes.includes(location.pathname);
-
   const token = localStorage.getItem("token");
+  const isLoggedIn = !!token;
+  const userRole =
+    (localStorage.getItem("role")?.toLowerCase() as
+      | "patient"
+      | "doctor"
+      | "admin"
+      | null) ?? null;
 
-const isLoggedIn = !!token;
-
-const userRole =
-  (localStorage.getItem("role")?.toLowerCase() as
-    | "patient"
-    | "doctor"
-    | null) ?? null;
-
-const userImage =
-  localStorage.getItem("profileImage") ??
-  "https://ui-avatars.com/api/?name=User&background=10b981&color=fff";
+  const userImage =
+    localStorage.getItem("profileImage") ??
+    "https://ui-avatars.com/api/?name=User&background=10b981&color=fff";
 
   return (
     <div className="min-h-screen bg-emerald-50">
       {!hideNavbar && (
-       <Navbar
-    isLoggedIn={isLoggedIn}
-    userRole={userRole}
-    userImage={userImage}
-/>
+        <Navbar
+          isLoggedIn={isLoggedIn}
+          userRole={userRole}
+          userImage={
+            localStorage.getItem("profileImage") ??
+            "https://ui-avatars.com/api/?name=User"
+          }
+        />
       )}
 
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
-
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
-
         <Route path="/email-verified" element={<EmailVerificationResult />} />
         <Route path="/auth/google/callback" element={<GoogleCallback />} />
-
         {/* Protected Routes */}
         <Route
           path="/dashboard"
