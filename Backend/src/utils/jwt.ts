@@ -5,6 +5,7 @@ import jwt, { type Secret, type SignOptions } from "jsonwebtoken";
 const JWT_SECRET: Secret = process.env.JWT_SECRET ?? "change-this-secret";
 const JWT_REFRESH_SECRET: Secret =
   process.env.JWT_REFRESH_SECRET ?? "change-this-refresh-secret";
+  console.log("JWT_SECRET =", JWT_SECRET);
 
 export interface AccessTokenPayload {
    id: string;

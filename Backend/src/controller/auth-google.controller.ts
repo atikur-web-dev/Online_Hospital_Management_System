@@ -119,7 +119,7 @@ export const googleCallback = async (
 
 
     console.log(
-      "Google service completed successfully ✅"
+      "Google service completed successfully "
     );
 
 
