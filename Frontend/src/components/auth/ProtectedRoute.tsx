@@ -1,21 +1,20 @@
 // src/components/auth/ProtectedRoute.tsx
-
-import { ReactNode } from 'react';
+import type { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
   children: ReactNode;
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  // Backend integration point: Check if user is authenticated
-  const isAuthenticated = false; // Replace with actual auth check
-  
-  if (!isAuthenticated) {
-    // Redirect to login page
-    window.location.href = '/login';
-    return null;
+const ProtectedRoute = ({
+  children,
+}: ProtectedRouteProps) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
   }
-  
+
   return <>{children}</>;
 };
 

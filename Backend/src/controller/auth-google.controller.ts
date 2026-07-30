@@ -1,5 +1,4 @@
 // Backend/src/controller/auth-google.controller.ts
-
 import type { Request, Response } from "express";
 
 import {
@@ -7,11 +6,7 @@ import {
   handleGoogleCallback,
 } from "../services/google.service.js";
 
-import {
-  setRefreshTokenCookie,
-} from "../utils/cookies.js";
-
-
+import { setRefreshTokenCookie } from "../utils/cookies.js";
 
 /**
  * Redirect user to Google OAuth page
@@ -20,42 +15,19 @@ export const googleLogin = async (
   _req: Request,
   res: Response
 ) => {
-
   try {
-
-    console.log("\n========== GOOGLE LOGIN START ==========");
-
     const url = getGoogleAuthUrl();
 
-    console.log("Generated Google Auth URL:");
-    console.log(url);
-
-    console.log("Redirecting user to Google...\n");
-
-
     return res.redirect(url);
-
-
   } catch (error) {
-
-    console.error(
-      "❌ Google Login Error:",
-      error
-    );
-
+    console.error("Google Login Error:", error);
 
     return res.status(500).json({
-      success:false,
-      message:"Google login failed",
+      success: false,
+      message: "Google login failed.",
     });
-
   }
-
 };
-
-
-
-
 
 /**
  * Google OAuth Callback
@@ -64,196 +36,45 @@ export const googleCallback = async (
   req: Request,
   res: Response
 ) => {
-
-
   try {
-
-
-    console.log("\n========== GOOGLE CALLBACK START ==========");
-
-
     const { code } = req.query;
 
-
-    console.log(
-      "Authorization Code:",
-      code ? "RECEIVED ✅" : "MISSING ❌"
-    );
-
-
-
-    if (
-      !code ||
-      typeof code !== "string"
-    ) {
-
-
-      console.log(
-        "❌ Authorization code invalid"
-      );
-
-
+    if (!code || typeof code !== "string") {
       return res.status(400).json({
-
-        success:false,
-
-        message:"Authorization code missing",
-
+        success: false,
+        message: "Authorization code is missing.",
       });
-
     }
-
-
-
-
-    console.log(
-      "Calling handleGoogleCallback service..."
-    );
-
-
-
-    const result = await handleGoogleCallback(
-      code
-    );
-
-
-
-    console.log(
-      "Google service completed successfully "
-    );
-
-
 
     const {
       user,
       accessToken,
       refreshToken,
+      googleName,
+    } = await handleGoogleCallback(code);
 
-    } = result;
-
-
-
-    console.log(
-      "\n----- USER INFORMATION -----"
-    );
-
-
-    console.log({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      googleId: user.googleId,
-      verified: user.isEmailVerified,
-    });
-
-
-
-    console.log(
-      "\nAccess Token Generated:",
-      accessToken ? "YES ✅" : "NO ❌"
-    );
-
-
-
-    console.log(
-      "Refresh Token Generated:",
-      refreshToken ? "YES ✅" : "NO ❌"
-    );
-
-
-
-
-
-    console.log(
-      "\nSaving refresh token cookie..."
-    );
-
-
-
-    setRefreshTokenCookie(
-      res,
-      refreshToken
-    );
-
-
-
-    console.log(
-      "Refresh cookie saved ✅"
-    );
-
-
-
-
+    setRefreshTokenCookie(res, refreshToken);
 
     const frontendUrl =
-      process.env.CORS_ORIGIN ??
+      process.env.CLIENT_URL ??
       "http://localhost:5173";
 
-
-
     const redirectUrl =
-      `${frontendUrl}/auth/google/callback?accessToken=${accessToken}`
+      `${frontendUrl}/auth/google/callback` +
+      `?accessToken=${encodeURIComponent(accessToken)}` +
+      `&role=${encodeURIComponent(user.role)}` +
+      `&name=${encodeURIComponent(googleName)}` +
+      `&profileImage=${encodeURIComponent(
+        user.profileImage ?? ""
+      )}`;
 
-
-
-    console.log(
-      "\nRedirecting to frontend:"
-    );
-
-    console.log(
-      redirectUrl
-    );
-
-
-
-    console.log(
-      "========== GOOGLE CALLBACK SUCCESS ==========\n"
-    );
-
-
-
-    return res.redirect(
-      redirectUrl
-    );
-
-
-
-
-  } catch(error:any) {
-
-
-    console.log(
-      "\n========== GOOGLE CALLBACK FAILED =========="
-    );
-
-
-    console.error(
-      "Error Message:",
-      error.message
-    );
-
-
-    console.error(
-      "Full Error:",
-      error
-    );
-
-
-    console.log(
-      "============================================\n"
-    );
-
-
+    return res.redirect(redirectUrl);
+  } catch (error) {
+    console.error("Google Callback Error:", error);
 
     return res.status(500).json({
-
-      success:false,
-
-      message:"Google authentication failed",
-
+      success: false,
+      message: "Google authentication failed.",
     });
-
-
   }
-
 };

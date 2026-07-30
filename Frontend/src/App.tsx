@@ -29,18 +29,28 @@ function Layout() {
 
   const hideNavbar = hideNavbarRoutes.includes(location.pathname);
 
-  // Temporary
-  const isLoggedIn = false;
-  const userRole = "patient";
+  const token = localStorage.getItem("token");
+
+const isLoggedIn = !!token;
+
+const userRole =
+  (localStorage.getItem("role")?.toLowerCase() as
+    | "patient"
+    | "doctor"
+    | null) ?? null;
+
+const userImage =
+  localStorage.getItem("profileImage") ??
+  "https://ui-avatars.com/api/?name=User&background=10b981&color=fff";
 
   return (
     <div className="min-h-screen bg-emerald-50">
       {!hideNavbar && (
-        <Navbar
-          isLoggedIn={isLoggedIn}
-          userRole={userRole}
-          userImage="https://ui-avatars.com/api/?name=Rahim+Ahmed&background=10b981&color=fff&size=40"
-        />
+       <Navbar
+    isLoggedIn={isLoggedIn}
+    userRole={userRole}
+    userImage={userImage}
+/>
       )}
 
       <Routes>

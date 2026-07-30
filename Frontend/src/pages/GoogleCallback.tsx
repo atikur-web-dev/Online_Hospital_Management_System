@@ -7,9 +7,20 @@ import toast from "react-hot-toast";
 const GoogleCallback = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  console.log(searchParams.toString());
+
+  console.log({
+    token: searchParams.get("accessToken"),
+    role: searchParams.get("role"),
+    name: searchParams.get("name"),
+    profileImage: searchParams.get("profileImage"),
+  });
 
   useEffect(() => {
     const accessToken = searchParams.get("accessToken");
+    const role = searchParams.get("role");
+    const name = searchParams.get("name");
+    const profileImage = searchParams.get("profileImage");
 
     if (!accessToken) {
       toast.error("Google login failed!");
@@ -17,11 +28,21 @@ const GoogleCallback = () => {
       return;
     }
 
-    localStorage.setItem("token", accessToken);
-
     // Save authentication info
     localStorage.setItem("token", accessToken);
     localStorage.setItem("loginType", "google");
+
+    if (role) {
+      localStorage.setItem("role", role);
+    }
+
+    if (name) {
+      localStorage.setItem("name", name);
+    }
+
+    if (profileImage) {
+      localStorage.setItem("profileImage", profileImage);
+    }
 
     // Remove token from browser URL
     window.history.replaceState({}, "", "/auth/google/callback");

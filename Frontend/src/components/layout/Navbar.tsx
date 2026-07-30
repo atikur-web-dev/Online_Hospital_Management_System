@@ -1,42 +1,56 @@
-// src/components/layout/Navbar.tsx 
+// src/components/layout/Navbar.tsx
 
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { 
-  Home, 
-  Stethoscope, 
-  User, 
-  CalendarDays, 
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Home,
+  Stethoscope,
+  User,
+  CalendarDays,
   Menu,
   X,
-  ChevronDown
-} from 'lucide-react';
-import { Button } from '../common';
+  ChevronDown,
+} from "lucide-react";
+import { Button } from "../common";
 
 interface NavbarProps {
-  userRole?: 'patient' | 'doctor' | null;
+  userRole?: "patient" | "doctor" | null;
   isLoggedIn?: boolean;
   userImage?: string;
 }
 
-const Navbar = ({ 
-  userRole = null, 
-  isLoggedIn = false, 
-  userImage = 'https://ui-avatars.com/api/?name=John+Doe&background=10b981&color=fff&size=40' 
+const Navbar = ({
+  userRole = null,
+  isLoggedIn = false,
+  userImage = "https://ui-avatars.com/api/?name=John+Doe&background=10b981&color=fff&size=40",
 }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const handleLogout = () => {
+  localStorage.clear();
+  navigate("/login");
+};
 
   const navLinks = [
-    { name: 'Home', path: '/', icon: Home },
-    { name: 'Doctors', path: '/doctors', icon: Stethoscope, show: userRole === 'patient' || !userRole },
-    { name: 'Appointments', path: '/appointments', icon: CalendarDays, show: true },
+    { name: "Home", path: "/", icon: Home },
+    {
+      name: "Doctors",
+      path: "/doctors",
+      icon: Stethoscope,
+      show: userRole === "patient" || !userRole,
+    },
+    {
+      name: "Appointments",
+      path: "/appointments",
+      icon: CalendarDays,
+      show: true,
+    },
   ];
 
   const handleNavigation = (path: string) => {
-    if (!isLoggedIn && path !== '/') {
-      navigate('/login');
+    if (!isLoggedIn && path !== "/") {
+      navigate("/login");
       return;
     }
     navigate(path);
@@ -46,7 +60,6 @@ const Navbar = ({
     <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-emerald-100 w-full">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-26">
-          
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="bg-emerald-600 p-2 rounded-lg">
               <Home className="w-10 h-10 text-white" />
@@ -85,22 +98,33 @@ const Navbar = ({
                     alt="Profile"
                     className="w-14 h-14 rounded-full border-2 border-emerald-500 object-cover hover:border-emerald-700 transition-all"
                   />
-                  <span className="text-4xl font-medium text-emerald-800">John</span>
+                  <span className="text-4xl font-medium text-emerald-800">
+                    {localStorage.getItem("name") ?? "User"}
+                  </span>
                   <ChevronDown className="w-8 h-8 text-emerald-600" />
                 </button>
 
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-emerald-100 py-1 z-50">
-                    <Link to="/profile" className="block px-4 py-3 text-4xl text-emerald-700 hover:bg-emerald-50">
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-3 text-4xl text-emerald-700 hover:bg-emerald-50"
+                    >
                       Profile
                     </Link>
-                    <Link to="/settings" className="block px-4 py-3 text-4xl text-emerald-700 hover:bg-emerald-50">
+                    {/* <Link
+                      to="/settings"
+                      className="block px-4 py-3 text-4xl text-emerald-700 hover:bg-emerald-50"
+                    >
                       Settings
-                    </Link>
+                    </Link> */}
                     <hr className="my-1 border-emerald-100" />
-                    <button className="w-full text-left px-4 py-3 text-4xl text-red-600 hover:bg-red-50">
-                      Logout
-                    </button>
+                    <button
+  onClick={handleLogout}
+  className="w-full text-left px-4 py-3 text-4xl text-red-600 hover:bg-red-50"
+>
+  Logout
+</button>
                   </div>
                 )}
               </div>
@@ -153,9 +177,9 @@ const Navbar = ({
               </button>
             );
           })}
-          
+
           <hr className="my-2 border-emerald-100" />
-          
+
           {isLoggedIn ? (
             <div className="flex items-center gap-3 px-3 py-2">
               <img
@@ -163,10 +187,15 @@ const Navbar = ({
                 alt="Profile"
                 className="w-12 h-12 rounded-full border-2 border-emerald-500"
               />
-              <span className="text-4xl font-medium text-emerald-800">John Doe</span>
-              <button className="ml-auto text-3xl text-red-600 hover:text-red-800">
-                Logout
-              </button>
+              <span className="text-4xl font-medium text-emerald-800">
+                {localStorage.getItem("name") ?? "User"}
+              </span>
+             <button
+  onClick={handleLogout}
+  className="ml-auto text-3xl text-red-600 hover:text-red-800"
+>
+  Logout
+</button>
             </div>
           ) : (
             <div className="flex flex-col gap-2 px-3 py-2">
