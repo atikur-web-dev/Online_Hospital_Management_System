@@ -1,6 +1,6 @@
 // src/pages/Login.tsx
-
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Mail,
   Lock,
@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loginType, setLoginType] = useState<"user" | "admin">("user");
   const [formData, setFormData] = useState({
@@ -28,31 +29,83 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Fixed Admin Login (No API Call)
+    // =========================
+    // Admin Login (Temporary)
+    // =========================
     if (loginType === "admin") {
       if (
         formData.email === "atikuradmin@gmail.com" &&
         formData.password === "atikur123"
       ) {
         toast.success("Admin login successful!");
+
         localStorage.setItem("token", "admin-fixed-token");
         localStorage.setItem("role", "ADMIN");
-        // navigate("/admin/dashboard");
-        return;
-      } else {
-        toast.error("Invalid admin credentials.");
+        localStorage.setItem("name", "Atikur Admin");
+        localStorage.setItem(
+          "profileImage",
+          "https://ui-avatars.com/api/?name=Atikur+Admin&background=10b981&color=fff",
+        );
+
+        navigate("/dashboard");
         return;
       }
+
+      toast.error("Invalid admin credentials.");
+      return;
     }
 
-    // User Login (API Call)
+    // =========================
+    // User Login
+    // =========================
     try {
       const response = await loginUser({
         email: formData.email,
         password: formData.password,
       });
+console.log(JSON.stringify(response, null, 2));
+      // ===== DEBUG =====
+      console.clear();
 
-      console.log(response);
+     console.log("========== LOGIN RESPONSE ==========");
+console.log(response);
+
+const { token, refreshToken, user } = response.data;
+
+console.log("========== USER ==========");
+console.log(user);
+
+console.log("========== TOKEN ==========");
+console.log(token);
+
+console.log("========== REFRESH TOKEN ==========");
+console.log(refreshToken);
+
+localStorage.setItem("token", token);
+
+if (refreshToken) {
+  localStorage.setItem("refreshToken", refreshToken);
+}
+
+localStorage.setItem("role", user.role);
+localStorage.setItem("name", user.name);
+localStorage.setItem(
+  "profileImage",
+  user.profileImage ?? ""
+);
+
+console.log("========== LOCAL STORAGE ==========");
+console.log("role =", localStorage.getItem("role"));
+console.log("name =", localStorage.getItem("name"));
+console.log(
+  "profileImage =",
+  localStorage.getItem("profileImage")
+);
+
+navigate("/dashboard");
+
+      // ================================
+
       toast.success("Login successful! Welcome back.", {
         duration: 3500,
         style: {
@@ -62,16 +115,28 @@ const Login = () => {
           minWidth: "460px",
         },
       });
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("refreshToken", response.data.refreshToken);
-      localStorage.setItem("role", response.data.user?.role || "USER");
-      // navigate("/dashboard");
+
+      localStorage.setItem("token", response.token ?? "");
+      localStorage.setItem("refreshToken", response.refreshToken ?? "");
+      localStorage.setItem("role", response.user?.role ?? "");
+      localStorage.setItem("name", response.user?.name ?? "");
+      localStorage.setItem("profileImage", response.user?.profileImage ?? "");
+
+      console.log("========== LOCAL STORAGE ==========");
+      console.log("role =", localStorage.getItem("role"));
+      console.log("name =", localStorage.getItem("name"));
+      console.log("profileImage =", localStorage.getItem("profileImage"));
+
+      navigate("/dashboard");
     } catch (error) {
       const err = error as AxiosError<{
         message?: string;
       }>;
 
-      toast.error("Invalid email or password.", {
+      console.error("LOGIN ERROR");
+      console.error(err.response?.data ?? error);
+
+      toast.error(err.response?.data?.message ?? "Invalid email or password.", {
         duration: 3500,
         style: {
           fontSize: "18px",
@@ -80,13 +145,10 @@ const Login = () => {
           minWidth: "460px",
         },
       });
-      console.error(error);
     }
   };
-
   const handleGoogleLogin = () => {
-    window.location.href =
-    "http://localhost:5000/api/v1/auth/google";
+    window.location.href = "http://localhost:5000/api/v1/auth/google";
   };
 
   return (

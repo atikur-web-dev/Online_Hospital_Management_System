@@ -84,6 +84,7 @@ export const login = async (
       data: {
         user: result.user,
         token: result.token,
+        refreshToken: result.refreshToken,
       },
     });
   } catch (err) {
