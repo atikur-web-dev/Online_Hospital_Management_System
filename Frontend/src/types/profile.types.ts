@@ -31,16 +31,24 @@ export interface PatientProfile {
 export interface DoctorProfile {
   id: string;
   userId: string;
+
   name: string;
   phone: string | null;
+
+  departmentId: string | null;
+  department: Department | null;
+
   specialization: string | null;
   qualification: string | null;
+
   experience: number | null;
   consultationFee: number | null;
+
   isAvailable: boolean;
+
   createdAt: string;
   updatedAt: string;
-  department: Department | null;
+
   user: User;
 }
 

@@ -67,6 +67,10 @@ function Layout() {
         />
 
         <Route path="/doctors" element={<Doctors />} />
+        <Route
+ path="/doctors/:id"
+ element={<DoctorDetails />}
+/>
 
         <Route
           path="/appointments"

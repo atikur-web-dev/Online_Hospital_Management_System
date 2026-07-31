@@ -1,8 +1,8 @@
 // Backend/src/services/Doctor/doctor.service.ts
-import prisma from "../../lib/prisma.js";
+import prisma from '../../lib/prisma.js';
 
 export const getAllDoctors = async () => {
-  return prisma.doctorProfile.findMany({
+  const doctors = await prisma.doctorProfile.findMany({
     where: {
       user: {
         isActive: true,
@@ -17,6 +17,7 @@ export const getAllDoctors = async () => {
           email: true,
           profileImage: true,
           isEmailVerified: true,
+          role: true,
         },
       },
 
@@ -29,7 +30,43 @@ export const getAllDoctors = async () => {
     },
 
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
+
+  return doctors;
+};
+/**
+ * Get Single Doctor
+ */
+export const getDoctorById = async (doctorId: string) => {
+  const doctor = await prisma.doctorProfile.findUnique({
+    where: {
+      id: doctorId,
+    },
+
+    include: {
+      user: {
+        select: {
+          email: true,
+          profileImage: true,
+          isEmailVerified: true,
+          role: true,
+        },
+      },
+
+      department: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!doctor) {
+    throw new Error('Doctor not found.');
+  }
+
+  return doctor;
 };
