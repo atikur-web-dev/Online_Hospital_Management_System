@@ -6,7 +6,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-
+import Doctors from "./pages/Doctors";
 import { Toaster } from "react-hot-toast";
 import Profile from "./pages/Profile";
 import Navbar from "./components/layout/Navbar";
@@ -15,7 +15,6 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import EmailVerificationResult from "./pages/EmailVerification";
-
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function Layout() {
@@ -67,14 +66,7 @@ function Layout() {
           }
         />
 
-        <Route
-          path="/doctors"
-          element={
-            <ProtectedRoute>
-              <div>Doctors List</div>
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/doctors" element={<Doctors />} />
 
         <Route
           path="/appointments"

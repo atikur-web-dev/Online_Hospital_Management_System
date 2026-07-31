@@ -1,21 +1,20 @@
 // Frontend/src/types/profile.types.ts
-export type UserRole =
-  | "PATIENT"
-  | "DOCTOR"
-  | "ADMIN";
+export type UserRole = "PATIENT" | "DOCTOR" | "ADMIN";
 
-export type Gender =
-  | "MALE"
-  | "FEMALE"
-  | "OTHER";
+export type Gender = "MALE" | "FEMALE" | "OTHER";
 
 export interface User {
+  id: string;
   email: string;
   role: UserRole;
   profileImage: string | null;
   isEmailVerified: boolean;
 }
 
+export interface Department {
+  id: string;
+  name: string;
+}
 export interface PatientProfile {
   id: string;
   userId: string;
@@ -26,7 +25,6 @@ export interface PatientProfile {
   address: string | null;
   createdAt: string;
   updatedAt: string;
-
   user: User;
 }
 
@@ -40,10 +38,9 @@ export interface DoctorProfile {
   experience: number | null;
   consultationFee: number | null;
   isAvailable: boolean;
-
   createdAt: string;
   updatedAt: string;
-
+  department: Department | null;
   user: User;
 }
 
@@ -53,14 +50,9 @@ export interface AdminProfile {
   name: string;
   phone: string | null;
   permissions: string[];
-
   createdAt: string;
   updatedAt: string;
-
   user: User;
 }
 
-export type Profile =
-  | PatientProfile
-  | DoctorProfile
-  | AdminProfile;
+export type Profile = PatientProfile | DoctorProfile | AdminProfile;
