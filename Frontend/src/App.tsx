@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import Navbar from "./components/layout/Navbar";
 import GoogleCallback from "./pages/GoogleCallback";
 import Home from "./pages/Home";
+import DoctorDetails from "./pages/DoctorDetails";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import EmailVerificationResult from "./pages/EmailVerification";
@@ -67,10 +68,7 @@ function Layout() {
         />
 
         <Route path="/doctors" element={<Doctors />} />
-        <Route
- path="/doctors/:id"
- element={<DoctorDetails />}
-/>
+        <Route path="/doctors/:id" element={<DoctorDetails />} />
 
         <Route
           path="/appointments"
