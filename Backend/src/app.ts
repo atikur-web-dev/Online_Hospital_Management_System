@@ -8,6 +8,7 @@ import session from 'express-session';
 import passport from 'passport';
 import { errorHandler } from "./middleware/error.middleware.js";
 import dotenv from 'dotenv';
+import doctorRoutes from "./routes/doctor.routes.js";
 import adminRoutes from './routes/admin.routes.js';
 import cookieParser from 'cookie-parser';
 import profileRoutes from "./routes/profile.routes.js";
@@ -73,6 +74,7 @@ app.use(cookieParser());
 app.use("/api/v1/auth", authRoutes);
 app.use('/api/v1/admin', adminRoutes); 
 app.use("/api/v1/profile",profileRoutes);
+app.use("/api/v1/doctors", doctorRoutes);
 
 // Health Check
 app.get('/api/health', (_req: Request, res: Response) => {

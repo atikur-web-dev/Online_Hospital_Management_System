@@ -46,10 +46,7 @@ function Layout() {
         <Navbar
           isLoggedIn={isLoggedIn}
           userRole={userRole}
-          userImage={
-            localStorage.getItem("profileImage") ||
-            "https://ui-avatars.com/api/?name=User&background=10b981&color=fff"
-          }
+          userImage={userImage}
         />
       )}
 

@@ -21,13 +21,9 @@ type UpdateProfileData =
 
 export const useProfile = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
-
   const [loading, setLoading] = useState(true);
-
   const [saving, setSaving] = useState(false);
-
   const [uploading, setUploading] = useState(false);
-
   const [error, setError] = useState<string | null>(null);
 
   /**
@@ -80,39 +76,38 @@ export const useProfile = () => {
   /**
    * Upload Avatar
    */
-  const uploadAvatar = async (
-    image: File
-  ) => {
-    try {
-      setUploading(true);
-      setError(null);
+  const uploadAvatar = async (image: File) => {
+  try {
+    setUploading(true);
+    setError(null);
 
-      const imageUrl =
-        await uploadProfileImage(image);
+    const imageUrl = await uploadProfileImage(image);
 
-      setProfile((prev) => {
-        if (!prev) return prev;
+    setProfile((prev) => {
+      if (!prev) return prev;
 
-        return {
-          ...prev,
-          user: {
-            ...prev.user,
-            profileImage: imageUrl,
-          },
-        };
-      });
+      return {
+        ...prev,
+        user: {
+          ...prev.user,
+          profileImage: imageUrl,
+        },
+      };
+    });
 
-      return imageUrl;
-    } catch (err) {
-      console.error(err);
+    localStorage.setItem("profileImage", imageUrl);
 
-      setError("Failed to upload image.");
+    return imageUrl;
+  } catch (err) {
+    console.error(err);
 
-      throw err;
-    } finally {
-      setUploading(false);
-    }
-  };
+    setError("Failed to upload image.");
+
+    throw err;
+  } finally {
+    setUploading(false);
+  }
+};
 
   useEffect(() => {
     fetchProfile();

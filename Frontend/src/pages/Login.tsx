@@ -28,33 +28,6 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // =========================
-    // Admin Login (Temporary)
-    // =========================
-    if (loginType === "admin") {
-      if (
-        formData.email === "atikuradmin@gmail.com" &&
-        formData.password === "atikur123"
-      ) {
-        toast.success("Admin login successful!");
-
-        localStorage.setItem("token", "admin-fixed-token");
-        localStorage.setItem("role", "ADMIN");
-        localStorage.setItem("name", "Atikur Admin");
-        localStorage.setItem(
-          "profileImage",
-          "https://ui-avatars.com/api/?name=Atikur+Admin&background=10b981&color=fff",
-        );
-
-        navigate("/dashboard");
-        return;
-      }
-
-      toast.error("Invalid admin credentials.");
-      return;
-    }
-
     // =========================
     // User Login
     // =========================
