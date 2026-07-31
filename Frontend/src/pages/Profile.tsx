@@ -46,7 +46,7 @@ export default function Profile() {
         <ProfileHeader />
 
         <ProfileAvatar
-          image={profile.user.profileImage}
+          image={profile.user?.profileImage ?? ""}
           onUpload={uploadAvatar}
         />
 

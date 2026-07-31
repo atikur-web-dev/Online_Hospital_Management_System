@@ -37,7 +37,7 @@ function Layout() {
       | null) ?? null;
 
   const userImage =
-    localStorage.getItem("profileImage") ??
+    localStorage.getItem("profileImage") ||
     "https://ui-avatars.com/api/?name=User&background=10b981&color=fff";
 
   return (
@@ -47,8 +47,8 @@ function Layout() {
           isLoggedIn={isLoggedIn}
           userRole={userRole}
           userImage={
-            localStorage.getItem("profileImage") ??
-            "https://ui-avatars.com/api/?name=User"
+            localStorage.getItem("profileImage") ||
+            "https://ui-avatars.com/api/?name=User&background=10b981&color=fff"
           }
         />
       )}

@@ -20,8 +20,7 @@ import hospitalBg from "../assets/hospital-bg.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
-  const isLoggedIn = false; // later auth state theke nibe
-
+  const isLoggedIn = !!localStorage.getItem("token");
   const handleGetStarted = () => {
     if (!isLoggedIn) {
       navigate("/login");

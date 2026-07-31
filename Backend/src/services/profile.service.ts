@@ -1,15 +1,15 @@
 // Backend/src/services/profile.service.ts
-import prisma from "../lib/prisma.js";
+import prisma from '../lib/prisma.js';
 
 import {
   updateAdminProfileSchema,
   updateDoctorProfileSchema,
   updatePatientProfileSchema,
-} from "../validators/profile.validator.js";
-import { v2 as cloudinary } from "cloudinary";
-import streamifier from "streamifier";
-import type { UserRole } from "../generated/prisma/index.js";
-import { uploadImage, deleteImage } from "./cloudinary.service.js";
+} from '../validators/profile.validator.js';
+import { v2 as cloudinary } from 'cloudinary';
+import streamifier from 'streamifier';
+import type { UserRole } from '../generated/prisma/index.js';
+import { uploadImage, deleteImage } from './cloudinary.service.js';
 /**
  * Get Logged In User Profile
  */
@@ -73,7 +73,6 @@ export const getMyProfile = async (
       throw new Error("Invalid user role");
   }
 };
-
 /**
  * Update Logged In User Profile
  */
@@ -84,104 +83,97 @@ export const updateMyProfile = async (
 ) => {
   switch (role) {
     case "PATIENT": {
-      const parsed =
-        updatePatientProfileSchema.parse(body);
+      const parsed = updatePatientProfileSchema.parse(body);
 
       const data = {
-        ...(parsed.name !== undefined && {
-          name: parsed.name,
-        }),
-
-        ...(parsed.phone !== undefined && {
-          phone: parsed.phone,
-        }),
-
-        ...(parsed.gender !== undefined && {
-          gender: parsed.gender,
-        }),
-
-        ...(parsed.address !== undefined && {
-          address: parsed.address,
-        }),
-
+        ...(parsed.name !== undefined && { name: parsed.name }),
+        ...(parsed.phone !== undefined && { phone: parsed.phone }),
+        ...(parsed.gender !== undefined && { gender: parsed.gender }),
+        ...(parsed.address !== undefined && { address: parsed.address }),
         ...(parsed.dateOfBirth !== undefined && {
           dateOfBirth: new Date(parsed.dateOfBirth),
         }),
       };
 
       return prisma.patientProfile.update({
-        where: {
-          userId,
-        },
+        where: { userId },
         data,
+        include: {
+          user: {
+            select: {
+              email: true,
+              profileImage: true,
+              isEmailVerified: true,
+              role: true,
+            },
+          },
+        },
       });
     }
 
     case "DOCTOR": {
-      const parsed =
-        updateDoctorProfileSchema.parse(body);
+      const parsed = updateDoctorProfileSchema.parse(body);
 
       const data = {
-        ...(parsed.name !== undefined && {
-          name: parsed.name,
-        }),
-
-        ...(parsed.phone !== undefined && {
-          phone: parsed.phone,
-        }),
-
+        ...(parsed.name !== undefined && { name: parsed.name }),
+        ...(parsed.phone !== undefined && { phone: parsed.phone }),
         ...(parsed.specialization !== undefined && {
           specialization: parsed.specialization,
         }),
-
         ...(parsed.qualification !== undefined && {
           qualification: parsed.qualification,
         }),
-
         ...(parsed.experience !== undefined && {
           experience: parsed.experience,
         }),
-
         ...(parsed.consultationFee !== undefined && {
           consultationFee: parsed.consultationFee,
         }),
-
         ...(parsed.isAvailable !== undefined && {
           isAvailable: parsed.isAvailable,
         }),
       };
 
       return prisma.doctorProfile.update({
-        where: {
-          userId,
-        },
+        where: { userId },
         data,
+        include: {
+          user: {
+            select: {
+              email: true,
+              profileImage: true,
+              isEmailVerified: true,
+              role: true,
+            },
+          },
+        },
       });
     }
 
     case "ADMIN": {
-      const parsed =
-        updateAdminProfileSchema.parse(body);
+      const parsed = updateAdminProfileSchema.parse(body);
 
       const data = {
-        ...(parsed.name !== undefined && {
-          name: parsed.name,
-        }),
-
-        ...(parsed.phone !== undefined && {
-          phone: parsed.phone,
-        }),
-
+        ...(parsed.name !== undefined && { name: parsed.name }),
+        ...(parsed.phone !== undefined && { phone: parsed.phone }),
         ...(parsed.permissions !== undefined && {
           permissions: parsed.permissions,
         }),
       };
 
       return prisma.adminProfile.update({
-        where: {
-          userId,
-        },
+        where: { userId },
         data,
+        include: {
+          user: {
+            select: {
+              email: true,
+              profileImage: true,
+              isEmailVerified: true,
+              role: true,
+            },
+          },
+        },
       });
     }
 
@@ -189,7 +181,6 @@ export const updateMyProfile = async (
       throw new Error("Invalid user role");
   }
 };
-
 /**
  * Upload Profile Image
  */
@@ -201,7 +192,6 @@ export const uploadProfileImage = async (
     throw new Error("Profile image is required.");
   }
 
-  // Find user
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
@@ -215,7 +205,6 @@ export const uploadProfileImage = async (
     throw new Error("User not found.");
   }
 
-  // Upload image to Cloudinary
   const uploadResult = await new Promise<{
     secure_url: string;
     public_id: string;
@@ -240,37 +229,18 @@ export const uploadProfileImage = async (
     streamifier.createReadStream(file.buffer).pipe(uploadStream);
   });
 
-  // Delete previous image
-  if (
-    user.profileImage &&
-    user.profileImage.includes("cloudinary")
-  ) {
-    try {
-      const parts = user.profileImage.split("/");
-
-      const fileName = parts.pop()?.split(".")[0];
-
-      const folder = parts.slice(parts.indexOf("upload") + 2).join("/");
-
-      const publicId = `${folder}/${fileName}`;
-
-      await cloudinary.uploader.destroy(publicId);
-    } catch (error) {
-      console.error("Failed to delete old image:", error);
-    }
-  }
-
-  // Save new image URL
   const updatedUser = await prisma.user.update({
     where: {
       id: userId,
     },
     data: {
       profileImage: uploadResult.secure_url,
+      profileImagePublicId: uploadResult.public_id,
     },
     select: {
       id: true,
       email: true,
+      role: true,
       profileImage: true,
     },
   });
@@ -285,14 +255,12 @@ export const uploadMyProfileImage = async (
   userId: string,
   file: Express.Multer.File
 ) => {
-  // Find user
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
     },
     select: {
       id: true,
-      profileImage: true,
       profileImagePublicId: true,
     },
   });
@@ -301,18 +269,15 @@ export const uploadMyProfileImage = async (
     throw new Error("User not found.");
   }
 
-  // Delete old image if exists
   if (user.profileImagePublicId) {
     await deleteImage(user.profileImagePublicId);
   }
 
-  // Upload new image
   const uploadedImage = await uploadImage(
     file,
     "careplus/profile-images"
   );
 
-  // Update database
   const updatedUser = await prisma.user.update({
     where: {
       id: userId,

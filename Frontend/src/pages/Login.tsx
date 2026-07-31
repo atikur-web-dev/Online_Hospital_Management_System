@@ -63,48 +63,28 @@ const Login = () => {
         email: formData.email,
         password: formData.password,
       });
-console.log(JSON.stringify(response, null, 2));
-      // ===== DEBUG =====
-      console.clear();
 
-     console.log("========== LOGIN RESPONSE ==========");
-console.log(response);
+      const { token, refreshToken, user } = response.data;
 
-const { token, refreshToken, user } = response.data;
+      localStorage.setItem("token", token);
 
-console.log("========== USER ==========");
-console.log(user);
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
+      }
 
-console.log("========== TOKEN ==========");
-console.log(token);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("name", user.name);
+      localStorage.setItem("profileImage", user.profileImage ?? "");
 
-console.log("========== REFRESH TOKEN ==========");
-console.log(refreshToken);
+      toast.success("Login successful!");
 
-localStorage.setItem("token", token);
-
-if (refreshToken) {
-  localStorage.setItem("refreshToken", refreshToken);
-}
-
-localStorage.setItem("role", user.role);
-localStorage.setItem("name", user.name);
-localStorage.setItem(
-  "profileImage",
-  user.profileImage ?? ""
-);
-
-console.log("========== LOCAL STORAGE ==========");
-console.log("role =", localStorage.getItem("role"));
-console.log("name =", localStorage.getItem("name"));
-console.log(
-  "profileImage =",
-  localStorage.getItem("profileImage")
-);
-
-navigate("/dashboard");
-
-      // ================================
+      if (user.role === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else if (user.role === "DOCTOR") {
+        navigate("/doctor/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
 
       toast.success("Login successful! Welcome back.", {
         duration: 3500,
@@ -115,19 +95,6 @@ navigate("/dashboard");
           minWidth: "460px",
         },
       });
-
-      localStorage.setItem("token", response.token ?? "");
-      localStorage.setItem("refreshToken", response.refreshToken ?? "");
-      localStorage.setItem("role", response.user?.role ?? "");
-      localStorage.setItem("name", response.user?.name ?? "");
-      localStorage.setItem("profileImage", response.user?.profileImage ?? "");
-
-      console.log("========== LOCAL STORAGE ==========");
-      console.log("role =", localStorage.getItem("role"));
-      console.log("name =", localStorage.getItem("name"));
-      console.log("profileImage =", localStorage.getItem("profileImage"));
-
-      navigate("/dashboard");
     } catch (error) {
       const err = error as AxiosError<{
         message?: string;

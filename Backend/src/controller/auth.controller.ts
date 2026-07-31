@@ -67,6 +67,8 @@ export const login = async (
   next: NextFunction,
 ) => {
   try {
+    console.log("========== LOGIN HIT ==========");
+console.log(req.body);
     const payload = loginSchema.parse(req.body);
 
     const result = await loginUser(payload);
