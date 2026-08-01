@@ -111,7 +111,7 @@ const Navbar = ({
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-emerald-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="bg-gradient-to-br from-emerald-600 to-emerald-500 p-2.5 rounded-xl shadow-lg shadow-emerald-200">
