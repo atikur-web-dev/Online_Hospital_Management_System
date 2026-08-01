@@ -1,14 +1,58 @@
 // Backend/src/services/Doctor/doctor.service.ts
 import prisma from '../../lib/prisma.js';
 
-export const getAllDoctors = async () => {
-  const doctors = await prisma.doctorProfile.findMany({
-    where: {
-      user: {
-        isActive: true,
-        isEmailVerified: true,
-      },
+interface GetAllDoctorsParams {
+  page: number;
+  limit: number;
+  search?: string;
+  department?: string;
+}
+
+export const getAllDoctors = async ({
+  page,
+  limit,
+  search = "",
+  department = "",
+}: GetAllDoctorsParams) => {
+
+  const skip = (page - 1) * limit;
+
+  const whereCondition = {
+    user: {
+      isActive: true,
+      isEmailVerified: true,
     },
+
+    ...(search && {
+      OR: [
+        {
+          name: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+        {
+          specialization: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+      ],
+    }),
+
+    ...(department && {
+      department: {
+        name: {
+          equals: department,
+          mode: "insensitive" as const,
+        },
+      },
+    }),
+  };
+
+  // Get paginated doctors
+  const doctors = await prisma.doctorProfile.findMany({
+    where: whereCondition,
 
     include: {
       user: {
@@ -30,11 +74,28 @@ export const getAllDoctors = async () => {
     },
 
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
+
+    skip,
+    take: limit,
   });
 
-  return doctors;
+  // Get total count
+  const total = await prisma.doctorProfile.count({
+    where: whereCondition,
+  });
+
+  return {
+    doctors,
+
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };
 /**
  * Get Single Doctor

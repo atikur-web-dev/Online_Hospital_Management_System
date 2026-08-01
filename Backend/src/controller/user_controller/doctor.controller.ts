@@ -6,23 +6,35 @@ import * as doctorService from "../../services/Doctor/doctor.service.js";
  * Get All Doctors
  */
 export const getAllDoctors = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const doctors = await doctorService.getAllDoctors();
+    const {
+      page = "1",
+      limit = "10",
+      search = "",
+      department = "",
+    } = req.query;
+
+    const result = await doctorService.getAllDoctors({
+      page: Number(page),
+      limit: Number(limit),
+      search: String(search),
+      department: String(department),
+    });
 
     return res.status(200).json({
       success: true,
       message: "Doctors fetched successfully.",
-      data: doctors,
+      data: result,
     });
+
   } catch (error) {
     return next(error);
   }
 };
-
 
 /**
  * Get Single Doctor By ID
