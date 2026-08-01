@@ -16,7 +16,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import EmailVerificationResult from "./pages/EmailVerification";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-// New Pages
 import Departments from "./pages/Departments";
 import Services from "./pages/Services";
 import About from "./pages/About";

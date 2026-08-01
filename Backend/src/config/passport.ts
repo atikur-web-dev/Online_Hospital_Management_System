@@ -20,14 +20,14 @@ passport.use(
         }
 
         // Find existing user
+        // Find existing user
         let user = await prisma.user.findFirst({
           where: {
-            OR: [
-              { email },
-              { googleId: profile.id },
-            ],
+            OR: [{ email }, { googleId: profile.id }],
           },
         });
+
+        const googlePhoto = profile.photos?.[0]?.value ?? null;
 
         if (!user) {
           user = await prisma.$transaction(async (tx) => {
@@ -37,20 +37,20 @@ passport.use(
                 googleId: profile.id,
                 role: 'PATIENT',
                 isEmailVerified: true,
-                profileImage: profile.photos?.[0]?.value ?? null,
+                profileImage: googlePhoto,
               },
             });
 
             await tx.patientProfile.create({
               data: {
                 userId: createdUser.id,
-                name: profile.displayName || email?.split('@')[0] || 'Patient',
+                name: profile.displayName || email.split('@')[0] || 'Patient',
               },
             });
 
             return createdUser;
           });
-        } else if (!user.googleId) {
+        } else {
           user = await prisma.user.update({
             where: {
               id: user.id,
@@ -58,6 +58,7 @@ passport.use(
             data: {
               googleId: profile.id,
               isEmailVerified: true,
+              profileImage: googlePhoto,
             },
           });
         }
@@ -66,8 +67,8 @@ passport.use(
       } catch (error) {
         return done(error as Error, undefined);
       }
-    }
-  )
+    },
+  ),
 );
 
 export default passport;

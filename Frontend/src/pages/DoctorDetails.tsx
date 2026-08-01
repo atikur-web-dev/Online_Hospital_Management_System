@@ -10,20 +10,17 @@ import {
   Phone,
   ArrowLeft,
 } from "lucide-react";
-
+import AppointmentForm from "../components/appointment/AppointmentForm";
 import { Link, useParams } from "react-router-dom";
 import { useDoctor } from "../hooks/useDoctor";
-
+import { useState } from "react";
+import { Modal } from "../components/common";
 
 const DoctorDetails = () => {
   const { id } = useParams();
-  const {
-    doctor,
-    loading,
-    error,
-  } = useDoctor(id);
+  const { doctor, loading, error } = useDoctor(id);
 
-
+  const [openBooking, setOpenBooking] = useState(false);
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-emerald-50">
@@ -41,17 +38,13 @@ const DoctorDetails = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-emerald-50">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-red-600">
-            Doctor Not Found
-          </h2>
-          <p className="mt-3 text-gray-600">
-            {error}
-          </p>
+          <h2 className="text-3xl font-bold text-red-600">Doctor Not Found</h2>
+          <p className="mt-3 text-gray-600">{error}</p>
           <Link
             to="/doctors"
             className="inline-flex items-center gap-2 mt-6 bg-emerald-600 text-white px-6 py-3 rounded-xl"
           >
-            <ArrowLeft size={20}/>
+            <ArrowLeft size={20} />
             Back to Doctors
           </Link>
         </div>
@@ -67,7 +60,7 @@ const DoctorDetails = () => {
           to="/doctors"
           className="inline-flex items-center gap-2 text-emerald-700 font-semibold mb-8 hover:text-emerald-900"
         >
-          <ArrowLeft size={20}/>
+          <ArrowLeft size={20} />
           Back to Doctors
         </Link>
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-emerald-100">
@@ -80,7 +73,7 @@ const DoctorDetails = () => {
                 src={
                   doctor.user.profileImage ??
                   `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                    doctor.name
+                    doctor.name,
                   )}&background=10b981&color=fff`
                 }
                 alt={doctor.name}
@@ -96,21 +89,17 @@ const DoctorDetails = () => {
                 {doctor.specialization ?? "General Physician"}
               </p>
               <div className="mt-4 flex justify-center">
-                {
-                  doctor.isAvailable ? (
-                    <span className="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full font-medium">
-                      <CircleCheck size={18}/>
-                      Available
-                    </span>
-                  )
-                  :
-                  (
-                    <span className="flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-full font-medium">
-                      <CircleX size={18}/>
-                      Unavailable
-                    </span>
-                  )
-                }
+                {doctor.isAvailable ? (
+                  <span className="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full font-medium">
+                    <CircleCheck size={18} />
+                    Available
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-full font-medium">
+                    <CircleX size={18} />
+                    Unavailable
+                  </span>
+                )}
               </div>
             </div>
             {/* Details */}
@@ -121,19 +110,19 @@ const DoctorDetails = () => {
                 </h3>
                 <div className="space-y-4 text-emerald-800">
                   <p className="flex gap-3 items-center">
-                    <Stethoscope size={20}/>
+                    <Stethoscope size={20} />
                     {doctor.department?.name ?? "General"}
                   </p>
                   <p className="flex gap-3 items-center">
-                    <GraduationCap size={20}/>
+                    <GraduationCap size={20} />
                     {doctor.qualification ?? "Not Provided"}
                   </p>
                   <p className="flex gap-3 items-center">
-                    <Briefcase size={20}/>
+                    <Briefcase size={20} />
                     {doctor.experience ?? 0} Years Experience
                   </p>
                   <p className="flex gap-3 items-center">
-                    <BadgeDollarSign size={20}/>
+                    <BadgeDollarSign size={20} />
                     Consultation Fee: ৳{doctor.consultationFee ?? 0}
                   </p>
                 </div>
@@ -144,11 +133,11 @@ const DoctorDetails = () => {
                 </h3>
                 <div className="space-y-4 text-emerald-800">
                   <p className="flex gap-3 items-center">
-                    <Mail size={20}/>
+                    <Mail size={20} />
                     {doctor.user.email}
                   </p>
                   <p className="flex gap-3 items-center">
-                    <Phone size={20}/>
+                    <Phone size={20} />
                     {doctor.phone ?? "Not Provided"}
                   </p>
                 </div>
@@ -156,10 +145,22 @@ const DoctorDetails = () => {
             </div>
             {/* Appointment */}
             <button
+              onClick={() => setOpenBooking(true)}
               className="mt-10 w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-xl text-lg font-semibold transition"
             >
               Book Appointment
             </button>
+            <Modal
+              isOpen={openBooking}
+              onClose={() => setOpenBooking(false)}
+              title="Book Appointment"
+              width="md"
+            >
+              <AppointmentForm
+                doctorId={doctor.id}
+                onSuccess={() => setOpenBooking(false)}
+              />
+            </Modal>
           </div>
         </div>
       </div>
