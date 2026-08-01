@@ -1,0 +1,86 @@
+// Backend/src/services/Appointment/appointment.service.ts
+
+import prisma from "../../lib/prisma.js";
+import type { CreateAppointmentInput } from "../../validators/appointment.validator.js";
+
+export const createAppointment = async (
+  patientUserId: string,
+  data: CreateAppointmentInput,
+) => {
+  const {
+    doctorId,
+    appointmentAt,
+    problem,
+  } = data;
+
+  // Find Patient Profile
+  const patient = await prisma.patientProfile.findUnique({
+    where: {
+      userId: patientUserId,
+    },
+  });
+
+  if (!patient) {
+    throw new Error("Patient profile not found.");
+  }
+
+
+  // Find Doctor
+  const doctor = await prisma.doctorProfile.findUnique({
+    where: {
+      id: doctorId,
+    },
+  });
+
+  if (!doctor) {
+    throw new Error("Doctor not found.");
+  }
+
+
+  // Doctor Availability
+  if (!doctor.isAvailable) {
+    throw new Error("Doctor is currently unavailable.");
+  }
+
+  // Check Duplicate Appointment
+  const existingAppointment = await prisma.appointment.findFirst({
+    where: {
+      doctorId,
+      appointmentAt,
+    },
+  });
+
+  if (existingAppointment) {
+    throw new Error("This time slot is already booked.");
+  }
+
+
+  // Create Appointment
+  const appointment = await prisma.appointment.create({
+    data: {
+      patientId: patient.id,
+      doctorId,
+      appointmentAt,
+      problem: problem ?? null,
+    },
+
+    include: {
+      patient: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+
+      doctor: {
+        select: {
+          id: true,
+          name: true,
+          specialization: true,
+        },
+      },
+    },
+  });
+
+  return appointment;
+};
