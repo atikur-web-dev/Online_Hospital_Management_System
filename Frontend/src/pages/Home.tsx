@@ -15,11 +15,13 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/common";
+import Footer from "../components/layout/Footer";
 import hospitalBg from "../assets/hospital-bg.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem("token");
+  
   const handleGetStarted = () => {
     if (!isLoggedIn) {
       navigate("/login");
@@ -27,6 +29,7 @@ const Home = () => {
       navigate("/dashboard");
     }
   };
+  
   return (
     <div className="min-h-screen bg-emerald-50">
       {/* ===== Hero Section ===== */}
@@ -106,6 +109,7 @@ const Home = () => {
         </div>
       </section>
 
+      {/* ===== Why Choose Us Section ===== */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <span className="inline-block px-5 py-2 bg-emerald-100 text-emerald-700 text-base font-semibold rounded-full tracking-wide">
@@ -162,6 +166,7 @@ const Home = () => {
         </div>
       </section>
 
+      {/* ===== Our Services Section ===== */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -225,6 +230,7 @@ const Home = () => {
         </div>
       </section>
 
+      {/* ===== CTA Section ===== */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="bg-emerald-700 rounded-3xl p-8 sm:p-12 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
@@ -290,157 +296,7 @@ const Home = () => {
         </div>
       </section>
 
-      <footer className="bg-white border-t border-emerald-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-1">
-              <div className="flex items-center gap-2">
-                <div className="bg-emerald-600 p-2.5 rounded-lg">
-                  <Heart className="w-7 h-7 text-white" />
-                </div>
-                <span className="text-3xl font-bold text-emerald-800">
-                  Care<span className="text-emerald-600">Plus</span>
-                </span>
-              </div>
-              <p className="mt-4 text-base text-emerald-700 leading-relaxed">
-                Providing exceptional healthcare services with compassion,
-                innovation, and excellence.
-              </p>
-              <div className="mt-4 flex gap-3">
-                <a
-                  href="#"
-                  className="p-2.5 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
-                >
-                  <span className="text-emerald-700 text-base">f</span>
-                </a>
-                <a
-                  href="#"
-                  className="p-2.5 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
-                >
-                  <span className="text-emerald-700 text-base">t</span>
-                </a>
-                <a
-                  href="#"
-                  className="p-2.5 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
-                >
-                  <span className="text-emerald-700 text-base">in</span>
-                </a>
-                <a
-                  href="#"
-                  className="p-2.5 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
-                >
-                  <span className="text-emerald-700 text-base">ig</span>
-                </a>
-              </div>
-            </div>
-            <div>
-              <h5 className="text-xl font-semibold text-emerald-900 mb-4">
-                Quick Links
-              </h5>{" "}
-              <ul className="space-y-3 text-base text-emerald-700">
-                {" "}
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-emerald-600 hover:underline"
-                  >
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-emerald-600 hover:underline"
-                  >
-                    Our Services
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-emerald-600 hover:underline"
-                  >
-                    Find a Doctor
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-emerald-600 hover:underline"
-                  >
-                    Appointments
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h5 className="text-xl font-semibold text-emerald-900 mb-4">
-                Patient Care
-              </h5>{" "}
-              <ul className="space-y-3 text-base text-emerald-700">
-                {" "}
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-emerald-600 hover:underline"
-                  >
-                    Patient Portal
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-emerald-600 hover:underline"
-                  >
-                    Medical Records
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-emerald-600 hover:underline"
-                  >
-                    Insurance
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-emerald-600 hover:underline"
-                  >
-                    FAQs
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="text-xl font-semibold text-emerald-900 mb-4">
-                Contact Us
-              </h5>{" "}
-              <ul className="space-y-3 text-base text-emerald-700">
-                {" "}
-                <li className="flex items-start gap-2">
-                  <MapPin className="w-5 h-5 mt-0.5 text-emerald-600" /> 123
-                  Healthcare Ave, Medical City
-                </li>
-                <li className="flex items-start gap-2">
-                  <Phone className="w-5 h-5 mt-0.5 text-emerald-600" />
-                  +880 123 456 7890
-                </li>
-                <li className="flex items-start gap-2">
-                  <Mail className="w-5 h-5 mt-0.5 text-emerald-600" />
-                  info@medicare.com
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-emerald-100 text-center text-base text-emerald-700">
-            <p>&copy; 2026 CarePlus. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

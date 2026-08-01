@@ -2,6 +2,7 @@
 import { Users, Heart, Award, Target, Stethoscope, Clock, Shield, Globe, Building2, Mail, Phone, MapPin, CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "../components/common";
 import { Link } from "react-router-dom";
+import Footer from "../components/layout/Footer";
 
 const About = () => {
   const values = [
@@ -337,6 +338,7 @@ const About = () => {
           </div>
         </div>
       </section>
+      <Footer/>
     </div>
   );
 };

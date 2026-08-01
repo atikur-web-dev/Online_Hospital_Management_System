@@ -16,6 +16,8 @@ import {
 import { useState } from "react";
 import DoctorCard from "../components/doctor/DoctorCard";
 import { useDoctors } from "../hooks/useDoctors";
+import Footer from "../components/layout/Footer";
+
 
 const Doctors = () => {
   const {
@@ -365,6 +367,7 @@ const Doctors = () => {
           </>
         )}
       </section>
+      <Footer/>
     </div>
   );
 };

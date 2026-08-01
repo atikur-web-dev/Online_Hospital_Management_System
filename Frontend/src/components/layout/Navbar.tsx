@@ -58,7 +58,6 @@ const Navbar = ({
     { name: "Departments", path: "/departments", icon: Building2 },
     { name: "Services", path: "/services", icon: Briefcase },
     { name: "About", path: "/about", icon: Users },
-    
   ];
 
   // Logged-in user links
@@ -110,20 +109,22 @@ const Navbar = ({
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-emerald-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="bg-gradient-to-br from-emerald-600 to-emerald-500 p-2.5 rounded-xl shadow-lg shadow-emerald-200">
-              <Heart className="w-8 h-8 text-white" />
-            </div>
-            <span className="text-3xl font-bold text-emerald-800 tracking-tight">
-              Care<span className="text-emerald-600">Plus</span>
-            </span>
-          </Link>
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center h-20 relative">
+          {/* Logo - Left (starts from edge) */}
+          <div className="flex items-center gap-2 shrink-0">
+            <Link to="/" className="flex items-center gap-2">
+              <div className="bg-gradient-to-br from-emerald-600 to-emerald-500 p-2.5 rounded-xl shadow-lg shadow-emerald-200">
+                <Heart className="w-8 h-8 text-white" />
+              </div>
+              <span className="text-3xl font-bold text-emerald-800 tracking-tight">
+                Care<span className="text-emerald-600">Plus</span>
+              </span>
+            </Link>
+          </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1 flex-1 justify-center">
+          {/* Desktop Navigation - Perfectly Centered */}
+          <div className="hidden md:flex items-center gap-1 absolute left-1/2 transform -translate-x-1/2">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const active = isActiveLink(link.path);
@@ -131,7 +132,7 @@ const Navbar = ({
                 <button
                   key={link.name}
                   onClick={() => handleNavigation(link.path)}
-                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 relative group
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 relative group whitespace-nowrap
                     ${active 
                       ? 'text-emerald-700 bg-emerald-50' 
                       : 'text-gray-600 hover:text-emerald-700 hover:bg-emerald-50/50'
@@ -148,8 +149,8 @@ const Navbar = ({
             })}
           </div>
 
-          {/* Right Side - Auth Buttons */}
-          <div className="hidden md:flex items-center gap-3 shrink-0">
+          {/* Right Side - Auth Buttons (starts from edge) */}
+          <div className="hidden md:flex items-center gap-3 shrink-0 ml-auto">
             {isLoggedIn ? (
               <div className="relative dropdown-container">
                 <button
@@ -205,7 +206,7 @@ const Navbar = ({
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="md:hidden ml-auto">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 rounded-lg text-emerald-700 hover:bg-emerald-50 transition-colors"

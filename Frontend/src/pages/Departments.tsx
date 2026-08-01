@@ -2,6 +2,8 @@
 import { Building2, Heart, Brain, Bone, Baby, Stethoscope, Eye, Ear, Activity, ArrowRight, Users, Clock, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/common";
+import Footer from "../components/layout/Footer";
+
 
 const Departments = () => {
   const departments = [
@@ -232,6 +234,7 @@ const Departments = () => {
           </div>
         </div>
       </section>
+          <Footer />
     </div>
   );
 };

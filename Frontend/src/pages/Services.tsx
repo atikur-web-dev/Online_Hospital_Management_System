@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/common";
 import { Link } from "react-router-dom";
+import Footer from "../components/layout/Footer";
 
 const Services = () => {
   const services = [
@@ -246,6 +247,9 @@ const Services = () => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
