@@ -1,5 +1,4 @@
 // Frontend/src/App.tsx
-
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,6 +16,10 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import EmailVerificationResult from "./pages/EmailVerification";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+// New Pages
+import Departments from "./pages/Departments";
+import Services from "./pages/Services";
+import About from "./pages/About";
 
 function Layout() {
   const location = useLocation();
@@ -57,6 +60,14 @@ function Layout() {
         <Route path="/register" element={<Register />} />
         <Route path="/email-verified" element={<EmailVerificationResult />} />
         <Route path="/auth/google/callback" element={<GoogleCallback />} />
+        <Route path="/doctors" element={<Doctors />} />
+        <Route path="/doctors/:id" element={<DoctorDetails />} />
+        
+        {/* New Public Pages */}
+        <Route path="/departments" element={<Departments />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/about" element={<About />} />
+
         {/* Protected Routes */}
         <Route
           path="/dashboard"
@@ -66,10 +77,6 @@ function Layout() {
             </ProtectedRoute>
           }
         />
-
-        <Route path="/doctors" element={<Doctors />} />
-        <Route path="/doctors/:id" element={<DoctorDetails />} />
-
         <Route
           path="/appointments"
           element={
@@ -88,35 +95,25 @@ function Layout() {
         />
       </Routes>
 
-      {/* Toast MUST stay outside Routes */}
       <Toaster
         position="top-right"
         reverseOrder={false}
         gutter={16}
         toastOptions={{
           duration: 4500,
-
           style: {
             minWidth: "430px",
             maxWidth: "520px",
-
             padding: "18px 22px",
-
             borderRadius: "16px",
-
             fontSize: "17px",
             lineHeight: "1.6",
-
             fontWeight: "600",
-
             background: "#ffffff",
             color: "#064e3b",
-
             border: "1px solid #d1fae5",
-
             boxShadow: "0 16px 40px rgba(0,0,0,.15)",
           },
-
           success: {
             style: {
               fontSize: "17px",
@@ -127,7 +124,6 @@ function Layout() {
               secondary: "#ffffff",
             },
           },
-
           error: {
             style: {
               fontSize: "17px",
