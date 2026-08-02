@@ -49,15 +49,11 @@ const Login = () => {
       localStorage.setItem("name", user.name);
       localStorage.setItem("profileImage", user.profileImage ?? "");
 
-      toast.success("Login successful!");
-
-      if (user.role === "ADMIN") {
-        navigate("/admin/dashboard");
-      } else if (user.role === "DOCTOR") {
-        navigate("/doctor/dashboard");
-      } else {
-        navigate("/dashboard");
-      }
+   if (user.role === "ADMIN") {
+  navigate("/admin/dashboard", { replace: true });
+} else {
+  navigate("/", { replace: true });
+}
 
       toast.success("Login successful! Welcome back.", {
         duration: 3500,

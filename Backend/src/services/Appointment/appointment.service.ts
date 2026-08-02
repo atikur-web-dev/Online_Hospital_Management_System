@@ -1,14 +1,17 @@
 // Backend/src/services/Appointment/appointment.service.ts
 
 import prisma from '../../lib/prisma.js';
+import { sendAppointmentConfirmationEmail } from "../../services/Appointment/appointmentEmail.service.js";
 import type { CreateAppointmentInput } from '../../validators/appointment.validator.js';
 import { ApiError } from '../../utils/errors/apiError.js';
+
+
 export const createAppointment = async (
   patientUserId: string,
   data: CreateAppointmentInput,
 ) => {
   const { doctorId, appointmentAt, problem } = data;
-  console.log('JWT User ID:', patientUserId);
+  
   // Find Patient Profile
   const patient = await prisma.patientProfile.findUnique({
     where: {
@@ -76,6 +79,41 @@ export const createAppointment = async (
       },
     },
   });
+
+  const patientUser = await prisma.user.findUnique({
+  where: {
+    id: patient.userId,
+  },
+});
+
+const department = doctor.departmentId
+  ? await prisma.department.findUnique({
+      where: {
+        id: doctor.departmentId,
+      },
+    })
+  : null;
+
+try {
+  await sendAppointmentConfirmationEmail({
+  email: patientUser!.email,
+  patientName: patient.name,
+  doctorName: doctor.name,
+  department: department?.name ?? "General",
+  appointmentDate: new Date(appointment.appointmentAt).toLocaleDateString(),
+  appointmentTime: new Date(appointment.appointmentAt).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  }),
+
+  ...(problem ? { problem } : {}),
+});
+} catch (err) {
+  console.error(
+    "Failed to send appointment confirmation email:",
+    err,
+  );
+}
 
   return appointment;
 };

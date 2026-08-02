@@ -264,5 +264,4 @@ const AppointmentDetailsModal = ({
     </div>
   );
 };
-
 export default AppointmentDetailsModal;
