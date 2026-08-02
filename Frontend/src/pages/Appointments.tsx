@@ -9,9 +9,9 @@ import {
   Eye,
   XCircle,
 } from "lucide-react";
-
+import DeleteAppointmentModal from "../components/appointment/DeleteAppointmentModal";
 import { useAppointment } from "../hooks/useAppointment";
-
+import AppointmentDetailsModal from "../components/appointment/AppointmentDetailsModal";
 const statusStyle = (status: string) => {
   switch (status) {
     case "CONFIRMED":
@@ -29,11 +29,16 @@ const statusStyle = (status: string) => {
 };
 
 const Appointments = () => {
-  const { loading, fetchMyAppointments, cancelMyAppointment } =
-    useAppointment();
+  const {
+    loading,
+    fetchMyAppointments,
+    cancelMyAppointment,
+    deleteMyAppointment,
+  } = useAppointment();
 
   const [appointments, setAppointments] = useState<any[]>([]);
-
+  const [deleteAppointment, setDeleteAppointment] = useState<any>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
   const loadAppointments = async () => {
     try {
       const data = await fetchMyAppointments();
@@ -57,6 +62,28 @@ const Appointments = () => {
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message ?? "Failed to cancel appointment.",
+        {
+          id: toastId,
+        },
+      );
+    }
+  };
+
+  const handleDelete = async (appointmentId: string) => {
+
+    const toastId = toast.loading("Deleting appointment...");
+
+    try {
+      await deleteMyAppointment(appointmentId);
+
+      toast.success("Appointment removed from your dashboard.", {
+        id: toastId,
+      });
+
+      await loadAppointments();
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ?? "Failed to delete appointment.",
         {
           id: toastId,
         },
@@ -194,28 +221,59 @@ const Appointments = () => {
 
               {/* Buttons */}
 
+              {/* Buttons */}
+
               <div className="mt-8 flex flex-wrap gap-4">
-                <button className="flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 transition px-6 py-3 text-white font-semibold">
+                <button
+                  onClick={() => setSelectedAppointment(appointment)}
+                  className="flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 transition px-6 py-3 text-white font-semibold"
+                >
                   <Eye size={18} />
                   View Details
                 </button>
 
-                <button
-                  onClick={() => handleCancel(appointment.id)}
-                  disabled={
-                    appointment.status === "COMPLETED" ||
-                    appointment.status === "CANCELLED"
-                  }
-                  className="flex items-center gap-2 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 transition px-6 py-3 font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <XCircle size={18} />
-                  Cancel Appointment
-                </button>
+                {appointment.status === "CANCELLED" ? (
+                  <button
+                    onClick={() => setDeleteAppointment(appointment)}
+                    className="flex items-center gap-2 rounded-xl bg-red-600 hover:bg-red-700 transition px-6 py-3 text-white font-semibold"
+                  >
+                    <XCircle size={18} />
+                    Delete Permanently
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleCancel(appointment.id)}
+                    disabled={appointment.status === "COMPLETED"}
+                    className="flex items-center gap-2 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 transition px-6 py-3 font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <XCircle size={18} />
+                    Cancel Appointment
+                  </button>
+                )}
               </div>
             </div>
           </div>
         ))}
       </div>
+      {selectedAppointment && (
+        <AppointmentDetailsModal
+          appointment={selectedAppointment}
+          onClose={() => setSelectedAppointment(null)}
+        />
+      )}
+      <DeleteAppointmentModal
+        open={!!deleteAppointment}
+        doctorName={deleteAppointment?.doctor?.name ?? ""}
+        specialization={deleteAppointment?.doctor?.specialization}
+        profileImage={deleteAppointment?.doctor?.user?.profileImage}
+        onClose={() => setDeleteAppointment(null)}
+        onConfirm={async () => {
+          if (!deleteAppointment) return;
+
+          await handleDelete(deleteAppointment.id);
+          setDeleteAppointment(null);
+        }}
+      />
     </div>
   );
 };

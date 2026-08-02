@@ -32,4 +32,11 @@ router.patch(
   appointmentController.cancelAppointment,
 );
 
+router.patch(
+  "/:id/delete",
+  authenticate,
+  authorize("PATIENT"),
+  appointmentController.deleteAppointmentForPatient,
+);
+
 export default router;

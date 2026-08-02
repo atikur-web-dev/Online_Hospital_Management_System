@@ -39,8 +39,15 @@ const AppointmentForm = ({ doctorId, onSuccess }: AppointmentFormProps) => {
 
       onSuccess?.();
     } catch (error: any) {
+      if (error?.response?.status === 401) {
+        toast.error(
+          "Login required. Please login first to book an appointment.",
+        );
+        return;
+      }
+
       toast.error(
-        error.response?.data?.message || "Failed to book appointment.",
+        error?.response?.data?.message ?? "Failed to book appointment.",
       );
     } finally {
       setLoading(false);

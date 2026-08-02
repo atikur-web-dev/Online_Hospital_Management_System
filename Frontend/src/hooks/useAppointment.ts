@@ -4,6 +4,7 @@ import {
   createAppointment,
   getMyAppointments,
   cancelAppointment,
+  deleteAppointmentForPatient,
   type CreateAppointmentPayload,
 } from "../api/appointment.api";
 
@@ -44,10 +45,23 @@ export const useAppointment = () => {
       setLoading(false);
     }
   };
+
+  const deleteMyAppointment = async (appointmentId: string) => {
+    try {
+      setLoading(true);
+
+      const response = await deleteAppointmentForPatient(appointmentId);
+
+      return response.data;
+    } finally {
+      setLoading(false);
+    }
+  };
   return {
     loading,
     bookAppointment,
     fetchMyAppointments,
     cancelMyAppointment,
+    deleteMyAppointment,
   };
 };

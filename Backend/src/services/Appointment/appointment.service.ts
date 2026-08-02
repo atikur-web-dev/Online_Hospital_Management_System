@@ -83,7 +83,9 @@ export const createAppointment = async (
 /**
  * Get Patient Appointments
  */
-export const getMyAppointments = async (patientUserId: string) => {
+export const getMyAppointments = async (
+  patientUserId: string,
+) => {
   const patient = await prisma.patientProfile.findUnique({
     where: {
       userId: patientUserId,
@@ -91,12 +93,13 @@ export const getMyAppointments = async (patientUserId: string) => {
   });
 
   if (!patient) {
-    throw new Error('Patient profile not found.');
+    throw new Error("Patient profile not found.");
   }
 
   const appointments = await prisma.appointment.findMany({
     where: {
       patientId: patient.id,
+      patientDeletedAt: null,
     },
 
     include: {
@@ -104,10 +107,17 @@ export const getMyAppointments = async (patientUserId: string) => {
         select: {
           id: true,
           name: true,
+          phone: true,
+
           specialization: true,
+          qualification: true,
+          experience: true,
+          consultationFee: true,
+          isAvailable: true,
 
           department: {
             select: {
+              id: true,
               name: true,
             },
           },
@@ -115,6 +125,7 @@ export const getMyAppointments = async (patientUserId: string) => {
           user: {
             select: {
               profileImage: true,
+              email: true,
             },
           },
         },
@@ -122,7 +133,7 @@ export const getMyAppointments = async (patientUserId: string) => {
     },
 
     orderBy: {
-      appointmentAt: 'desc',
+      appointmentAt: "desc",
     },
   });
 
@@ -171,6 +182,65 @@ export const cancelAppointment = async (
     },
     data: {
       status: 'CANCELLED',
+    },
+  });
+};
+
+export const deleteAppointmentForPatient = async (
+  patientUserId: string,
+  appointmentId: string,
+) => {
+  // Find patient
+  const patient = await prisma.patientProfile.findUnique({
+    where: {
+      userId: patientUserId,
+    },
+  });
+
+  if (!patient) {
+    throw new ApiError(404, "Patient profile not found.", {});
+  }
+
+  // Find appointment
+  const appointment = await prisma.appointment.findUnique({
+    where: {
+      id: appointmentId,
+    },
+  });
+
+  if (!appointment) {
+    throw new ApiError(404, "Appointment not found.", {});
+  }
+
+  // Ownership check
+  if (appointment.patientId !== patient.id) {
+    throw new ApiError(403, "You are not allowed to delete this appointment.", {});
+  }
+
+  // Only cancelled appointments can be hidden
+  if (appointment.status !== "CANCELLED") {
+    throw new ApiError(
+      400,
+      "Only cancelled appointments can be deleted.",
+      {},
+    );
+  }
+
+  // Already deleted
+  if (appointment.patientDeletedAt) {
+    throw new ApiError(
+      400,
+      "Appointment has already been deleted.",
+      {},
+    );
+  }
+
+  return prisma.appointment.update({
+    where: {
+      id: appointmentId,
+    },
+    data: {
+      patientDeletedAt: new Date(),
     },
   });
 };

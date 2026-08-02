@@ -29,3 +29,11 @@ export const cancelAppointment = async (
 
   return response.data;
 };
+
+export const deleteAppointmentForPatient = async (
+  appointmentId: string,
+) => {
+  return api.patch(
+    `/appointments/${appointmentId}/delete`,
+  );
+};

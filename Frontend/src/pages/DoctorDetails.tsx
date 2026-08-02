@@ -11,16 +11,28 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import AppointmentForm from "../components/appointment/AppointmentForm";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useDoctor } from "../hooks/useDoctor";
 import { useState } from "react";
 import { Modal } from "../components/common";
+import toast from "react-hot-toast";
 
 const DoctorDetails = () => {
   const { id } = useParams();
   const { doctor, loading, error } = useDoctor(id);
-
   const [openBooking, setOpenBooking] = useState(false);
+  const navigate = useNavigate();
+  const handleBookingClick = () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Please login to continue booking.");
+      navigate("/login");
+      return;
+    }
+
+    setOpenBooking(true);
+  };
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-emerald-50">
@@ -144,8 +156,9 @@ const DoctorDetails = () => {
               </div>
             </div>
             {/* Appointment */}
+
             <button
-              onClick={() => setOpenBooking(true)}
+              onClick={handleBookingClick}
               className="mt-10 w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-xl text-lg font-semibold transition"
             >
               Book Appointment
