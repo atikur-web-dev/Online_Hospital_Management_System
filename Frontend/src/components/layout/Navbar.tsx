@@ -114,7 +114,7 @@ const Navbar = ({
           {/* Logo - Left (starts from edge) */}
           <div className="flex items-center gap-2 shrink-0">
             <Link to="/" className="flex items-center gap-2">
-              <div className="bg-gradient-to-br from-emerald-600 to-emerald-500 p-2.5 rounded-xl shadow-lg shadow-emerald-200">
+              <div className="bg-linear-to-br from-emerald-600 to-emerald-500 p-2.5 rounded-xl shadow-lg shadow-emerald-200">
                 <Heart className="w-8 h-8 text-white" />
               </div>
               <span className="text-3xl font-bold text-emerald-800 tracking-tight">
@@ -173,7 +173,7 @@ const Navbar = ({
                         "https://ui-avatars.com/api/?name=User&background=10b981&color=fff";
                     }}
                   />
-                  <span className="text-sm font-semibold text-emerald-800 max-w-[120px] truncate">
+                  <span className="text-sm font-semibold text-emerald-800 max-w-30 truncate">
                     {localStorage.getItem("name") ?? "User"}
                   </span>
                   <ChevronDown

@@ -25,4 +25,11 @@ router.get(
   appointmentController.getMyAppointments,
 );
 
+router.patch(
+  "/:id/cancel",
+  authenticate,
+  authorize("PATIENT"),
+  appointmentController.cancelAppointment,
+);
+
 export default router;

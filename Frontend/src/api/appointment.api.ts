@@ -14,3 +14,18 @@ export const createAppointment = async (
 
   return response.data;
 };
+
+export const getMyAppointments = async () => {
+  const response = await api.get("/appointments/my");
+  return response.data;
+};
+
+export const cancelAppointment = async (
+  appointmentId: string,
+) => {
+  const response = await api.patch(
+    `/appointments/${appointmentId}/cancel`,
+  );
+
+  return response.data;
+};

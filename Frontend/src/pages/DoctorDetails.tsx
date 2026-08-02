@@ -65,7 +65,7 @@ const DoctorDetails = () => {
         </Link>
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-emerald-100">
           {/* Header */}
-          <div className="bg-gradient-to-r from-emerald-700 to-emerald-500 h-40" />
+          <div className="bg-linear-to-r from-emerald-700 to-emerald-500 h-40" />
           <div className="px-8 pb-10">
             {/* Image */}
             <div className="-mt-20 flex justify-center">

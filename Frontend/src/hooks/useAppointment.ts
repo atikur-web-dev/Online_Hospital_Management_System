@@ -2,15 +2,15 @@
 import { useState } from "react";
 import {
   createAppointment,
+  getMyAppointments,
+  cancelAppointment,
   type CreateAppointmentPayload,
 } from "../api/appointment.api";
 
 export const useAppointment = () => {
   const [loading, setLoading] = useState(false);
 
-  const bookAppointment = async (
-    payload: CreateAppointmentPayload,
-  ) => {
+  const bookAppointment = async (payload: CreateAppointmentPayload) => {
     try {
       setLoading(true);
 
@@ -21,9 +21,33 @@ export const useAppointment = () => {
       setLoading(false);
     }
   };
+  const fetchMyAppointments = async () => {
+    try {
+      setLoading(true);
 
+      const response = await getMyAppointments();
+
+      return response.data;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cancelMyAppointment = async (appointmentId: string) => {
+    try {
+      setLoading(true);
+
+      const response = await cancelAppointment(appointmentId);
+
+      return response;
+    } finally {
+      setLoading(false);
+    }
+  };
   return {
     loading,
     bookAppointment,
+    fetchMyAppointments,
+    cancelMyAppointment,
   };
 };
