@@ -37,12 +37,12 @@ const Navbar = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      if (!target.closest('.dropdown-container')) {
+      if (!target.closest(".dropdown-container")) {
         setIsDropdownOpen(false);
       }
     };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   const handleLogout = () => {
@@ -96,8 +96,8 @@ const Navbar = ({
   }
 
   const isActiveLink = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
+    if (path === "/") {
+      return location.pathname === "/";
     }
     return location.pathname.startsWith(path);
   };
@@ -106,7 +106,7 @@ const Navbar = ({
     navigate(path);
     setIsMobileMenuOpen(false);
   };
-
+  console.log("Navbar userImage =", userImage);
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-emerald-100">
       <div className="px-4 sm:px-6 lg:px-8">
@@ -133,13 +133,16 @@ const Navbar = ({
                   key={link.name}
                   onClick={() => handleNavigation(link.path)}
                   className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 relative group whitespace-nowrap
-                    ${active 
-                      ? 'text-emerald-700 bg-emerald-50' 
-                      : 'text-gray-600 hover:text-emerald-700 hover:bg-emerald-50/50'
+                    ${
+                      active
+                        ? "text-emerald-700 bg-emerald-50"
+                        : "text-gray-600 hover:text-emerald-700 hover:bg-emerald-50/50"
                     }
                   `}
                 >
-                  <Icon className={`w-5 h-5 transition-colors duration-200 ${active ? 'text-emerald-600' : 'text-gray-400 group-hover:text-emerald-500'}`} />
+                  <Icon
+                    className={`w-5 h-5 transition-colors duration-200 ${active ? "text-emerald-600" : "text-gray-400 group-hover:text-emerald-500"}`}
+                  />
                   {link.name}
                   {active && (
                     <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-emerald-600 rounded-full" />
@@ -160,12 +163,22 @@ const Navbar = ({
                   <img
                     src={userImage}
                     alt="Profile"
+                    referrerPolicy="no-referrer"
                     className="w-11 h-11 rounded-full object-cover border-2 border-emerald-500"
+                    onError={(e) => {
+                      console.log("IMAGE FAILED");
+                      console.log(userImage);
+
+                      e.currentTarget.src =
+                        "https://ui-avatars.com/api/?name=User&background=10b981&color=fff";
+                    }}
                   />
                   <span className="text-sm font-semibold text-emerald-800 max-w-[120px] truncate">
                     {localStorage.getItem("name") ?? "User"}
                   </span>
-                  <ChevronDown className={`w-5 h-5 text-emerald-600 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    className={`w-5 h-5 text-emerald-600 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                  />
                 </button>
 
                 {isDropdownOpen && (
@@ -183,7 +196,9 @@ const Navbar = ({
                       onClick={handleLogout}
                       className="flex items-center gap-3 w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
                     >
-                      <span className="w-4 h-4 flex items-center justify-center">✕</span>
+                      <span className="w-4 h-4 flex items-center justify-center">
+                        ✕
+                      </span>
                       Logout
                     </button>
                   </div>
@@ -233,11 +248,13 @@ const Navbar = ({
                 onClick={() => handleNavigation(link.path)}
                 className={`w-full text-left px-4 py-3 rounded-lg text-base font-medium transition-all flex items-center gap-3 ${
                   active
-                    ? 'bg-emerald-50 text-emerald-700'
-                    : 'text-gray-600 hover:bg-emerald-50/50 hover:text-emerald-700'
+                    ? "bg-emerald-50 text-emerald-700"
+                    : "text-gray-600 hover:bg-emerald-50/50 hover:text-emerald-700"
                 }`}
               >
-                <Icon className={`w-5 h-5 ${active ? 'text-emerald-600' : 'text-gray-400'}`} />
+                <Icon
+                  className={`w-5 h-5 ${active ? "text-emerald-600" : "text-gray-400"}`}
+                />
                 {link.name}
               </button>
             );

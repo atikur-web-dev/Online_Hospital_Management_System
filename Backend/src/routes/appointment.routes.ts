@@ -17,4 +17,12 @@ router.post(
   appointmentController.createAppointment,
 );
 
+
+router.get(
+  "/my",
+  authenticate,
+  authorize("PATIENT"),
+  appointmentController.getMyAppointments,
+);
+
 export default router;

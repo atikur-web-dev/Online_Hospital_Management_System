@@ -1,29 +1,24 @@
 import { useState } from "react";
 import { Button } from "../common";
 import { createAppointment } from "../../api/appointment.api";
-
+import toast from "react-hot-toast";
 interface AppointmentFormProps {
   doctorId: string;
   onSuccess: () => void;
 }
 
-const AppointmentForm = ({
-  doctorId,
-  onSuccess,
-}: AppointmentFormProps) => {
+const AppointmentForm = ({ doctorId, onSuccess }: AppointmentFormProps) => {
   const [appointmentDate, setAppointmentDate] = useState("");
   const [appointmentTime, setAppointmentTime] = useState("");
   const [problem, setProblem] = useState("");
 
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>,
-  ) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!appointmentDate || !appointmentTime) {
-      alert("Please select date and time.");
+      toast.error("Please select both appointment date and time.");
       return;
     }
 
@@ -31,7 +26,7 @@ const AppointmentForm = ({
       setLoading(true);
 
       const appointmentAt = new Date(
-        `${appointmentDate}T${appointmentTime}`
+        `${appointmentDate}T${appointmentTime}`,
       ).toISOString();
 
       await createAppointment({
@@ -40,13 +35,12 @@ const AppointmentForm = ({
         problem,
       });
 
-      alert("Appointment booked successfully.");
+      toast.success("Your appointment has been booked successfully.");
 
-      onSuccess();
+      onSuccess?.();
     } catch (error: any) {
-      alert(
-        error?.response?.data?.message ??
-        "Booking failed."
+      toast.error(
+        error.response?.data?.message || "Failed to book appointment.",
       );
     } finally {
       setLoading(false);
@@ -54,10 +48,7 @@ const AppointmentForm = ({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-5"
-    >
+    <form onSubmit={handleSubmit} className="space-y-5">
       {/* Date */}
       <div>
         <label className="block mb-2 font-medium text-emerald-700">
@@ -68,9 +59,7 @@ const AppointmentForm = ({
           type="date"
           value={appointmentDate}
           min={new Date().toISOString().split("T")[0]}
-          onChange={(e) =>
-            setAppointmentDate(e.target.value)
-          }
+          onChange={(e) => setAppointmentDate(e.target.value)}
           className="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           required
         />
@@ -85,9 +74,7 @@ const AppointmentForm = ({
         <input
           type="time"
           value={appointmentTime}
-          onChange={(e) =>
-            setAppointmentTime(e.target.value)
-          }
+          onChange={(e) => setAppointmentTime(e.target.value)}
           className="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           required
         />
@@ -102,19 +89,13 @@ const AppointmentForm = ({
         <textarea
           rows={4}
           value={problem}
-          onChange={(e) =>
-            setProblem(e.target.value)
-          }
+          onChange={(e) => setProblem(e.target.value)}
           placeholder="Write your problem..."
           className="w-full border rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
       </div>
 
-      <Button
-        type="submit"
-        fullWidth
-        isLoading={loading}
-      >
+      <Button type="submit" fullWidth isLoading={loading}>
         Confirm Appointment
       </Button>
     </form>

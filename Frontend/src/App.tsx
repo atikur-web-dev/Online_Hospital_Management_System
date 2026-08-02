@@ -19,7 +19,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Departments from "./pages/Departments";
 import Services from "./pages/Services";
 import About from "./pages/About";
-
+import Appointments from "./pages/Appointments";
 function Layout() {
   const location = useLocation();
   const hideNavbarRoutes = [
@@ -61,7 +61,7 @@ function Layout() {
         <Route path="/auth/google/callback" element={<GoogleCallback />} />
         <Route path="/doctors" element={<Doctors />} />
         <Route path="/doctors/:id" element={<DoctorDetails />} />
-        
+
         {/* New Public Pages */}
         <Route path="/departments" element={<Departments />} />
         <Route path="/services" element={<Services />} />
@@ -80,7 +80,7 @@ function Layout() {
           path="/appointments"
           element={
             <ProtectedRoute>
-              <div>Appointments</div>
+              <Appointments />
             </ProtectedRoute>
           }
         />

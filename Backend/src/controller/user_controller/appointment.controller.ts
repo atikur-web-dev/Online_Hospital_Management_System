@@ -35,3 +35,39 @@ export const createAppointment = async (
     return next(error);
   }
 };
+
+/**
+ * Get My Appointments
+ */
+export const getMyAppointments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+
+    const appointments =
+      await appointmentService.getMyAppointments(
+        req.user.id,
+      );
+
+
+    return res.status(200).json({
+      success: true,
+      message: "Appointments fetched successfully.",
+      data: appointments,
+    });
+
+
+  } catch (error) {
+    return next(error);
+  }
+};

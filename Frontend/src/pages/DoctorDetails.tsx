@@ -158,7 +158,9 @@ const DoctorDetails = () => {
             >
               <AppointmentForm
                 doctorId={doctor.id}
-                onSuccess={() => setOpenBooking(false)}
+                onSuccess={() => {
+                  setOpenBooking(false);
+                }}
               />
             </Modal>
           </div>

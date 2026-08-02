@@ -12,13 +12,15 @@ export const createAppointment = async (
     appointmentAt,
     problem,
   } = data;
-
+console.log("JWT User ID:", patientUserId);
   // Find Patient Profile
   const patient = await prisma.patientProfile.findUnique({
     where: {
       userId: patientUserId,
     },
   });
+
+console.log("Patient Profile:", patient);
 
   if (!patient) {
     throw new Error("Patient profile not found.");
@@ -83,4 +85,58 @@ export const createAppointment = async (
   });
 
   return appointment;
+};
+
+/**
+ * Get Patient Appointments
+ */
+export const getMyAppointments = async (
+  patientUserId: string,
+) => {
+
+  const patient = await prisma.patientProfile.findUnique({
+    where: {
+      userId: patientUserId,
+    },
+  });
+
+  if (!patient) {
+    throw new Error("Patient profile not found.");
+  }
+
+
+  const appointments = await prisma.appointment.findMany({
+    where: {
+      patientId: patient.id,
+    },
+
+    include: {
+      doctor: {
+        select: {
+          id: true,
+          name: true,
+          specialization: true,
+
+          department: {
+            select: {
+              name: true,
+            },
+          },
+
+          user: {
+            select: {
+              profileImage: true,
+            },
+          },
+        },
+      },
+    },
+
+    orderBy: {
+      appointmentAt: "desc",
+    },
+  });
+
+
+  return appointments;
 };
