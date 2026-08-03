@@ -70,13 +70,25 @@ export const getDoctor = async (
 /**
  * Doctor Dashboard
  */
+/**
+ * Doctor Dashboard
+ */
 export const getDashboard = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const dashboard = await doctorService.getDashboard();
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized.",
+      });
+    }
+
+    const dashboard = await doctorService.getDashboard(userId);
 
     return res.status(200).json({
       success: true,

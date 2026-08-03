@@ -1,40 +1,31 @@
-// Frontend/src/components/doctor-dashboard/AppointmentTable.tsx
 import {
   Eye,
   CheckCircle2,
   Clock3,
 } from "lucide-react";
 
-const appointments = [
-  {
-    id: 1,
-    patient: "John Smith",
-    date: "Today",
-    time: "09:00 AM",
-    status: "Confirmed",
-  },
-  {
-    id: 2,
-    patient: "Emma Watson",
-    date: "Today",
-    time: "10:30 AM",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    patient: "Michael Brown",
-    date: "Today",
-    time: "02:00 PM",
-    status: "Completed",
-  },
-];
+interface Appointment {
+  id: string;
+  appointmentAt: string;
+  status: string;
 
-const AppointmentTable = () => {
+  patient: {
+    id: string;
+    name: string;
+    phone?: string | null;
+  };
+}
+
+interface Props {
+  appointments: Appointment[];
+}
+
+const AppointmentTable = ({ appointments }: Props) => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-gray-800">
-          Today's Appointments
+          Upcoming Appointments
         </h2>
 
         <button className="text-emerald-600 font-semibold hover:underline">
@@ -45,7 +36,7 @@ const AppointmentTable = () => {
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="text-left border-b">
+            <tr className="border-b text-left">
               <th className="py-3">Patient</th>
               <th>Date</th>
               <th>Time</th>
@@ -55,49 +46,71 @@ const AppointmentTable = () => {
           </thead>
 
           <tbody>
-            {appointments.map((appointment) => (
-              <tr
-                key={appointment.id}
-                className="border-b last:border-0 hover:bg-emerald-50"
-              >
-                <td className="py-4 font-medium">
-                  {appointment.patient}
-                </td>
-
-                <td>{appointment.date}</td>
-
-                <td>{appointment.time}</td>
-
-                <td>
-                  {appointment.status === "Confirmed" && (
-                    <span className="inline-flex items-center gap-1 text-emerald-600">
-                      <CheckCircle2 size={16} />
-                      Confirmed
-                    </span>
-                  )}
-
-                  {appointment.status === "Pending" && (
-                    <span className="inline-flex items-center gap-1 text-yellow-600">
-                      <Clock3 size={16} />
-                      Pending
-                    </span>
-                  )}
-
-                  {appointment.status === "Completed" && (
-                    <span className="inline-flex items-center gap-1 text-blue-600">
-                      <CheckCircle2 size={16} />
-                      Completed
-                    </span>
-                  )}
-                </td>
-
-                <td>
-                  <button className="text-emerald-600 hover:text-emerald-800">
-                    <Eye size={20} />
-                  </button>
+            {appointments.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="py-8 text-center text-gray-500"
+                >
+                  No appointments found.
                 </td>
               </tr>
-            ))}
+            ) : (
+              appointments.map((appointment) => (
+                <tr
+                  key={appointment.id}
+                  className="border-b last:border-0 hover:bg-emerald-50"
+                >
+                  <td className="py-4 font-medium">
+                    {appointment.patient.name}
+                  </td>
+
+                  <td>
+                    {new Date(
+                      appointment.appointmentAt
+                    ).toLocaleDateString()}
+                  </td>
+
+                  <td>
+                    {new Date(
+                      appointment.appointmentAt
+                    ).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </td>
+
+                  <td>
+                    {appointment.status === "CONFIRMED" && (
+                      <span className="inline-flex items-center gap-1 text-emerald-600">
+                        <CheckCircle2 size={16} />
+                        Confirmed
+                      </span>
+                    )}
+
+                    {appointment.status === "PENDING" && (
+                      <span className="inline-flex items-center gap-1 text-yellow-600">
+                        <Clock3 size={16} />
+                        Pending
+                      </span>
+                    )}
+
+                    {appointment.status === "COMPLETED" && (
+                      <span className="inline-flex items-center gap-1 text-blue-600">
+                        <CheckCircle2 size={16} />
+                        Completed
+                      </span>
+                    )}
+                  </td>
+
+                  <td>
+                    <button className="text-emerald-600 hover:text-emerald-800">
+                      <Eye size={20} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

@@ -1,30 +1,25 @@
-// Frontend/src/components/doctor-dashboard/ScheduleCard.tsx
 import { Clock3 } from "lucide-react";
 
-const schedule = [
-  {
-    day: "Monday",
-    time: "9:00 AM - 5:00 PM",
-  },
-  {
-    day: "Tuesday",
-    time: "9:00 AM - 5:00 PM",
-  },
-  {
-    day: "Wednesday",
-    time: "10:00 AM - 4:00 PM",
-  },
-  {
-    day: "Thursday",
-    time: "9:00 AM - 5:00 PM",
-  },
-  {
-    day: "Friday",
-    time: "9:00 AM - 1:00 PM",
-  },
+interface ScheduleItem {
+  day: string;
+  time: string;
+}
+
+interface Props {
+  schedule?: ScheduleItem[];
+}
+
+const defaultSchedule: ScheduleItem[] = [
+  { day: "Monday", time: "9:00 AM - 5:00 PM" },
+  { day: "Tuesday", time: "9:00 AM - 5:00 PM" },
+  { day: "Wednesday", time: "10:00 AM - 4:00 PM" },
+  { day: "Thursday", time: "9:00 AM - 5:00 PM" },
+  { day: "Friday", time: "9:00 AM - 1:00 PM" },
 ];
 
-const ScheduleCard = () => {
+const ScheduleCard = ({
+  schedule = defaultSchedule,
+}: Props) => {
   return (
     <div className="bg-white rounded-2xl border border-emerald-100 shadow-sm p-6">
       <div className="flex items-center justify-between mb-6">
@@ -39,13 +34,13 @@ const ScheduleCard = () => {
         {schedule.map((item) => (
           <div
             key={item.day}
-            className="flex items-center justify-between border-b border-gray-100 pb-3 last:border-0 last:pb-0"
+            className="flex justify-between items-center border-b border-gray-100 pb-3 last:border-0 last:pb-0"
           >
             <span className="font-medium text-gray-700">
               {item.day}
             </span>
 
-            <span className="text-emerald-700 font-semibold">
+            <span className="font-semibold text-emerald-700">
               {item.time}
             </span>
           </div>

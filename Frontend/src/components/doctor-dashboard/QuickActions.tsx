@@ -14,12 +14,12 @@ const actions = [
     icon: CalendarDays,
     link: "/doctor/appointments",
   },
-  {
-    title: "Availability",
-    description: "Manage schedule",
-    icon: Clock3,
-    link: "/doctor/dashboard",
-  },
+{
+  title: "Availability",
+  description: "Manage Schedule",
+  icon: Clock3,
+  link: "/doctor/schedule",
+},
   {
     title: "My Profile",
     description: "Update profile",

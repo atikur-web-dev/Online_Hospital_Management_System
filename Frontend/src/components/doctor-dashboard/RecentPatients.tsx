@@ -1,62 +1,57 @@
 // Frontend/src/components/doctor-dashboard/RecentPatients.tsx
 import { UserRound } from "lucide-react";
 
-const patients = [
-  {
-    id: 1,
-    name: "John Smith",
-    age: 35,
-    disease: "Heart Checkup",
-  },
-  {
-    id: 2,
-    name: "Emma Watson",
-    age: 28,
-    disease: "Skin Allergy",
-  },
-  {
-    id: 3,
-    name: "Michael Brown",
-    age: 44,
-    disease: "Diabetes",
-  },
-  {
-    id: 4,
-    name: "Sophia Johnson",
-    age: 31,
-    disease: "Migraine",
-  },
-];
+interface Patient {
+  id: string;
+  name: string;
+  phone?: string | null;
+}
 
-const RecentPatients = () => {
+interface Props {
+  patients: Patient[];
+}
+
+const RecentPatients = ({ patients }: Props) => {
   return (
-    <div className="bg-white rounded-2xl border border-emerald-100 shadow-sm p-6 h-full">
+    <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 p-6">
       <h2 className="text-xl font-bold text-gray-800 mb-6">
         Recent Patients
       </h2>
 
-      <div className="space-y-4">
-        {patients.map((patient) => (
-          <div
-            key={patient.id}
-            className="flex items-center gap-4 border border-gray-100 rounded-xl p-4 hover:bg-emerald-50 transition"
-          >
-            <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
-              <UserRound className="w-6 h-6 text-emerald-700" />
-            </div>
+      {patients.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          No recent patients.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {patients.map((patient) => (
+            <div
+              key={patient.id}
+              className="flex items-center justify-between border rounded-xl p-4 hover:bg-emerald-50 transition"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <UserRound className="text-emerald-600" size={22} />
+                </div>
 
-            <div>
-              <h3 className="font-semibold text-gray-800">
-                {patient.name}
-              </h3>
+                <div>
+                  <h3 className="font-semibold text-gray-800">
+                    {patient.name}
+                  </h3>
 
-              <p className="text-sm text-gray-500">
-                Age {patient.age} • {patient.disease}
-              </p>
+                  <p className="text-sm text-gray-500">
+                    {patient.phone || "No phone"}
+                  </p>
+                </div>
+              </div>
+
+              <button className="text-sm font-semibold text-emerald-600 hover:underline">
+                View
+              </button>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

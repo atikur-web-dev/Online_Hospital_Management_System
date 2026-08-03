@@ -6,12 +6,15 @@ import {
   getDashboard,
 } from "../controller/user_controller/doctor.controller.js";
 
+import { authenticate } from "../middleware/auth.middleware.js";
+
 const router = Router();
 
-router.get("/dashboard", getDashboard);
-
+// Public
 router.get("/", getAllDoctors);
-
 router.get("/:id", getDoctor);
+
+// Doctor Dashboard
+router.get("/dashboard", authenticate, getDashboard);
 
 export default router;

@@ -11,10 +11,9 @@ interface GetAllDoctorsParams {
 export const getAllDoctors = async ({
   page,
   limit,
-  search = "",
-  department = "",
+  search = '',
+  department = '',
 }: GetAllDoctorsParams) => {
-
   const skip = (page - 1) * limit;
 
   const whereCondition = {
@@ -28,13 +27,13 @@ export const getAllDoctors = async ({
         {
           name: {
             contains: search,
-            mode: "insensitive" as const,
+            mode: 'insensitive' as const,
           },
         },
         {
           specialization: {
             contains: search,
-            mode: "insensitive" as const,
+            mode: 'insensitive' as const,
           },
         },
       ],
@@ -44,7 +43,7 @@ export const getAllDoctors = async ({
       department: {
         name: {
           equals: department,
-          mode: "insensitive" as const,
+          mode: 'insensitive' as const,
         },
       },
     }),
@@ -74,7 +73,7 @@ export const getAllDoctors = async ({
     },
 
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
 
     skip,
@@ -135,16 +134,87 @@ export const getDoctorById = async (doctorId: string) => {
 /**
  * Doctor Dashboard
  */
-export const getDashboard = async () => {
+export const getDashboard = async (userId: string) => {
+  // Find doctor profile
+  const doctor = await prisma.doctorProfile.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!doctor) {
+    throw new Error('Doctor profile not found.');
+  }
+
+  // Today's date range
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  // Dashboard statistics (run in parallel)
+  const [todayAppointments, pendingAppointments, totalPatients, appointments] =
+    await Promise.all([
+      prisma.appointment.count({
+        where: {
+          doctorId: doctor.id,
+          appointmentAt: {
+            gte: today,
+            lt: tomorrow,
+          },
+        },
+      }),
+
+      prisma.appointment.count({
+        where: {
+          doctorId: doctor.id,
+          status: 'PENDING',
+        },
+      }),
+
+      prisma.appointment.groupBy({
+        by: ['patientId'],
+        where: {
+          doctorId: doctor.id,
+        },
+      }),
+
+      prisma.appointment.findMany({
+        where: {
+          doctorId: doctor.id,
+        },
+
+        include: {
+          patient: {
+            select: {
+              id: true,
+              name: true,
+              phone: true,
+            },
+          },
+        },
+
+        orderBy: {
+          appointmentAt: 'asc',
+        },
+
+        take: 10,
+      }),
+    ]);
+
   return {
     stats: {
-      todayAppointments: 12,
-      totalPatients: 245,
-      pendingAppointments: 4,
-      earningsToday: 8500,
+      todayAppointments,
+      totalPatients: totalPatients.length,
+      pendingAppointments,
+      earningsToday: 0,
     },
-    appointments: [],
-    recentPatients: [],
+
+    appointments,
+
+    recentPatients: appointments.map((appointment) => appointment.patient),
+
     schedule: [],
   };
 };

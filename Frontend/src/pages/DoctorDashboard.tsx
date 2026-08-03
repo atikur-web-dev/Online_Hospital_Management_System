@@ -1,4 +1,7 @@
+// Frontend/src/pages/DoctorDashboard.tsx
+
 import { useEffect, useState } from "react";
+import { getDoctorDashboard } from "../api/doctor";
 
 import DashboardHeader from "../components/doctor-dashboard/DashboardHeader";
 import StatsCards from "../components/doctor-dashboard/StatsCards";
@@ -8,8 +11,6 @@ import QuickActions from "../components/doctor-dashboard/QuickActions";
 import RecentPatients from "../components/doctor-dashboard/RecentPatients";
 import TodayAppointments from "../components/doctor-dashboard/TodayAppointments";
 
-import { getDoctorDashboard } from "../api/doctor";
-
 const DoctorDashboard = () => {
   const [dashboard, setDashboard] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -17,10 +18,11 @@ const DoctorDashboard = () => {
   useEffect(() => {
     const loadDashboard = async () => {
       try {
-        const res = await getDoctorDashboard();
-        setDashboard(res.data);
-      } catch (err) {
-        console.error(err);
+        const response = await getDoctorDashboard();
+        console.log(response.data);
+        setDashboard(response.data);
+      } catch (error) {
+        console.error("Dashboard Error:", error);
       } finally {
         setLoading(false);
       }
@@ -31,8 +33,16 @@ const DoctorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[70vh]">
+      <div className="flex justify-center items-center h-[70vh] text-xl font-semibold">
         Loading Dashboard...
+      </div>
+    );
+  }
+
+  if (!dashboard) {
+    return (
+      <div className="flex justify-center items-center h-[70vh] text-red-600 text-xl font-semibold">
+        Failed to load dashboard.
       </div>
     );
   }
