@@ -1,29 +1,38 @@
 // Frontend/src/App.tsx
+
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   useLocation,
 } from "react-router-dom";
-import Doctors from "./pages/Doctors";
+
 import { Toaster } from "react-hot-toast";
-import Profile from "./pages/Profile";
+
 import Navbar from "./components/layout/Navbar";
-import GoogleCallback from "./pages/GoogleCallback";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+
 import Home from "./pages/Home";
-import DoctorDetails from "./pages/DoctorDetails";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import GoogleCallback from "./pages/GoogleCallback";
 import EmailVerificationResult from "./pages/EmailVerification";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
+
+import Doctors from "./pages/Doctors";
+import DoctorDetails from "./pages/DoctorDetails";
+
 import Departments from "./pages/Departments";
 import Services from "./pages/Services";
 import About from "./pages/About";
+
+import Profile from "./pages/Profile";
 import Appointments from "./pages/Appointments";
 import DoctorAppointments from "./pages/DoctorAppointments";
+import DoctorDashboard from "./pages/DoctorDashboard";
 
 function Layout() {
   const location = useLocation();
+
   const hideNavbarRoutes = [
     "/email-verified",
     "/forgot-password",
@@ -31,8 +40,10 @@ function Layout() {
   ];
 
   const hideNavbar = hideNavbarRoutes.includes(location.pathname);
+
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
+
   const userRole =
     (localStorage.getItem("role")?.toLowerCase() as
       | "patient"
@@ -61,23 +72,16 @@ function Layout() {
         <Route path="/register" element={<Register />} />
         <Route path="/email-verified" element={<EmailVerificationResult />} />
         <Route path="/auth/google/callback" element={<GoogleCallback />} />
+
         <Route path="/doctors" element={<Doctors />} />
         <Route path="/doctors/:id" element={<DoctorDetails />} />
 
-        {/* New Public Pages */}
         <Route path="/departments" element={<Departments />} />
         <Route path="/services" element={<Services />} />
         <Route path="/about" element={<About />} />
 
         {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <div>Dashboard</div>
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path="/appointments"
           element={
@@ -86,6 +90,7 @@ function Layout() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/profile"
           element={
@@ -94,19 +99,21 @@ function Layout() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/doctor/dashboard"
+          element={
+            <ProtectedRoute>
+              <DoctorDashboard />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/doctor/appointments"
           element={
             <ProtectedRoute>
               <DoctorAppointments />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/doctor/dashboard"
-          element={
-            <ProtectedRoute>
-              <div className="p-10 text-3xl font-bold">Doctor Dashboard</div>
             </ProtectedRoute>
           }
         />
