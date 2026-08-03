@@ -68,12 +68,14 @@ const Navbar = ({
   ];
 
   const doctorLinks = [
-    { name: "Dashboard", path: "/doctor/dashboard", icon: Home },
+    { name: "Home", path: "/", icon: Home },
+    { name: "Dashboard", path: "/doctor/dashboard", icon: Briefcase },
     { name: "Appointments", path: "/doctor/appointments", icon: CalendarDays },
   ];
 
   const adminLinks = [
-    { name: "Dashboard", path: "/admin/dashboard", icon: Home },
+    { name: "Home", path: "/", icon: Home },
+    { name: "Dashboard", path: "/admin/dashboard", icon: Briefcase },
     { name: "Doctors", path: "/admin/doctors", icon: Stethoscope },
   ];
 

@@ -14,7 +14,10 @@ import type {
 import { generateVerificationLink } from '../utils/generateVerificationLink.js';
 import { sendMail } from '../config/mailConfig.js';
 import { emailVerificationTemplate } from '../templates/emailVerification.js';
-import { InternalServerError, ConflictError } from '../utils/errors/httpErrors.js';
+import {
+  InternalServerError,
+  ConflictError,
+} from '../utils/errors/httpErrors.js';
 
 export const registerUser = async (data: RegisterInput) => {
   const {
@@ -124,18 +127,15 @@ export const registerUser = async (data: RegisterInput) => {
 
     const verificationLink = generateVerificationLink(user.email);
 
-try {
-  await sendMail(
-    [user.email],
-    "Verify Your Email",
-    emailVerificationTemplate(
-      verificationLink,
-      name,
-    ),
-  );
-} catch (error) {
-  console.error("Email sending failed:", error);
-}
+    try {
+      await sendMail(
+        [user.email],
+        'Verify Your Email',
+        emailVerificationTemplate(verificationLink, name),
+      );
+    } catch (error) {
+      console.error('Email sending failed:', error);
+    }
 
     // ================= Response =================
 
@@ -162,7 +162,7 @@ try {
 // Login
 export const loginUser = async (data: LoginInput) => {
   const { email, password } = data;
-
+  console.log('LOGIN EMAIL:', email);
   const user = await prisma.user.findUnique({
     where: { email },
     include: {
@@ -179,9 +179,10 @@ export const loginUser = async (data: LoginInput) => {
   if (!user.password) {
     throw new Error('Please login with Google');
   }
-
+  console.log('INPUT PASSWORD:', password);
+  console.log('HASH:', user.password);
   const isValid = await comparePassword(password, user.password);
-
+  console.log('PASSWORD MATCH:', isValid);
   if (!isValid) {
     throw new Error('Invalid credentials');
   }

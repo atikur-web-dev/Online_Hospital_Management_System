@@ -102,6 +102,14 @@ function Layout() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/doctor/dashboard"
+          element={
+            <ProtectedRoute>
+              <div className="p-10 text-3xl font-bold">Doctor Dashboard</div>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
 
       <Toaster

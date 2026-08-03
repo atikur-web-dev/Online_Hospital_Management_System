@@ -15,9 +15,15 @@ export const useDoctorAppointment = () => {
       const response = await getMyDoctorAppointments();
 
       setAppointments(response.data);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError("Failed to load appointments.");
+      console.log(err.response);
+
+      setError(
+        err.response?.data?.message ??
+          err.message ??
+          "Failed to load appointments.",
+      );
     } finally {
       setLoading(false);
     }
