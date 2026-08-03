@@ -131,3 +131,20 @@ export const getDoctorById = async (doctorId: string) => {
 
   return doctor;
 };
+
+/**
+ * Doctor Dashboard
+ */
+export const getDashboard = async () => {
+  return {
+    stats: {
+      todayAppointments: 12,
+      totalPatients: 245,
+      pendingAppointments: 4,
+      earningsToday: 8500,
+    },
+    appointments: [],
+    recentPatients: [],
+    schedule: [],
+  };
+};

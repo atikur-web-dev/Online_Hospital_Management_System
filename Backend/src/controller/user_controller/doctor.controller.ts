@@ -66,3 +66,24 @@ export const getDoctor = async (
     return next(error);
   }
 };
+
+/**
+ * Doctor Dashboard
+ */
+export const getDashboard = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const dashboard = await doctorService.getDashboard();
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor dashboard fetched successfully.",
+      data: dashboard,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
