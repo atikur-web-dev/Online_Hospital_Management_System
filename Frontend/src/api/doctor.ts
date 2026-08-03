@@ -2,6 +2,6 @@
 import axios from "./axios";
 
 export const getDoctorDashboard = async () => {
-  const response = await axios.get("/doctor/dashboard");
+  const response = await axios.get("/doctors/dashboard");
   return response.data;
 };
