@@ -20,6 +20,8 @@ import Departments from "./pages/Departments";
 import Services from "./pages/Services";
 import About from "./pages/About";
 import Appointments from "./pages/Appointments";
+import DoctorAppointments from "./pages/DoctorAppointments";
+
 function Layout() {
   const location = useLocation();
   const hideNavbarRoutes = [
@@ -89,6 +91,14 @@ function Layout() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/doctor/appointments"
+          element={
+            <ProtectedRoute>
+              <DoctorAppointments />
             </ProtectedRoute>
           }
         />
