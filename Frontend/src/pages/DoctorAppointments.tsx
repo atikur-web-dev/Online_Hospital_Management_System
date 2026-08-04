@@ -1,143 +1,52 @@
 // Frontend/src/pages/DoctorAppointments.tsx
 
 import {
-  Calendar,
-  Clock3,
-  Phone,
-  User,
-  CheckCircle2,
-  Search,
-  ClipboardList,
-  XCircle,
-  Hourglass,
-  Loader2,
-  UserCircle2,
-  Mail,
-  Stethoscope,
-  Check,
-  Ban,
-  UserCheck,
   AlertCircle,
-  RefreshCw,
-  TrendingUp,
-  CalendarClock,
-  Sun,
-  Moon,
-  Sunset,
-  Trash2,
+  Ban,
   Bell,
   BellRing,
+  Calendar,
+  CalendarClock,
+  Check,
+  CheckCircle2,
+  ClipboardList,
+  Clock3,
+  Hourglass,
+  Loader2,
+  Mail,
+  Moon,
+  Phone,
+  RefreshCw,
+  Search,
+  Stethoscope,
+  Sun,
+  Sunset,
+  Trash2,
+  TrendingUp,
+  UserCheck,
+  UserCircle2,
+  XCircle,
 } from "lucide-react";
-import { useDoctorAppointment } from "../hooks/useDoctorAppointment";
-import { useState, useMemo, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import {
-  confirmAppointment,
   cancelAppointment,
+  confirmAppointment,
 } from "../api/doctorAppointment.api";
+import ConfirmationModal from "../components/doctor/appointments/ConfirmationModal";
+import LoadingScreen from "../components/doctor/appointments/LoadingScreen";
+import { useDoctorAppointment } from "../hooks/useDoctorAppointment";
+import type { Appointment } from "../types/appointment";
+import AppointmentCard from "../components/doctor/appointments/AppointmentCard";
+import {
+  getInitials,
+  formatAppointmentDate,
+  formatAppointmentTime,
+  getDayLabel,
+  getTimeOfDay,
+} from "../utils/appointment";
+import AppointmentStatusBadge from "../components/doctor/appointments/AppointmentStatusBadge";
 
-// Types
-interface Patient {
-  id: string;
-  name: string;
-  phone: string | null;
-  gender: string | null;
-  dateOfBirth: string | null;
-  user: {
-    email: string;
-    profileImage: string | null;
-  };
-}
-
-interface Appointment {
-  id: string;
-  status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
-  problem: string | null;
-  appointmentAt: string;
-  patient: Patient;
-}
-
-// Helper functions
-const getStatusConfig = (status: Appointment["status"]) => {
-  const configs = {
-    PENDING: {
-      label: "Pending",
-      bgColor: "bg-amber-50",
-      textColor: "text-amber-700",
-      borderColor: "border-l-amber-400",
-      dotColor: "bg-amber-400",
-      icon: Clock3,
-      shadowColor: "shadow-amber-100",
-    },
-    CONFIRMED: {
-      label: "Confirmed",
-      bgColor: "bg-emerald-50",
-      textColor: "text-emerald-700",
-      borderColor: "border-l-emerald-400",
-      dotColor: "bg-emerald-400",
-      icon: CheckCircle2,
-      shadowColor: "shadow-emerald-100",
-    },
-    COMPLETED: {
-      label: "Completed",
-      bgColor: "bg-blue-50",
-      textColor: "text-blue-700",
-      borderColor: "border-l-blue-400",
-      dotColor: "bg-blue-400",
-      icon: Check,
-      shadowColor: "shadow-blue-100",
-    },
-    CANCELLED: {
-      label: "Cancelled",
-      bgColor: "bg-red-50",
-      textColor: "text-red-700",
-      borderColor: "border-l-red-400",
-      dotColor: "bg-red-400",
-      icon: XCircle,
-      shadowColor: "shadow-red-100",
-    },
-  };
-  return configs[status];
-};
-
-const getInitials = (name: string) => {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-};
-
-const getDayLabel = (date: Date) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const targetDate = new Date(date);
-  targetDate.setHours(0, 0, 0, 0);
-  const diffDays = Math.floor(
-    (targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
-  );
-
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Tomorrow";
-  if (diffDays === -1) return "Yesterday";
-  return targetDate.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-};
-
-const getTimeOfDay = (date: Date) => {
-  const hours = date.getHours();
-  if (hours < 12)
-    return { label: "Morning", icon: Sun, color: "text-amber-500" };
-  if (hours < 17)
-    return { label: "Afternoon", icon: Sun, color: "text-orange-500" };
-  if (hours < 20)
-    return { label: "Evening", icon: Sunset, color: "text-purple-500" };
-  return { label: "Night", icon: Moon, color: "text-indigo-500" };
-};
 
 const colorMap: Record<
   string,
@@ -203,99 +112,6 @@ const AppointmentSkeleton = () => (
   </div>
 );
 
-// Confirmation Modal Component
-const ConfirmationModal = ({
-  isOpen,
-  onClose,
-  onConfirm,
-  patientName,
-  isDeleting,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  patientName: string;
-  isDeleting: boolean;
-}) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-gray-100 animate-in zoom-in-95 duration-200">
-        <div className="p-6 sm:p-8">
-          <div className="flex items-center justify-center w-16 h-16 mx-auto bg-red-50 rounded-full mb-4">
-            <BellRing className="w-8 h-8 text-red-500" />
-          </div>
-          <h3 className="text-xl font-bold text-gray-800 text-center mb-2">
-            Confirm Cancellation
-          </h3>
-          <div className="text-gray-600 text-center space-y-2">
-            <p>
-              You are about to cancel the appointment with{" "}
-              <span className="font-semibold text-gray-800">{patientName}</span>
-              .
-            </p>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3 text-left">
-              <div className="flex items-start gap-2">
-                <Bell className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-amber-800">
-                  The patient will be notified about this cancellation via email
-                  and SMS. This action cannot be undone.
-                </p>
-              </div>
-            </div>
-            <p className="text-sm text-gray-500 mt-3">
-              The appointment will be removed from your dashboard.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 mt-6">
-            <button
-              onClick={onClose}
-              className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-all duration-200"
-            >
-              No, Keep It
-            </button>
-            <button
-              onClick={onConfirm}
-              disabled={isDeleting}
-              className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Deleting...</span>
-                </>
-              ) : (
-                <>
-                  <Trash2 className="w-4 h-4" />
-                  <span>Yes, Cancel Appointment</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Status Badge Component
-const StatusBadge = ({ status }: { status: Appointment["status"] }) => {
-  const config = getStatusConfig(status);
-  const Icon = config.icon;
-  return (
-    <div
-      className={`inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full ${config.bgColor} ${config.textColor} shadow-sm ${config.shadowColor}`}
-    >
-      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-      <span className="text-xs sm:text-sm font-semibold">{config.label}</span>
-      <span
-        className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${config.dotColor}`}
-      ></span>
-    </div>
-  );
-};
-
 // Search Component
 const AppointmentSearch = ({
   search,
@@ -356,241 +172,6 @@ const StatsCard = ({
             <span>Active</span>
           </div>
         )}
-      </div>
-    </div>
-  );
-};
-
-// Appointment Card Component
-const AppointmentCard = ({
-  appointment,
-  onConfirm,
-  onCancel,
-  onDeletePermanently,
-  isConfirming,
-  isCanceling,
-  isDeleting,
-}: {
-  appointment: Appointment;
-  onConfirm: (id: string) => void;
-  onCancel: (id: string) => void;
-  onDeletePermanently: (id: string) => void;
-  isConfirming: boolean;
-  isCanceling: boolean;
-  isDeleting: boolean;
-}) => {
-  const statusConfig = getStatusConfig(appointment.status);
-  const initials = getInitials(appointment.patient.name);
-  const profileImage = appointment.patient.user.profileImage;
-  const appointmentDate = new Date(appointment.appointmentAt);
-  const dayLabel = getDayLabel(appointmentDate);
-  const timeOfDay = getTimeOfDay(appointmentDate);
-  const TimeIcon = timeOfDay.icon;
-
-  const isPending = appointment.status === "PENDING";
-  const isConfirmed = appointment.status === "CONFIRMED";
-  const isCompleted = appointment.status === "COMPLETED";
-  const isCancelled = appointment.status === "CANCELLED";
-  const showActions = !isCompleted && !isCancelled;
-  const showDeletePermanently = isCancelled;
-
-  const handleConfirm = () => onConfirm(appointment.id);
-  const handleCancel = () => onCancel(appointment.id);
-  const handleDeletePermanently = () => onDeletePermanently(appointment.id);
-
-  return (
-    <div
-      className={`bg-white rounded-xl sm:rounded-2xl border border-gray-100/80 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden border-l-4 ${statusConfig.borderColor}`}
-    >
-      <div className="p-4 sm:p-5 lg:p-6">
-        <div className="flex flex-col lg:flex-row lg:items-start gap-4 lg:gap-6">
-          {/* Left - Patient Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="flex-shrink-0">
-                {profileImage ? (
-                  <img
-                    src={profileImage}
-                    alt={`${appointment.patient.name}'s profile`}
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-emerald-100 shadow-sm"
-                  />
-                ) : (
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center ring-2 ring-emerald-200 shadow-sm">
-                    <span className="text-sm sm:text-base font-semibold text-white">
-                      {initials}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-800 truncate">
-                  {appointment.patient.name}
-                </h3>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-0.5">
-                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500">
-                    <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    <span className="truncate">
-                      {appointment.patient.user.email}
-                    </span>
-                  </div>
-                  {appointment.patient.phone && (
-                    <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500">
-                      <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      <span>{appointment.patient.phone}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Appointment Details */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 sm:mt-4">
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-                <Calendar className="w-4 h-4 text-emerald-500" />
-                <span className="font-medium">{dayLabel}</span>
-                {dayLabel === "Today" ||
-                dayLabel === "Tomorrow" ||
-                dayLabel === "Yesterday" ? (
-                  <span className="text-gray-400">
-                    (
-                    {appointmentDate.toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                    )
-                  </span>
-                ) : null}
-              </div>
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-                <Clock3 className="w-4 h-4 text-emerald-500" />
-                <span>
-                  {appointmentDate.toLocaleTimeString("en-US", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
-                <span
-                  className={`text-xs ${timeOfDay.color} flex items-center gap-1`}
-                >
-                  <TimeIcon className="w-3 h-3" />
-                  <span>{timeOfDay.label}</span>
-                </span>
-              </div>
-              {appointment.patient.gender && (
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-                  <UserCircle2 className="w-4 h-4 text-emerald-500" />
-                  <span className="capitalize">
-                    {appointment.patient.gender.toLowerCase()}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Problem Section */}
-            {appointment.problem && (
-              <div className="mt-3 sm:mt-4">
-                <div className="inline-flex items-start gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 bg-gray-50 rounded-lg border border-gray-100 max-w-full">
-                  <Stethoscope className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm text-gray-700 break-words">
-                    {appointment.problem}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Right - Status & Actions */}
-          <div className="flex flex-col items-start lg:items-end gap-3 lg:gap-4 w-full lg:w-auto">
-            <StatusBadge status={appointment.status} />
-
-            {showActions && (
-              <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
-                {isPending && (
-                  <button
-                    onClick={handleConfirm}
-                    disabled={isConfirming}
-                    aria-label="Confirm appointment"
-                    className="flex items-center justify-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md active:scale-95 w-full lg:w-auto"
-                  >
-                    {isConfirming ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Confirming...</span>
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>Confirm</span>
-                      </>
-                    )}
-                  </button>
-                )}
-                {isConfirmed && (
-                  <button
-                    onClick={handleConfirm}
-                    disabled={isConfirming}
-                    aria-label="Complete appointment"
-                    className="flex items-center justify-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md active:scale-95 w-full lg:w-auto"
-                  >
-                    {isConfirming ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Processing...</span>
-                      </>
-                    ) : (
-                      <>
-                        <UserCheck className="w-4 h-4" />
-                        <span>Complete</span>
-                      </>
-                    )}
-                  </button>
-                )}
-                {(isPending || isConfirmed) && (
-                  <button
-                    onClick={handleCancel}
-                    disabled={isCanceling}
-                    aria-label="Cancel appointment"
-                    className="flex items-center justify-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-red-50 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed text-red-700 text-sm font-medium rounded-lg border border-red-200 transition-all duration-200 hover:shadow-md active:scale-95 w-full lg:w-auto"
-                  >
-                    {isCanceling ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Cancelling...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Ban className="w-4 h-4" />
-                        <span>Cancel</span>
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
-            )}
-
-            {showDeletePermanently && (
-              <button
-                onClick={handleDeletePermanently}
-                disabled={isDeleting}
-                aria-label="Delete permanently"
-                className="flex items-center justify-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md active:scale-95 w-full lg:w-auto"
-              >
-                {isDeleting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Deleting...</span>
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="w-4 h-4" />
-                    <span>Delete Permanently</span>
-                  </>
-                )}
-              </button>
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -730,36 +311,7 @@ const DoctorAppointments = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div>
-              <div className="h-8 sm:h-10 bg-gray-200 rounded-lg w-48 sm:w-64"></div>
-              <div className="h-4 bg-gray-200 rounded mt-2 w-64 sm:w-80"></div>
-            </div>
-            <div className="h-11 sm:h-12 bg-gray-200 rounded-xl w-full lg:w-80 xl:w-96"></div>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 mb-6 sm:mb-8">
-            {[...Array(5)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm border border-gray-100 animate-pulse"
-              >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-lg sm:rounded-xl mb-2 sm:mb-3"></div>
-                <div className="h-3 bg-gray-200 rounded w-16 mb-1"></div>
-                <div className="h-6 bg-gray-200 rounded w-10"></div>
-              </div>
-            ))}
-          </div>
-          <div className="space-y-4 sm:space-y-5">
-            {[...Array(3)].map((_, i) => (
-              <AppointmentSkeleton key={i} />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (error) {
@@ -880,6 +432,8 @@ const DoctorAppointments = () => {
                   isConfirming={confirmingId === appointment.id}
                   isCanceling={cancelingId === appointment.id}
                   isDeleting={deletingId === appointment.id}
+                  dayLabel={getDayLabel(new Date(appointment.appointmentAt))}
+                  timeOfDay={getTimeOfDay(new Date(appointment.appointmentAt))}
                 />
               ))}
             </div>
