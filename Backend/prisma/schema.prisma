@@ -147,6 +147,7 @@ model Appointment {
   problem       String?
   patientDeletedAt DateTime?
   status        AppointmentStatus @default(PENDING)
+  doctorArchived Boolean @default(false)
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
 

@@ -1,4 +1,6 @@
 // Backend/src/routes/doctorAppointment.routes.ts
+// Backend/src/routes/doctorAppointment.routes.ts
+
 import { Router } from "express";
 
 import {
@@ -7,7 +9,6 @@ import {
 } from "../middleware/auth.middleware.js";
 
 import * as appointmentController from "../controller/doctor_controller/appointment.controller.js";
-
 
 const router = Router();
 
@@ -37,6 +38,13 @@ router.patch(
   authenticate,
   authorize("DOCTOR"),
   appointmentController.cancelAppointment,
+);
+
+router.patch(
+  "/:id/archive",
+  authenticate,
+  authorize("DOCTOR"),
+  appointmentController.archiveAppointment,
 );
 
 export default router;

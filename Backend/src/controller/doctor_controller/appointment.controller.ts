@@ -146,3 +146,42 @@ export const cancelAppointment = async (
     return next(error);
   }
 };
+
+export const archiveAppointment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const appointmentId = Array.isArray(req.params.id)
+      ? req.params.id[0]
+      : req.params.id;
+
+    if (!appointmentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Appointment ID is required.",
+      });
+    }
+
+    const appointment = await appointmentService.archiveAppointment(
+      req.user.id,
+      appointmentId,
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Appointment archived successfully.",
+      data: appointment,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};

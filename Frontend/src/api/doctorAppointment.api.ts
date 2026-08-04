@@ -29,3 +29,11 @@ export const cancelAppointment = async (id: string) => {
 
   return response.data;
 };
+
+export const archiveAppointment = async (id: string) => {
+  const response = await api.patch(
+    `/doctor/appointments/${id}/archive`,
+  );
+
+  return response.data;
+};

@@ -41,7 +41,7 @@ const ConfirmationModal = ({
 
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3 text-left">
               <div className="flex items-start gap-2">
-                <Bell className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                <Bell className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
                 <p className="text-sm text-amber-800">
                   The patient will be notified via email and SMS. This action
                   cannot be undone.

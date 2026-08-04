@@ -3,6 +3,7 @@ import { AlertCircle, RefreshCw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import {
+  archiveAppointment,
   cancelAppointment,
   confirmAppointment,
 } from "../api/doctorAppointment.api";
@@ -29,47 +30,22 @@ const DoctorAppointments = () => {
   const [modalAppointment, setModalAppointment] = useState<Appointment | null>(
     null,
   );
-  // Initialize hiddenAppointments from localStorage immediately
-  const [hiddenAppointments, setHiddenAppointments] = useState<Set<string>>(
-    () => {
-      const stored = localStorage.getItem("hiddenAppointments");
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) {
-            return new Set(parsed);
-          }
-        } catch (e) {
-          console.error("Failed to parse hidden appointments", e);
-        }
-      }
-      return new Set();
-    },
-  );
-
-  // Save hidden appointments to localStorage
-  useEffect(() => {
-    localStorage.setItem(
-      "hiddenAppointments",
-      JSON.stringify(Array.from(hiddenAppointments)),
-    );
-  }, [hiddenAppointments]);
 
   const filteredAppointments = useMemo(() => {
-    const visibleAppointments = appointments.filter(
-      (appointment: Appointment) => !hiddenAppointments.has(appointment.id),
-    );
-    if (!search.trim()) return visibleAppointments;
+    if (!search.trim()) return appointments;
+
     const searchLower = search.toLowerCase();
-    return visibleAppointments.filter((appointment: Appointment) => {
+
+    return appointments.filter((appointment: Appointment) => {
       const patient = appointment.patient;
+
       return (
         patient.name.toLowerCase().includes(searchLower) ||
         patient.user.email.toLowerCase().includes(searchLower) ||
         (patient.phone && patient.phone.toLowerCase().includes(searchLower))
       );
     });
-  }, [appointments, search, hiddenAppointments]);
+  }, [appointments, search]);
 
   const totalAppointments = appointments.length;
   const pendingAppointments = appointments.filter(
@@ -122,17 +98,15 @@ const DoctorAppointments = () => {
 
   const confirmDeletePermanently = async () => {
     if (!modalAppointment) return;
+
     try {
       setDeletingId(modalAppointment.id);
-
-      // Create a new Set with the hidden appointment added
-      const newHiddenAppointments = new Set(hiddenAppointments);
-      newHiddenAppointments.add(modalAppointment.id);
-      setHiddenAppointments(newHiddenAppointments);
-
+      await archiveAppointment(modalAppointment.id);
+      await fetchAppointments();
       toast.success(
         `Appointment with ${modalAppointment.patient.name} has been removed from your dashboard.`,
       );
+
       setModalAppointment(null);
     } catch (err) {
       console.error(err);
@@ -154,7 +128,7 @@ const DoctorAppointments = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50/50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-emerald-50/50 flex items-center justify-center p-4">
         <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-2xl shadow-lg border border-red-100 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-red-500" />
@@ -177,7 +151,7 @@ const DoctorAppointments = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50/50">
+      <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-emerald-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
           <AppointmentHeader search={search} setSearch={setSearch} />
 

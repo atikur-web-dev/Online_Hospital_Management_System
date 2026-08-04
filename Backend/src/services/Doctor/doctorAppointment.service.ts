@@ -6,6 +6,7 @@ export const getMyAppointments = async (doctorUserId: string) => {
   const doctor = await prisma.doctorProfile.findUnique({
     where: {
       userId: doctorUserId,
+
     },
   });
 
@@ -15,7 +16,8 @@ export const getMyAppointments = async (doctorUserId: string) => {
 
   const appointments = await prisma.appointment.findMany({
     where: {
-      doctorId: doctor.id,
+       doctorId: doctor.id,
+  doctorArchived: false,
     },
 
     include: {
@@ -199,6 +201,47 @@ export const cancelAppointment = async (
     },
     data: {
       status: "CANCELLED",
+    },
+  });
+
+  return updatedAppointment;
+};
+
+export const archiveAppointment = async (
+  doctorUserId: string,
+  appointmentId: string,
+) => {
+  const doctor = await prisma.doctorProfile.findUnique({
+    where: {
+      userId: doctorUserId,
+    },
+  });
+
+  if (!doctor) {
+    throw new ApiError(404, "Doctor profile not found.", {});
+  }
+
+  const appointment = await prisma.appointment.findFirst({
+    where: {
+      id: appointmentId,
+      doctorId: doctor.id,
+    },
+  });
+
+  if (!appointment) {
+    throw new ApiError(404, "Appointment not found.", {});
+  }
+
+  if (appointment.doctorArchived) {
+    return appointment;
+  }
+
+  const updatedAppointment = await prisma.appointment.update({
+    where: {
+      id: appointmentId,
+    },
+    data: {
+      doctorArchived: true,
     },
   });
 
