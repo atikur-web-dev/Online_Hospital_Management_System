@@ -21,14 +21,18 @@ import hospitalBg from "../assets/hospital-bg.jpg";
 const Home = () => {
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem("token");
-  
-  const handleGetStarted = () => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    } else {
-      navigate("/dashboard");
-    }
-  };
+const handleGetStarted = () => {
+  if (!isLoggedIn) {
+    navigate("/login");
+    return;
+  }
+
+  const role = localStorage.getItem("role");
+
+  if (role === "ADMIN") {
+    navigate("/admin/dashboard");
+  }
+};
   
   return (
     <div className="min-h-screen bg-emerald-50">

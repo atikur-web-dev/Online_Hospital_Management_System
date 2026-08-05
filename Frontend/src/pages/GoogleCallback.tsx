@@ -50,8 +50,16 @@ const GoogleCallback = () => {
     toast.success("Google Login Successful!");
 
     setTimeout(() => {
-      navigate("/dashboard", { replace: true });
-    }, 1500);
+  if (role === "ADMIN") {
+    navigate("/admin/dashboard", {
+      replace: true,
+    });
+  } else {
+    navigate("/", {
+      replace: true,
+    });
+  }
+}, 1500);
   }, [navigate, searchParams]);
 
   return (

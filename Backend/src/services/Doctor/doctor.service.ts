@@ -153,60 +153,94 @@ export const getDashboard = async (userId: string) => {
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
-  // Dashboard statistics (run in parallel)
-  const [todayAppointments, pendingAppointments, totalPatients, appointments] =
-    await Promise.all([
-      prisma.appointment.count({
-        where: {
-          doctorId: doctor.id,
-          doctorArchived: false,
+  const nextWeek = new Date(today);
+  nextWeek.setDate(today.getDate() + 7);
 
-          appointmentAt: {
-            gte: today,
-            lt: tomorrow,
+  // Dashboard statistics
+  const [
+    todayAppointments,
+    pendingAppointments,
+    totalPatients,
+    appointments,
+    weeklyAppointments,
+  ] = await Promise.all([
+    prisma.appointment.count({
+      where: {
+        doctorId: doctor.id,
+        doctorArchived: false,
+
+        appointmentAt: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+    }),
+
+    prisma.appointment.count({
+      where: {
+        doctorId: doctor.id,
+        doctorArchived: false,
+        status: 'PENDING',
+      },
+    }),
+
+    prisma.appointment.groupBy({
+      by: ['patientId'],
+      where: {
+        doctorId: doctor.id,
+        doctorArchived: false,
+      },
+    }),
+
+    prisma.appointment.findMany({
+      where: {
+        doctorId: doctor.id,
+        doctorArchived: false,
+      },
+
+      include: {
+        patient: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
           },
         },
-      }),
+      },
 
-      prisma.appointment.count({
-        where: {
-          doctorId: doctor.id,
-          doctorArchived: false,
-          status: 'PENDING',
+      orderBy: {
+        appointmentAt: 'asc',
+      },
+
+      take: 10,
+    }),
+
+    prisma.appointment.findMany({
+      where: {
+        doctorId: doctor.id,
+        doctorArchived: false,
+
+        appointmentAt: {
+          gte: today,
+          lt: nextWeek,
         },
-      }),
+      },
 
-      prisma.appointment.groupBy({
-        by: ['patientId'],
-        where: {
-          doctorId: doctor.id,
-          doctorArchived: false,
-        },
-      }),
-
-      prisma.appointment.findMany({
-        where: {
-          doctorId: doctor.id,
-          doctorArchived: false,
-        },
-
-        include: {
-          patient: {
-            select: {
-              id: true,
-              name: true,
-              phone: true,
-            },
+      include: {
+        patient: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
           },
         },
+      },
 
-        orderBy: {
-          appointmentAt: 'asc',
-        },
-
-        take: 10,
-      }),
-    ]);
+      orderBy: {
+        appointmentAt: 'asc',
+      },
+    }),
+  ]);
 
   return {
     stats: {
@@ -218,8 +252,10 @@ export const getDashboard = async (userId: string) => {
 
     appointments,
 
-    recentPatients: appointments.map((appointment) => appointment.patient),
+    weeklyAppointments,
 
-    schedule: [],
+    recentPatients: appointments.map(
+      (appointment) => appointment.patient,
+    ),
   };
 };

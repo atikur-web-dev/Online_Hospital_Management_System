@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getDoctorDashboard } from "../api/doctor";
-
+import DashboardSkeleton from "../components/doctor-dashboard/DashboardSkeleton";
 import DashboardHeader from "../components/doctor-dashboard/DashboardHeader";
 import StatsCards from "../components/doctor-dashboard/StatsCards";
 import AppointmentTable from "../components/doctor-dashboard/AppointmentTable";
@@ -31,13 +31,9 @@ const DoctorDashboard = () => {
     loadDashboard();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-[70vh] text-xl font-semibold">
-        Loading Dashboard...
-      </div>
-    );
-  }
+ if (loading) {
+  return <DashboardSkeleton />;
+}
 
   if (!dashboard) {
     return (
@@ -57,7 +53,7 @@ const DoctorDashboard = () => {
         <AppointmentTable appointments={dashboard.appointments} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ScheduleCard schedule={dashboard.schedule} />
+          <ScheduleCard appointments={dashboard.weeklyAppointments} />
           <QuickActions />
         </div>
 

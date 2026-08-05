@@ -10,7 +10,7 @@ import {
 import {
   AppointmentCard,
   AppointmentHeader,
-  AppointmentSkeleton,
+  LoadingScreen,
   AppointmentStats,
   ConfirmationModal,
   EmptyState,
@@ -116,15 +116,9 @@ const DoctorAppointments = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="space-y-5">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <AppointmentSkeleton key={index} />
-        ))}
-      </div>
-    );
-  }
+if (loading) {
+  return <LoadingScreen />;
+}
 
   if (error) {
     return (
