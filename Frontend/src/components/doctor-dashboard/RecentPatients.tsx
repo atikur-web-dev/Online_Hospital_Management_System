@@ -45,9 +45,7 @@ const RecentPatients = ({ patients }: Props) => {
                 </div>
               </div>
 
-              <button className="text-sm font-semibold text-emerald-600 hover:underline">
-                View
-              </button>
+              
             </div>
           ))}
         </div>

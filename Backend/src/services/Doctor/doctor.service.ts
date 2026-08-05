@@ -159,6 +159,8 @@ export const getDashboard = async (userId: string) => {
       prisma.appointment.count({
         where: {
           doctorId: doctor.id,
+          doctorArchived: false,
+
           appointmentAt: {
             gte: today,
             lt: tomorrow,
@@ -169,6 +171,7 @@ export const getDashboard = async (userId: string) => {
       prisma.appointment.count({
         where: {
           doctorId: doctor.id,
+          doctorArchived: false,
           status: 'PENDING',
         },
       }),
@@ -177,12 +180,14 @@ export const getDashboard = async (userId: string) => {
         by: ['patientId'],
         where: {
           doctorId: doctor.id,
+          doctorArchived: false,
         },
       }),
 
       prisma.appointment.findMany({
         where: {
           doctorId: doctor.id,
+          doctorArchived: false,
         },
 
         include: {
