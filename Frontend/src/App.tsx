@@ -24,7 +24,7 @@ import DoctorDetails from "./pages/DoctorDetails";
 import Departments from "./pages/Departments";
 import Services from "./pages/Services";
 import About from "./pages/About";
-
+import DoctorPrescription from "./pages/DoctorPrescription";
 import Profile from "./pages/Profile";
 import Appointments from "./pages/Appointments";
 import DoctorAppointments from "./pages/DoctorAppointments";
@@ -117,6 +117,14 @@ function Layout() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/doctor/prescription/:appointmentId"
+  element={
+    <ProtectedRoute>
+      <DoctorPrescription />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
 
       <Toaster

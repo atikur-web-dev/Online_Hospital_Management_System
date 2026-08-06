@@ -140,20 +140,63 @@ model RefreshToken {
 }
 
 model Appointment {
-  id            String            @id @default(cuid())
-  patientId     String
-  doctorId      String
-  appointmentAt DateTime
-  problem       String?
+  id               String            @id @default(cuid())
+  patientId        String
+  doctorId         String
+  appointmentAt    DateTime
+  problem          String?
   patientDeletedAt DateTime?
-  status        AppointmentStatus @default(PENDING)
-  doctorArchived Boolean @default(false)
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  status           AppointmentStatus @default(PENDING)
+  doctorArchived   Boolean           @default(false)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 
   patient PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
   doctor  DoctorProfile  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 
+  prescription Prescription?
+
   @@unique([doctorId, appointmentAt])
   @@map("appointments")
+}
+
+model Prescription {
+  id String @id @default(cuid())
+  appointmentId String @unique
+  diagnosis String
+  advice    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  followUpDate DateTime?
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+  medicines PrescriptionMedicine[]
+  tests     PrescriptionTest[]
+
+  @@map("prescriptions")
+}
+
+model PrescriptionMedicine {
+  id String @id @default(cuid())
+  prescriptionId String
+  medicineName String
+  dosage       String
+  frequency    String
+  duration     String
+  instructions String?
+
+  prescription Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+
+  @@map("prescription_medicines")
+}
+
+model PrescriptionTest {
+  id String @id @default(cuid())
+  prescriptionId String
+  testName String
+
+  prescription Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+
+  @@map("prescription_tests")
 }

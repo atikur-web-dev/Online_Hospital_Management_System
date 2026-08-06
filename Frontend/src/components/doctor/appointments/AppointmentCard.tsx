@@ -16,7 +16,7 @@ import {
 import type { Appointment } from "../../../types/appointment";
 import AppointmentActions from "./AppointmentActions";
 import AppointmentStatusBadge from "./AppointmentStatusBadge";
-
+import { useNavigate } from "react-router-dom";
 import {
   getInitials,
   formatAppointmentDate,
@@ -59,7 +59,7 @@ const AppointmentCard = ({
   timeOfDay,
 }: AppointmentCardProps) => {
   const initials = getInitials(appointment.patient.name);
-
+  const navigate = useNavigate();
   const profileImage = appointment.patient.user.profileImage;
 
   const TimeIcon = timeOfDay.icon;
@@ -89,7 +89,7 @@ const AppointmentCard = ({
           {/* Left */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 sm:gap-4">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 {profileImage ? (
                   <img
                     src={profileImage}
@@ -97,7 +97,10 @@ const AppointmentCard = ({
                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-emerald-100 shadow-sm"
                   />
                 ) : (
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center ring-2 ring-emerald-200 shadow-sm">
+                  <div
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full                 )}
+ from-emerald-400 to-emerald-600 flex items-center justify-center ring-2 ring-emerald-200 shadow-sm"
+                  >
                     <span className="text-white font-semibold">{initials}</span>
                   </div>
                 )}
@@ -179,6 +182,7 @@ const AppointmentCard = ({
           <div className="flex flex-col items-start lg:items-end gap-3 lg:gap-4 w-full lg:w-auto">
             <AppointmentStatusBadge status={appointment.status} />
             <AppointmentActions
+              appointmentId={appointment.id}
               isPending={isPending}
               isConfirmed={isConfirmed}
               showActions={showActions}
