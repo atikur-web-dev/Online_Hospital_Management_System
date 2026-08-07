@@ -2,22 +2,27 @@
 import prisma from "../../lib/prisma.js";
 import { ApiError } from "../../utils/errors/apiError.js";
 
-export const getMyAppointments = async (doctorUserId: string) => {
+export const getMyAppointments = async (
+  doctorUserId: string,
+) => {
   const doctor = await prisma.doctorProfile.findUnique({
     where: {
       userId: doctorUserId,
-
     },
   });
 
   if (!doctor) {
-    throw new ApiError(404, "Doctor profile not found.", {});
+    throw new ApiError(
+      404,
+      "Doctor profile not found.",
+      {},
+    );
   }
 
   const appointments = await prisma.appointment.findMany({
     where: {
-       doctorId: doctor.id,
-  doctorArchived: false,
+      doctorId: doctor.id,
+      doctorArchived: false,
     },
 
     include: {
@@ -35,6 +40,14 @@ export const getMyAppointments = async (doctorUserId: string) => {
               profileImage: true,
             },
           },
+        },
+      },
+
+      prescription: {
+        select: {
+          id: true,
+          diagnosis: true,
+          createdAt: true,
         },
       },
     },
