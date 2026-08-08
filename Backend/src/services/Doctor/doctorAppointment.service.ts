@@ -60,6 +60,76 @@ export const getMyAppointments = async (
   return appointments;
 };
 
+export const getAppointmentById = async (
+  doctorUserId: string,
+  appointmentId: string,
+) => {
+  const doctor = await prisma.doctorProfile.findUnique({
+    where: {
+      userId: doctorUserId,
+    },
+  });
+
+  if (!doctor) {
+    throw new ApiError(
+      404,
+      "Doctor profile not found.",
+      {},
+    );
+  }
+
+  const appointment =
+    await prisma.appointment.findFirst({
+      where: {
+        id: appointmentId,
+        doctorId: doctor.id,
+        doctorArchived: false,
+      },
+
+      include: {
+        patient: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+            gender: true,
+            dateOfBirth: true,
+
+            user: {
+              select: {
+                email: true,
+                profileImage: true,
+              },
+            },
+          },
+        },
+
+        prescription: {
+          select: {
+            id: true,
+            diagnosis: true,
+            advice: true,
+            followUpDate: true,
+            medicines: true,
+            tests: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+      },
+    });
+
+  if (!appointment) {
+    throw new ApiError(
+      404,
+      "Appointment not found.",
+      {},
+    );
+  }
+
+  return appointment;
+};
+
 export const confirmAppointment = async (
   doctorUserId: string,
   appointmentId: string,

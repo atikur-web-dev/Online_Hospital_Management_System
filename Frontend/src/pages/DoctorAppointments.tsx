@@ -6,8 +6,8 @@ import toast from "react-hot-toast";
 import {
   archiveAppointment,
   cancelAppointment,
-  confirmAppointment,
   completeAppointment,
+  confirmAppointment,
 } from "../api/doctorAppointment.api";
 
 import {
@@ -20,7 +20,9 @@ import {
 } from "../components/doctor/appointments";
 
 import { useDoctorAppointment } from "../hooks/useDoctorAppointment";
+
 import type { Appointment } from "../types/appointment";
+
 import {
   getDayLabel,
   getTimeOfDay,
@@ -37,10 +39,10 @@ const DoctorAppointments = () => {
   const [confirmingId, setConfirmingId] =
     useState<string | null>(null);
 
-  const [cancelingId, setCancelingId] =
+  const [completingId, setCompletingId] =
     useState<string | null>(null);
 
-  const [completingId, setCompletingId] =
+  const [cancelingId, setCancelingId] =
     useState<string | null>(null);
 
   const [deletingId, setDeletingId] =
@@ -50,6 +52,7 @@ const DoctorAppointments = () => {
 
   const [modalAppointment, setModalAppointment] =
     useState<Appointment | null>(null);
+
 
   const filteredAppointments = useMemo(() => {
     if (!search.trim()) {
@@ -69,10 +72,12 @@ const DoctorAppointments = () => {
           patient.user.email
             .toLowerCase()
             .includes(searchLower) ||
-          (patient.phone &&
+          (
+            patient.phone &&
             patient.phone
               .toLowerCase()
-              .includes(searchLower))
+              .includes(searchLower)
+          )
         );
       },
     );
@@ -105,7 +110,7 @@ const DoctorAppointments = () => {
         appointment.status === "CANCELLED",
     ).length;
 
-  // Confirm appointment
+
   const handleConfirm = async (
     id: string,
   ) => {
@@ -115,12 +120,15 @@ const DoctorAppointments = () => {
       await confirmAppointment(id);
 
       toast.success(
-        "Appointment confirmed successfully!",
+        "Appointment confirmed successfully.",
       );
 
       await fetchAppointments();
     } catch (err) {
-      console.error(err);
+      console.error(
+        "Confirm appointment error:",
+        err,
+      );
 
       toast.error(
         "Failed to confirm appointment.",
@@ -130,22 +138,44 @@ const DoctorAppointments = () => {
     }
   };
 
-  // Complete appointment
+
   const handleComplete = async (
     id: string,
   ) => {
+    const appointment = appointments.find(
+      (item: Appointment) =>
+        item.id === id,
+    );
+
+    if (!appointment) {
+      toast.error(
+        "Appointment not found.",
+      );
+      return;
+    }
+
+    if (!appointment.prescription) {
+      toast.error(
+        "Create a prescription before completing the appointment.",
+      );
+      return;
+    }
+
     try {
       setCompletingId(id);
 
       await completeAppointment(id);
 
       toast.success(
-        "Appointment completed successfully!",
+        "Appointment completed successfully.",
       );
 
       await fetchAppointments();
     } catch (err) {
-      console.error(err);
+      console.error(
+        "Complete appointment error:",
+        err,
+      );
 
       toast.error(
         "Failed to complete appointment.",
@@ -155,7 +185,6 @@ const DoctorAppointments = () => {
     }
   };
 
-  // Cancel appointment
   const handleCancel = async (
     id: string,
   ) => {
@@ -165,12 +194,15 @@ const DoctorAppointments = () => {
       await cancelAppointment(id);
 
       toast.success(
-        "Appointment cancelled successfully!",
+        "Appointment cancelled successfully.",
       );
 
       await fetchAppointments();
     } catch (err) {
-      console.error(err);
+      console.error(
+        "Cancel appointment error:",
+        err,
+      );
 
       toast.error(
         "Failed to cancel appointment.",
@@ -180,22 +212,23 @@ const DoctorAppointments = () => {
     }
   };
 
-  // Open archive confirmation modal
+
   const handleDeletePermanently = (
     id: string,
   ) => {
     const appointment =
       appointments.find(
-        (appointment: Appointment) =>
-          appointment.id === id,
+        (item: Appointment) =>
+          item.id === id,
       );
 
     if (appointment) {
-      setModalAppointment(appointment);
+      setModalAppointment(
+        appointment,
+      );
     }
   };
 
-  // Archive appointment
   const confirmDeletePermanently =
     async () => {
       if (!modalAppointment) {
@@ -219,7 +252,10 @@ const DoctorAppointments = () => {
 
         setModalAppointment(null);
       } catch (err) {
-        console.error(err);
+        console.error(
+          "Archive appointment error:",
+          err,
+        );
 
         toast.error(
           "Failed to remove appointment.",
@@ -229,9 +265,11 @@ const DoctorAppointments = () => {
       }
     };
 
+
   if (loading) {
     return <LoadingScreen />;
   }
+
 
   if (error) {
     return (
@@ -250,7 +288,10 @@ const DoctorAppointments = () => {
           </p>
 
           <button
-            onClick={() => fetchAppointments()}
+            type="button"
+            onClick={() =>
+              fetchAppointments()
+            }
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md active:scale-95"
           >
             <RefreshCw className="w-4 h-4" />
@@ -261,15 +302,18 @@ const DoctorAppointments = () => {
     );
   }
 
+// Main UI
   return (
     <>
       <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-emerald-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+          {/* Header */}
           <AppointmentHeader
             search={search}
             setSearch={setSearch}
           />
 
+          {/* Statistics */}
           <AppointmentStats
             total={totalAppointments}
             pending={pendingAppointments}
@@ -278,8 +322,11 @@ const DoctorAppointments = () => {
             cancelled={cancelledAppointments}
           />
 
+          {/* Appointment List */}
           {appointments.length === 0 ? (
-            <EmptyState type="appointments" />
+            <EmptyState
+              type="appointments"
+            />
           ) : filteredAppointments.length ===
             0 ? (
             <EmptyState
@@ -294,7 +341,9 @@ const DoctorAppointments = () => {
                 ) => (
                   <AppointmentCard
                     key={appointment.id}
-                    appointment={appointment}
+                    appointment={
+                      appointment
+                    }
 
                     onConfirm={
                       handleConfirm
@@ -351,8 +400,11 @@ const DoctorAppointments = () => {
         </div>
       </div>
 
+      {/* Permanent Delete Confirmation */}
       <ConfirmationModal
-        isOpen={!!modalAppointment}
+        isOpen={
+          !!modalAppointment
+        }
         onClose={() =>
           setModalAppointment(null)
         }
@@ -360,10 +412,12 @@ const DoctorAppointments = () => {
           confirmDeletePermanently
         }
         patientName={
-          modalAppointment?.patient.name ||
-          ""
+          modalAppointment?.patient
+            .name || ""
         }
-        isDeleting={!!deletingId}
+        isDeleting={
+          !!deletingId
+        }
       />
     </>
   );

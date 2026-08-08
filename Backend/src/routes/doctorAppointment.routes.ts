@@ -1,6 +1,4 @@
 // Backend/src/routes/doctorAppointment.routes.ts
-// Backend/src/routes/doctorAppointment.routes.ts
-
 import { Router } from "express";
 
 import {
@@ -17,6 +15,13 @@ router.get(
   authenticate,
   authorize("DOCTOR"),
   appointmentController.getMyAppointments,
+);
+
+router.get(
+  "/:id",
+  authenticate,
+  authorize("DOCTOR"),
+  appointmentController.getAppointmentById,
 );
 
 router.patch(
