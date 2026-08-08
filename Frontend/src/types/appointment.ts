@@ -18,14 +18,17 @@ export interface Patient {
   };
 }
 
+export interface PrescriptionSummary {
+  id: string;
+  diagnosis: string;
+  createdAt: string;
+}
+
 export interface Appointment {
   id: string;
-
   status: AppointmentStatus;
-
   problem: string | null;
-
   appointmentAt: string;
-
   patient: Patient;
+  prescription: PrescriptionSummary | null;
 }
