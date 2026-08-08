@@ -1,21 +1,50 @@
 import { ArrowLeft, ClipboardList } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DiagnosisCard from "../components/doctor/prescription/DiagnosisCard";
 import MedicineList from "../components/doctor/prescription/MedicineList";
 import TestList from "../components/doctor/prescription/TestList";
 import AdviceCard from "../components/doctor/prescription/AdviceCard";
 import PrescriptionActions from "../components/doctor/prescription/PrescriptionActions";
 import PrescriptionHeader from "../components/doctor/prescription/PrescriptionHeader";
-
 import { usePrescription } from "../hooks/usePrescription";
+import { getDoctorAppointmentById } from "../api/doctorAppointment.api";
 
 import type {
   Medicine,
   MedicalTest,
   PrescriptionFormData,
 } from "../types/prescription";
+
+interface AppointmentDetails {
+  id: string;
+  appointmentAt: string;
+
+  patient: {
+    id: string;
+    name: string;
+    phone: string | null;
+    gender: string | null;
+    dateOfBirth: string | null;
+
+    user: {
+      email: string;
+      profileImage: string | null;
+    };
+  };
+
+  prescription: {
+    id: string;
+    diagnosis: string;
+    advice: string | null;
+    followUpDate: string | null;
+    medicines: Medicine[];
+    tests: MedicalTest[];
+    createdAt: string;
+    updatedAt: string;
+  } | null;
+}
 
 const emptyMedicine = (): Medicine => ({
   name: "",
@@ -37,15 +66,72 @@ const DoctorPrescription = () => {
     appointmentId: string;
   }>();
 
-  const { create, loading } = usePrescription();
+  const { create, loading, prescription, fetchById } = usePrescription();
+
+  const [appointment, setAppointment] = useState<AppointmentDetails | null>(
+    null,
+  );
+
+  const [appointmentLoading, setAppointmentLoading] = useState(true);
 
   const [diagnosis, setDiagnosis] = useState("");
-  const [medicines, setMedicines] = useState<Medicine[]>([
-    emptyMedicine(),
-  ]);
+
+  const [medicines, setMedicines] = useState<Medicine[]>([emptyMedicine()]);
+
   const [tests, setTests] = useState<MedicalTest[]>([]);
+
   const [advice, setAdvice] = useState("");
+
   const [followUpDate, setFollowUpDate] = useState("");
+
+  useEffect(() => {
+    const fetchAppointment = async () => {
+      if (!appointmentId) {
+        toast.error("Appointment not found.");
+        setAppointmentLoading(false);
+        return;
+      }
+
+      try {
+        setAppointmentLoading(true);
+
+        const response = await getDoctorAppointmentById(appointmentId);
+        const appointmentData = response.data;
+
+        setAppointment(appointmentData);
+
+        if (appointmentData.prescription?.id) {
+          await fetchById(appointmentData.prescription.id);
+        }
+      } catch (error) {
+        console.error("Failed to fetch appointment:", error);
+
+        toast.error("Failed to load appointment details.");
+      } finally {
+        setAppointmentLoading(false);
+      }
+    };
+
+    fetchAppointment();
+  }, [appointmentId, fetchById]);
+
+  useEffect(() => {
+  if (!prescription) return;
+
+  setDiagnosis(prescription.diagnosis);
+  setMedicines(
+    prescription.medicines.length > 0
+      ? prescription.medicines
+      : [emptyMedicine()],
+  );
+  setTests(prescription.tests);
+  setAdvice(prescription.advice ?? "");
+  setFollowUpDate(
+    prescription.followUpDate
+      ? prescription.followUpDate.split("T")[0]
+      : "",
+  );
+}, [prescription]);
 
   const handleSave = async () => {
     if (!appointmentId) {
@@ -68,9 +154,7 @@ const DoctorPrescription = () => {
     );
 
     const validTests = tests.filter(
-      (test) =>
-        test.name.trim() ||
-        test.instructions?.trim(),
+      (test) => test.name.trim() || test.instructions?.trim(),
     );
 
     const payload: PrescriptionFormData = {
@@ -99,11 +183,48 @@ const DoctorPrescription = () => {
     toast.success("Prescription form has been reset.");
   };
 
+  if (appointmentLoading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-emerald-50/60 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600" />
+
+          <p className="text-sm font-medium text-gray-600">
+            Loading appointment...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!appointment) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-emerald-50/60 flex items-center justify-center p-4">
+        <div className="w-full max-w-md rounded-2xl border border-red-100 bg-white p-8 text-center shadow-lg">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Appointment Not Found
+          </h2>
+
+          <p className="mt-2 text-sm text-gray-500">
+            We could not load this appointment.
+          </p>
+
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-emerald-50/60">
       <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-
-        {/* Top Navigation */}
         <div className="mb-6 flex items-center justify-between">
           <button
             type="button"
@@ -120,31 +241,26 @@ const DoctorPrescription = () => {
           </div>
         </div>
 
-        {/* Header */}
-        <PrescriptionHeader />
+        <PrescriptionHeader
+          patientName={appointment.patient.name}
+          appointmentDate={appointment.appointmentAt}
+        />
 
-        {/* Form */}
         <div className="mt-6 space-y-6">
-
           {/* Diagnosis */}
-          <DiagnosisCard
-            diagnosis={diagnosis}
-            onChange={setDiagnosis}
-          />
+
+          <DiagnosisCard diagnosis={diagnosis} onChange={setDiagnosis} />
 
           {/* Medicines */}
-          <MedicineList
-            medicines={medicines}
-            onChange={setMedicines}
-          />
+
+          <MedicineList medicines={medicines} onChange={setMedicines} />
 
           {/* Medical Tests */}
-          <TestList
-            tests={tests}
-            onChange={setTests}
-          />
+
+          <TestList tests={tests} onChange={setTests} />
 
           {/* Advice + Follow-up */}
+
           <AdviceCard
             advice={advice}
             onChange={setAdvice}
@@ -153,6 +269,7 @@ const DoctorPrescription = () => {
           />
 
           {/* Actions */}
+
           <PrescriptionActions
             loading={loading}
             onSave={handleSave}

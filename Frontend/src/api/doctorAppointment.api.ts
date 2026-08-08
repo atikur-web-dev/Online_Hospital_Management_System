@@ -6,6 +6,16 @@ export const getMyDoctorAppointments = async () => {
   return response.data;
 };
 
+export const getDoctorAppointmentById = async (
+  id: string,
+) => {
+  const response = await api.get(
+    `/doctor/appointments/${id}`,
+  );
+
+  return response.data;
+};
+
 export const confirmAppointment = async (id: string) => {
   const response = await api.patch(
     `/doctor/appointments/${id}/confirm`,
