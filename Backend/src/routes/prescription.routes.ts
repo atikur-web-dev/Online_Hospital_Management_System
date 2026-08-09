@@ -13,9 +13,6 @@ import {
 
 const router = Router();
 
-/**
- * Doctor Only Routes
- */
 
 // Create Prescription
 router.post(

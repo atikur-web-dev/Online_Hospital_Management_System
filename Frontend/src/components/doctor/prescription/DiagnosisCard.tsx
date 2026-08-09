@@ -6,10 +6,7 @@ interface Props {
   onChange: (value: string) => void;
 }
 
-const DiagnosisCard = ({
-  diagnosis,
-  onChange,
-}: Props) => {
+const DiagnosisCard = ({ diagnosis, onChange }: Props) => {
   return (
     <section className="bg-white border border-emerald-100 rounded-2xl shadow-sm overflow-hidden">
       {/* Header */}
@@ -20,9 +17,7 @@ const DiagnosisCard = ({
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">
-              Diagnosis
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900">Diagnosis</h2>
 
             <p className="mt-1 text-sm text-gray-500">
               Record the patient's primary diagnosis and clinical findings.

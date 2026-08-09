@@ -101,7 +101,12 @@ const DoctorPrescription = () => {
         setAppointment(appointmentData);
 
         if (appointmentData.prescription?.id) {
-          await fetchById(appointmentData.prescription.id);
+          navigate(
+            `/doctor/prescription/view/${appointmentData.prescription.id}`,
+            { replace: true },
+          );
+
+          return;
         }
       } catch (error) {
         console.error("Failed to fetch appointment:", error);
@@ -176,13 +181,15 @@ const DoctorPrescription = () => {
       medicines: validMedicines,
       tests: validTests,
       advice: advice.trim(),
-      followUpDate,
+      followUpDate: followUpDate
+        ? new Date(`${followUpDate}T00:00:00`).toISOString()
+        : null,
     };
 
     const success = await create(payload);
 
     if (success) {
-      navigate(-1);
+      navigate(`/doctor/prescription/view/${prescription?.id}`);
     }
   };
 

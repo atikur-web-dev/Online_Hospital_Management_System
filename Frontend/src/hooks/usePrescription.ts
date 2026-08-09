@@ -15,40 +15,70 @@ import type {
 } from "../types/prescription";
 
 interface ApiError {
-  message?: string;
+  message?: string | string[];
 }
+
+const getErrorMessage = (
+  error: AxiosError<ApiError>,
+  fallback: string,
+): string => {
+  const message = error.response?.data?.message;
+
+  if (Array.isArray(message)) {
+    return message.join(", ");
+  }
+
+  if (typeof message === "string") {
+    return message;
+  }
+
+  if (error.message) {
+    return error.message;
+  }
+
+  return fallback;
+};
 
 export const usePrescription = () => {
   const [loading, setLoading] = useState(false);
 
-  const [prescription, setPrescription] =
-    useState<PrescriptionResponse | null>(null);
+  const [prescription, setPrescription] = useState<PrescriptionResponse | null>(
+    null,
+  );
 
   /**
    * Create Prescription
    */
-  const create = async (
-    data: PrescriptionFormData,
-  ): Promise<boolean> => {
+  const create = async (data: PrescriptionFormData): Promise<string | null> => {
     try {
       setLoading(true);
 
       const response = await createPrescription(data);
 
-      setPrescription(response.data.data);
+      const createdPrescription = response.data.data;
+
+      setPrescription(createdPrescription);
 
       toast.success(response.data.message);
 
-      return true;
+      return createdPrescription.id;
     } catch (err) {
       const error = err as AxiosError<ApiError>;
 
-      toast.error(
-        error.response?.data?.message ??
-          "Failed to create prescription.",
+      console.error(
+        "Create prescription error:",
+        error.response?.data ?? error,
       );
 
-      return false;
+      const errorMessage = error.response?.data?.message;
+
+      toast.error(
+        Array.isArray(errorMessage)
+          ? errorMessage.join(", ")
+          : (errorMessage ?? "Failed to create prescription."),
+      );
+
+      return null;
     } finally {
       setLoading(false);
     }
@@ -58,14 +88,11 @@ export const usePrescription = () => {
    * Get Prescription By ID
    */
   const fetchById = useCallback(
-    async (
-      prescriptionId: string,
-    ): Promise<boolean> => {
+    async (prescriptionId: string): Promise<boolean> => {
       try {
         setLoading(true);
 
-        const response =
-          await getPrescription(prescriptionId);
+        const response = await getPrescription(prescriptionId);
 
         setPrescription(response.data.data);
 
@@ -73,10 +100,17 @@ export const usePrescription = () => {
       } catch (err) {
         const error = err as AxiosError<ApiError>;
 
-        toast.error(
-          error.response?.data?.message ??
-            "Failed to load prescription.",
-        );
+        console.error("GET PRESCRIPTION ERROR:", error);
+
+        console.error("GET PRESCRIPTION RESPONSE:", error.response);
+
+        console.error("GET PRESCRIPTION RESPONSE DATA:", error.response?.data);
+
+        console.error("GET PRESCRIPTION REQUEST:", error.request);
+
+        console.error("GET PRESCRIPTION MESSAGE:", error.message);
+
+        toast.error(getErrorMessage(error, "Failed to load prescription."));
 
         return false;
       } finally {
@@ -91,17 +125,12 @@ export const usePrescription = () => {
    */
   const update = async (
     prescriptionId: string,
-    data: Partial<
-      Omit<PrescriptionFormData, "appointmentId">
-    >,
+    data: Partial<Omit<PrescriptionFormData, "appointmentId">>,
   ): Promise<boolean> => {
     try {
       setLoading(true);
 
-      const response = await updatePrescription(
-        prescriptionId,
-        data,
-      );
+      const response = await updatePrescription(prescriptionId, data);
 
       setPrescription(response.data.data);
 
@@ -111,10 +140,17 @@ export const usePrescription = () => {
     } catch (err) {
       const error = err as AxiosError<ApiError>;
 
-      toast.error(
-        error.response?.data?.message ??
-          "Failed to update prescription.",
-      );
+      console.error("UPDATE PRESCRIPTION ERROR:", error);
+
+      console.error("UPDATE PRESCRIPTION RESPONSE:", error.response);
+
+      console.error("UPDATE PRESCRIPTION RESPONSE DATA:", error.response?.data);
+
+      console.error("UPDATE PRESCRIPTION REQUEST:", error.request);
+
+      console.error("UPDATE PRESCRIPTION MESSAGE:", error.message);
+
+      toast.error(getErrorMessage(error, "Failed to update prescription."));
 
       return false;
     } finally {
