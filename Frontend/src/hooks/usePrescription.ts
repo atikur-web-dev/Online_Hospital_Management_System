@@ -6,6 +6,7 @@ import { AxiosError } from "axios";
 import {
   createPrescription,
   getPrescription,
+  updatePrescription,
 } from "../api/prescription.api";
 
 import type {
@@ -23,6 +24,9 @@ export const usePrescription = () => {
   const [prescription, setPrescription] =
     useState<PrescriptionResponse | null>(null);
 
+  /**
+   * Create Prescription
+   */
   const create = async (
     data: PrescriptionFormData,
   ): Promise<boolean> => {
@@ -50,17 +54,21 @@ export const usePrescription = () => {
     }
   };
 
+  /**
+   * Get Prescription By ID
+   */
   const fetchById = async (
     prescriptionId: string,
-  ): Promise<void> => {
+  ): Promise<boolean> => {
     try {
       setLoading(true);
 
-      const response = await getPrescription(
-        prescriptionId,
-      );
+      const response =
+        await getPrescription(prescriptionId);
 
       setPrescription(response.data.data);
+
+      return true;
     } catch (err) {
       const error = err as AxiosError<ApiError>;
 
@@ -68,6 +76,44 @@ export const usePrescription = () => {
         error.response?.data?.message ??
           "Failed to load prescription.",
       );
+
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Update Prescription
+   */
+  const update = async (
+    prescriptionId: string,
+    data: Partial<
+      Omit<PrescriptionFormData, "appointmentId">
+    >,
+  ): Promise<boolean> => {
+    try {
+      setLoading(true);
+
+      const response = await updatePrescription(
+        prescriptionId,
+        data,
+      );
+
+      setPrescription(response.data.data);
+
+      toast.success(response.data.message);
+
+      return true;
+    } catch (err) {
+      const error = err as AxiosError<ApiError>;
+
+      toast.error(
+        error.response?.data?.message ??
+          "Failed to update prescription.",
+      );
+
+      return false;
     } finally {
       setLoading(false);
     }
@@ -78,5 +124,6 @@ export const usePrescription = () => {
     prescription,
     create,
     fetchById,
+    update,
   };
 };

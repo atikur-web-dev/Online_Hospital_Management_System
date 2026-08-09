@@ -30,3 +30,22 @@ export const getPrescription = async (
     data: PrescriptionResponse;
   }>(`/prescriptions/${prescriptionId}`);
 };
+
+/**
+ * Update Prescription
+ */
+export const updatePrescription = async (
+  prescriptionId: string,
+  data: Partial<
+    Omit<PrescriptionFormData, "appointmentId">
+  >,
+) => {
+  return api.patch<{
+    success: boolean;
+    message: string;
+    data: PrescriptionResponse;
+  }>(
+    `/prescriptions/${prescriptionId}`,
+    data,
+  );
+};

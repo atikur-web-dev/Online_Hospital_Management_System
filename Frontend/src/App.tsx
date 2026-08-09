@@ -24,7 +24,10 @@ import DoctorDetails from "./pages/DoctorDetails";
 import Departments from "./pages/Departments";
 import Services from "./pages/Services";
 import About from "./pages/About";
+
 import DoctorPrescription from "./pages/DoctorPrescription";
+import DoctorEditPrescription from "./pages/DoctorEditPrescription";
+import DoctorPrescriptionView from "./pages/DoctorPrescriptionView";
 import Profile from "./pages/Profile";
 import Appointments from "./pages/Appointments";
 import DoctorAppointments from "./pages/DoctorAppointments";
@@ -56,7 +59,7 @@ function Layout() {
     "https://ui-avatars.com/api/?name=User&background=10b981&color=fff";
 
   return (
-    <div className="min-h-screen bg-emerald-50">
+    <div className="min-h-screen bg-gray-50">
       {!hideNavbar && (
         <Navbar
           isLoggedIn={isLoggedIn}
@@ -66,21 +69,25 @@ function Layout() {
       )}
 
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<Home />} />
+
         <Route path="/login" element={<Login />} />
+
         <Route path="/register" element={<Register />} />
+
         <Route path="/email-verified" element={<EmailVerificationResult />} />
+
         <Route path="/auth/google/callback" element={<GoogleCallback />} />
 
         <Route path="/doctors" element={<Doctors />} />
+
         <Route path="/doctors/:id" element={<DoctorDetails />} />
 
         <Route path="/departments" element={<Departments />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/about" element={<About />} />
 
-        {/* Protected Routes */}
+        <Route path="/services" element={<Services />} />
+
+        <Route path="/about" element={<About />} />
 
         <Route
           path="/appointments"
@@ -117,14 +124,33 @@ function Layout() {
             </ProtectedRoute>
           }
         />
+
         <Route
-  path="/doctor/prescription/:appointmentId"
-  element={
-    <ProtectedRoute>
-      <DoctorPrescription />
-    </ProtectedRoute>
-  }
-/>
+          path="/doctor/prescription/view/:prescriptionId"
+          element={
+            <ProtectedRoute>
+              <DoctorPrescriptionView />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/doctor/prescription/edit/:prescriptionId"
+          element={
+            <ProtectedRoute>
+              <DoctorEditPrescription />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/doctor/prescription/:appointmentId"
+          element={
+            <ProtectedRoute>
+              <DoctorPrescription />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
 
       <Toaster

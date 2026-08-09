@@ -1,5 +1,5 @@
-// Frontend/src/types/prescription.ts
 export interface Medicine {
+  id?: string;
   name: string;
   dosage: string;
   frequency: string;
@@ -8,6 +8,7 @@ export interface Medicine {
 }
 
 export interface MedicalTest {
+  id?: string;
   name: string;
   instructions?: string;
 }
@@ -18,7 +19,46 @@ export interface PrescriptionFormData {
   medicines: Medicine[];
   tests: MedicalTest[];
   advice: string;
-  followUpDate: string;
+  followUpDate: string | null;
+}
+
+/**
+ * Backend response structure
+ */
+export interface PrescriptionMedicineResponse {
+  id: string;
+  prescriptionId: string;
+  medicineName: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  instructions: string | null;
+}
+
+export interface PrescriptionTestResponse {
+  id: string;
+  prescriptionId: string;
+  testName: string;
+}
+
+export interface PrescriptionPatient {
+  id: string;
+  name: string;
+  phone: string | null;
+  gender: string | null;
+  dateOfBirth: string | null;
+}
+
+export interface PrescriptionDoctor {
+  id: string;
+  name?: string;
+}
+
+export interface PrescriptionAppointment {
+  id: string;
+  appointmentAt: string;
+  patient: PrescriptionPatient;
+  doctor?: PrescriptionDoctor;
 }
 
 export interface PrescriptionResponse {
@@ -27,8 +67,9 @@ export interface PrescriptionResponse {
   diagnosis: string;
   advice: string | null;
   followUpDate: string | null;
-  medicines: Medicine[];
-  tests: MedicalTest[];
+  medicines: PrescriptionMedicineResponse[];
+  tests: PrescriptionTestResponse[];
   createdAt: string;
   updatedAt: string;
+  appointment?: PrescriptionAppointment;
 }

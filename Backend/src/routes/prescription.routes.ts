@@ -1,9 +1,9 @@
 // Backend/src/routes/prescription.routes.ts
 import { Router } from "express";
-
 import {
   createPrescription,
   getPrescription,
+  updatePrescription,
 } from "../controller/doctor_controller/prescription.controller.js";
 
 import {
@@ -31,6 +31,14 @@ router.get(
   authenticate,
   authorize("DOCTOR"),
   getPrescription,
+);
+
+// Update Prescription
+router.patch(
+  "/:id",
+  authenticate,
+  authorize("DOCTOR"),
+  updatePrescription,
 );
 
 export default router;

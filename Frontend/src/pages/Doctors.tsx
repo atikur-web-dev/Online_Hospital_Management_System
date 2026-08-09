@@ -56,7 +56,7 @@ const Doctors = () => {
   // Show full page loader only on initial load
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-emerald-50 to-white">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="mt-4 text-emerald-700 font-medium">Loading our medical team...</p>
@@ -67,7 +67,7 @@ const Doctors = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-emerald-50 to-white">
         <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-xl">
           <div className="flex justify-center mb-4">
             <AlertCircle size={56} className="text-red-500" />
@@ -88,9 +88,7 @@ const Doctors = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ==================== HERO SECTION WITH BACKGROUND IMAGE ==================== */}
       <section className="relative overflow-hidden">
-        {/* Background Image with Overlay */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
@@ -340,7 +338,7 @@ const Doctors = () => {
                           key={pageNumber}
                           onClick={() => handlePageChange(pageNumber)}
                           className={`
-                            min-w-[36px] h-[36px] rounded-lg font-semibold transition-all text-sm
+                            min-w-9 h-9 rounded-lg font-semibold transition-all text-sm
                             ${
                               isActive
                                 ? "bg-emerald-600 text-white shadow-md"

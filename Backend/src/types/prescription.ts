@@ -22,9 +22,18 @@ export interface CreatePrescriptionInput {
 }
 
 export interface UpdatePrescriptionInput {
-  diagnosis?: string | undefined;
-  medicines?: MedicineInput[] | undefined;
-  tests?: TestInput[] | undefined;
-  advice?: string | undefined;
-  followUpDate?: Date | null | undefined;
+  diagnosis?: string;
+  medicines?: {
+    name: string;
+    dosage: string;
+    frequency: string;
+    duration: string;
+    instructions?: string;
+  }[];
+  tests?: {
+    name: string;
+    instructions?: string;
+  }[];
+  advice?: string;
+  followUpDate?: Date | null;
 }
