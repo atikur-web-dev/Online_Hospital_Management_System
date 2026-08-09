@@ -1,10 +1,12 @@
 // Frontend/src/components/doctor/prescription/MedicineList.tsx
+
 import {
   Pill,
   Plus,
   Trash2,
   ClipboardList,
 } from "lucide-react";
+
 import type { Medicine } from "../../../types/prescription";
 
 interface Props {
@@ -50,12 +52,13 @@ const MedicineList = ({
   };
 
   return (
-    <section className="bg-white rounded-2xl border border-emerald-100 shadow-sm overflow-hidden">
+    <section className="overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm">
+
       {/* Header */}
 
-      <div className="px-6 py-5 border-b border-emerald-100 flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-emerald-100 px-6 py-5">
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-xl bg-emerald-100 flex items-center justify-center">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100">
             <Pill className="h-5 w-5 text-emerald-700" />
           </div>
 
@@ -64,7 +67,7 @@ const MedicineList = ({
               Medicines
             </h2>
 
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="mt-1 text-sm text-gray-500">
               Add prescribed medicines with dosage,
               frequency and duration.
             </p>
@@ -128,9 +131,7 @@ const MedicineList = ({
 
               <button
                 type="button"
-                onClick={() =>
-                  removeMedicine(index)
-                }
+                onClick={() => removeMedicine(index)}
                 className="
                   flex
                   items-center
@@ -150,12 +151,18 @@ const MedicineList = ({
               </button>
             </div>
 
+            {/* Medicine Information */}
+
             <div className="grid gap-5 md:grid-cols-2">
               <Input
                 label="Medicine Name"
                 value={medicine.name}
-                onChange={(v) =>
-                  updateMedicine(index, "name", v)
+                onChange={(value) =>
+                  updateMedicine(
+                    index,
+                    "name",
+                    value
+                  )
                 }
                 placeholder="Paracetamol 500mg"
               />
@@ -163,8 +170,12 @@ const MedicineList = ({
               <Input
                 label="Dosage"
                 value={medicine.dosage}
-                onChange={(v) =>
-                  updateMedicine(index, "dosage", v)
+                onChange={(value) =>
+                  updateMedicine(
+                    index,
+                    "dosage",
+                    value
+                  )
                 }
                 placeholder="1 Tablet"
               />
@@ -172,8 +183,12 @@ const MedicineList = ({
               <Input
                 label="Frequency"
                 value={medicine.frequency}
-                onChange={(v) =>
-                  updateMedicine(index, "frequency", v)
+                onChange={(value) =>
+                  updateMedicine(
+                    index,
+                    "frequency",
+                    value
+                  )
                 }
                 placeholder="3 Times Daily"
               />
@@ -181,12 +196,18 @@ const MedicineList = ({
               <Input
                 label="Duration"
                 value={medicine.duration}
-                onChange={(v) =>
-                  updateMedicine(index, "duration", v)
+                onChange={(value) =>
+                  updateMedicine(
+                    index,
+                    "duration",
+                    value
+                  )
                 }
                 placeholder="7 Days"
               />
             </div>
+
+            {/* Medicine Instructions */}
 
             <div className="mt-5">
               <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -195,7 +216,7 @@ const MedicineList = ({
 
               <textarea
                 rows={3}
-                value={medicine.instructions}
+                value={medicine.instructions ?? ""}
                 onChange={(e) =>
                   updateMedicine(
                     index,
@@ -206,6 +227,7 @@ const MedicineList = ({
                 placeholder="After meals..."
                 className="
                   w-full
+                  resize-none
                   rounded-xl
                   border
                   border-gray-200

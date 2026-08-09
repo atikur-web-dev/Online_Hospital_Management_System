@@ -1,5 +1,5 @@
 // Frontend/src/hooks/usePrescription.ts
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 
@@ -57,31 +57,34 @@ export const usePrescription = () => {
   /**
    * Get Prescription By ID
    */
-  const fetchById = async (
-    prescriptionId: string,
-  ): Promise<boolean> => {
-    try {
-      setLoading(true);
+  const fetchById = useCallback(
+    async (
+      prescriptionId: string,
+    ): Promise<boolean> => {
+      try {
+        setLoading(true);
 
-      const response =
-        await getPrescription(prescriptionId);
+        const response =
+          await getPrescription(prescriptionId);
 
-      setPrescription(response.data.data);
+        setPrescription(response.data.data);
 
-      return true;
-    } catch (err) {
-      const error = err as AxiosError<ApiError>;
+        return true;
+      } catch (err) {
+        const error = err as AxiosError<ApiError>;
 
-      toast.error(
-        error.response?.data?.message ??
-          "Failed to load prescription.",
-      );
+        toast.error(
+          error.response?.data?.message ??
+            "Failed to load prescription.",
+        );
 
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   /**
    * Update Prescription

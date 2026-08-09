@@ -1,4 +1,5 @@
 // Frontend/src/pages/DoctorPrescriptionView.tsx
+
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -35,7 +36,7 @@ const DoctorPrescriptionView = () => {
     }
 
     fetchById(prescriptionId);
-  }, [prescriptionId]);
+  }, [prescriptionId, fetchById]);
 
   if (loading) {
     return (
@@ -99,6 +100,9 @@ const DoctorPrescriptionView = () => {
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-8 md:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl space-y-6">
+
+        {/* Top Actions */}
+
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <button
             type="button"
@@ -118,6 +122,8 @@ const DoctorPrescriptionView = () => {
             Edit Prescription
           </button>
         </div>
+
+        {/* Prescription Information */}
 
         <section className="overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm">
           <div className="border-b border-emerald-100 bg-emerald-50/60 px-6 py-6">
@@ -139,6 +145,9 @@ const DoctorPrescriptionView = () => {
           </div>
 
           <div className="grid gap-6 p-6 md:grid-cols-2">
+
+            {/* Patient */}
+
             <div className="flex items-start gap-3">
               <UserRound className="mt-0.5 h-5 w-5 text-blue-600" />
 
@@ -152,6 +161,8 @@ const DoctorPrescriptionView = () => {
                 </p>
               </div>
             </div>
+
+            {/* Appointment */}
 
             <div className="flex items-start gap-3">
               <CalendarDays className="mt-0.5 h-5 w-5 text-purple-600" />
@@ -171,6 +182,8 @@ const DoctorPrescriptionView = () => {
               </div>
             </div>
 
+            {/* Created */}
+
             <div className="flex items-start gap-3">
               <CalendarDays className="mt-0.5 h-5 w-5 text-emerald-600" />
 
@@ -186,6 +199,8 @@ const DoctorPrescriptionView = () => {
                 </p>
               </div>
             </div>
+
+            {/* Follow-up */}
 
             <div className="flex items-start gap-3">
               <CalendarDays className="mt-0.5 h-5 w-5 text-orange-600" />
@@ -206,6 +221,8 @@ const DoctorPrescriptionView = () => {
             </div>
           </div>
         </section>
+
+        {/* Diagnosis */}
 
         <section className="rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center gap-3 border-b border-gray-100 px-6 py-5">
@@ -228,6 +245,8 @@ const DoctorPrescriptionView = () => {
             {prescription.diagnosis}
           </div>
         </section>
+
+        {/* Medicines */}
 
         <section className="rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center gap-3 border-b border-gray-100 px-6 py-5">
@@ -270,7 +289,10 @@ const DoctorPrescriptionView = () => {
                       </div>
                     </div>
 
+                    {/* Medicine Details */}
+
                     <div className="mt-5 grid gap-4 sm:grid-cols-3">
+
                       <div>
                         <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
                           Dosage
@@ -300,9 +322,12 @@ const DoctorPrescriptionView = () => {
                           {medicine.duration}
                         </p>
                       </div>
+
                     </div>
 
-                    {medicine.instructions && (
+                    {/* Medicine Instructions */}
+
+                    {medicine.instructions?.trim() && (
                       <div className="mt-5 rounded-xl border border-gray-200 bg-white px-4 py-3">
                         <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
                           Instructions
@@ -319,6 +344,8 @@ const DoctorPrescriptionView = () => {
             )}
           </div>
         </section>
+
+        {/* Diagnostic Tests */}
 
         <section className="rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center gap-3 border-b border-gray-100 px-6 py-5">
@@ -351,11 +378,27 @@ const DoctorPrescriptionView = () => {
                   <p className="font-semibold text-gray-800">
                     {test.testName}
                   </p>
+
+                  {/* Test Instructions */}
+
+                  {test.instructions?.trim() && (
+                    <div className="mt-4 rounded-xl border border-gray-200 bg-white px-4 py-3">
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
+                        Instructions
+                      </p>
+
+                      <p className="mt-1 whitespace-pre-line text-sm leading-6 text-gray-700">
+                        {test.instructions}
+                      </p>
+                    </div>
+                  )}
                 </div>
               ))
             )}
           </div>
         </section>
+
+        {/* Medical Advice */}
 
         <section className="rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center gap-3 border-b border-gray-100 px-6 py-5">
@@ -381,6 +424,8 @@ const DoctorPrescriptionView = () => {
           </div>
         </section>
 
+        {/* Bottom Actions */}
+
         <div className="flex flex-col-reverse gap-3 pb-8 sm:flex-row sm:justify-end">
           <button
             type="button"
@@ -400,6 +445,7 @@ const DoctorPrescriptionView = () => {
             Edit Prescription
           </button>
         </div>
+
       </div>
     </div>
   );

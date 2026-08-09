@@ -83,7 +83,7 @@ const DoctorEditPrescription = () => {
     setTests(
       prescription.tests.map((test) => ({
         name: test.testName,
-        instructions: "",
+        instructions: test.instructions ?? "",
       })),
     );
 

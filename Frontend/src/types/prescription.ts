@@ -39,6 +39,7 @@ export interface PrescriptionTestResponse {
   id: string;
   prescriptionId: string;
   testName: string;
+  instructions: string | null;
 }
 
 export interface PrescriptionPatient {

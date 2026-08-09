@@ -116,22 +116,35 @@ const DoctorPrescription = () => {
   }, [appointmentId, fetchById]);
 
   useEffect(() => {
-  if (!prescription) return;
+    if (!prescription) return;
 
-  setDiagnosis(prescription.diagnosis);
-  setMedicines(
-    prescription.medicines.length > 0
-      ? prescription.medicines
-      : [emptyMedicine()],
-  );
-  setTests(prescription.tests);
-  setAdvice(prescription.advice ?? "");
-  setFollowUpDate(
-    prescription.followUpDate
-      ? prescription.followUpDate.split("T")[0]
-      : "",
-  );
-}, [prescription]);
+    setDiagnosis(prescription.diagnosis);
+
+    setMedicines(
+      prescription.medicines.length > 0
+        ? prescription.medicines.map((medicine) => ({
+            name: medicine.medicineName,
+            dosage: medicine.dosage,
+            frequency: medicine.frequency,
+            duration: medicine.duration,
+            instructions: medicine.instructions ?? "",
+          }))
+        : [emptyMedicine()],
+    );
+
+    setTests(
+      prescription.tests.map((test) => ({
+        name: test.testName,
+        instructions: test.instructions ?? "",
+      })),
+    );
+
+    setAdvice(prescription.advice ?? "");
+
+    setFollowUpDate(
+      prescription.followUpDate ? prescription.followUpDate.split("T")[0] : "",
+    );
+  }, [prescription]);
 
   const handleSave = async () => {
     if (!appointmentId) {
