@@ -9,6 +9,7 @@ import {
   Eye,
   XCircle,
 } from "lucide-react";
+import { initiatePayment } from "../api/payment.api";
 import DeleteAppointmentModal from "../components/appointment/DeleteAppointmentModal";
 import { useAppointment } from "../hooks/useAppointment";
 import AppointmentDetailsModal from "../components/appointment/AppointmentDetailsModal";
@@ -37,6 +38,7 @@ const Appointments = () => {
   } = useAppointment();
 
   const [appointments, setAppointments] = useState<any[]>([]);
+  const [paymentLoading, setPaymentLoading] = useState<string | null>(null);
   const [deleteAppointment, setDeleteAppointment] = useState<any>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
   const loadAppointments = async () => {
@@ -45,6 +47,30 @@ const Appointments = () => {
       setAppointments(data);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handlePayment = async (appointmentId: string) => {
+    try {
+      setPaymentLoading(appointmentId);
+      const response = await initiatePayment(appointmentId);
+      const gatewayPageURL = response?.data?.gatewayPageURL;
+
+      if (!gatewayPageURL) {
+        throw new Error("Payment gateway URL was not returned.");
+      }
+
+      // Redirect patient to SSLCommerz
+      window.location.href = gatewayPageURL;
+    } catch (error: any) {
+      console.error("Payment initiation error:", error);
+      toast.error(
+        error?.response?.data?.message ??
+          error?.message ??
+          "Failed to initiate payment.",
+      );
+    } finally {
+      setPaymentLoading(null);
     }
   };
 
@@ -70,7 +96,6 @@ const Appointments = () => {
   };
 
   const handleDelete = async (appointmentId: string) => {
-
     const toastId = toast.loading("Deleting appointment...");
 
     try {
@@ -231,6 +256,20 @@ const Appointments = () => {
                   <Eye size={18} />
                   View Details
                 </button>
+
+                {/* Payment */}
+                {appointment.status === "PENDING" && (
+                  <button
+                    type="button"
+                    onClick={() => handlePayment(appointment.id)}
+                    disabled={paymentLoading === appointment.id}
+                    className="flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 transition px-6 py-3 text-white font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {paymentLoading === appointment.id
+                      ? "Redirecting..."
+                      : `Pay ৳${appointment.doctor.consultationFee ?? "N/A"}`}
+                  </button>
+                )}
 
                 {appointment.status === "CANCELLED" ? (
                   <button

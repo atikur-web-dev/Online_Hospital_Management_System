@@ -9,9 +9,13 @@ import {
 
 import { Toaster } from "react-hot-toast";
 
+// Layout
 import Navbar from "./components/layout/Navbar";
+
+// Auth
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
+// Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -25,13 +29,24 @@ import Departments from "./pages/Departments";
 import Services from "./pages/Services";
 import About from "./pages/About";
 
+// Payment
+import PaymentSuccess from "./pages/payment/PaymentSuccess";
+import PaymentFail from "./pages/payment/PaymentFail";
+import PaymentCancel from "./pages/payment/PaymentCancel";
+
+// Doctor
 import DoctorPrescription from "./pages/DoctorPrescription";
 import DoctorEditPrescription from "./pages/DoctorEditPrescription";
 import DoctorPrescriptionView from "./pages/DoctorPrescriptionView";
+
+// Patient
 import Profile from "./pages/Profile";
 import Appointments from "./pages/Appointments";
+
+// Doctor Dashboard
 import DoctorAppointments from "./pages/DoctorAppointments";
 import DoctorDashboard from "./pages/DoctorDashboard";
+
 
 function Layout() {
   const location = useLocation();
@@ -42,7 +57,9 @@ function Layout() {
     "/reset-password",
   ];
 
-  const hideNavbar = hideNavbarRoutes.includes(location.pathname);
+  const hideNavbar = hideNavbarRoutes.includes(
+    location.pathname,
+  );
 
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
@@ -60,6 +77,9 @@ function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+
+      {/* ================= NAVBAR ================= */}
+
       {!hideNavbar && (
         <Navbar
           isLoggedIn={isLoggedIn}
@@ -68,26 +88,64 @@ function Layout() {
         />
       )}
 
+      {/* ================= ROUTES ================= */}
+
       <Routes>
-        <Route path="/" element={<Home />} />
 
-        <Route path="/login" element={<Login />} />
+        {/* ================= PUBLIC ================= */}
 
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={<Home />}
+        />
 
-        <Route path="/email-verified" element={<EmailVerificationResult />} />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-        <Route path="/auth/google/callback" element={<GoogleCallback />} />
+        <Route
+          path="/register"
+          element={<Register />}
+        />
 
-        <Route path="/doctors" element={<Doctors />} />
+        <Route
+          path="/email-verified"
+          element={<EmailVerificationResult />}
+        />
 
-        <Route path="/doctors/:id" element={<DoctorDetails />} />
+        <Route
+          path="/auth/google/callback"
+          element={<GoogleCallback />}
+        />
 
-        <Route path="/departments" element={<Departments />} />
+        <Route
+          path="/doctors"
+          element={<Doctors />}
+        />
 
-        <Route path="/services" element={<Services />} />
+        <Route
+          path="/doctors/:id"
+          element={<DoctorDetails />}
+        />
 
-        <Route path="/about" element={<About />} />
+        <Route
+          path="/departments"
+          element={<Departments />}
+        />
+
+        <Route
+          path="/services"
+          element={<Services />}
+        />
+
+        <Route
+          path="/about"
+          element={<About />}
+        />
+
+
+        {/* ================= PATIENT ================= */}
 
         <Route
           path="/appointments"
@@ -106,6 +164,9 @@ function Layout() {
             </ProtectedRoute>
           }
         />
+
+
+        {/* ================= DOCTOR ================= */}
 
         <Route
           path="/doctor/dashboard"
@@ -151,7 +212,29 @@ function Layout() {
             </ProtectedRoute>
           }
         />
+
+
+        {/* ================= PAYMENT ================= */}
+
+        <Route
+          path="/payment/success"
+          element={<PaymentSuccess />}
+        />
+
+        <Route
+          path="/payment/fail"
+          element={<PaymentFail />}
+        />
+
+        <Route
+          path="/payment/cancel"
+          element={<PaymentCancel />}
+        />
+
       </Routes>
+
+
+      {/* ================= TOASTER ================= */}
 
       <Toaster
         position="top-right"
@@ -159,6 +242,7 @@ function Layout() {
         gutter={16}
         toastOptions={{
           duration: 4500,
+
           style: {
             minWidth: "430px",
             maxWidth: "520px",
@@ -170,23 +254,28 @@ function Layout() {
             background: "#ffffff",
             color: "#064e3b",
             border: "1px solid #d1fae5",
-            boxShadow: "0 16px 40px rgba(0,0,0,.15)",
+            boxShadow:
+              "0 16px 40px rgba(0,0,0,.15)",
           },
+
           success: {
             style: {
               fontSize: "17px",
               fontWeight: "600",
             },
+
             iconTheme: {
               primary: "#10b981",
               secondary: "#ffffff",
             },
           },
+
           error: {
             style: {
               fontSize: "17px",
               fontWeight: "600",
             },
+
             iconTheme: {
               primary: "#ef4444",
               secondary: "#ffffff",
@@ -194,9 +283,11 @@ function Layout() {
           },
         }}
       />
+
     </div>
   );
 }
+
 
 export default function App() {
   return (
