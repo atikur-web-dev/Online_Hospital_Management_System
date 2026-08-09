@@ -1,7 +1,5 @@
 // Backend/src/services/Doctor/Prescription/prescription.service.ts
-
 import prisma from "../../../lib/prisma.js";
-
 import type {
   CreatePrescriptionInput,
   UpdatePrescriptionInput,
@@ -142,6 +140,7 @@ export const getPrescriptionById = async (
         appointment: {
           include: {
             patient: true,
+            doctor: true,
           },
         },
 
