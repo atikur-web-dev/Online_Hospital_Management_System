@@ -143,7 +143,7 @@ export const getDashboard = async (userId: string) => {
   });
 
   if (!doctor) {
-    throw new Error('Doctor profile not found.');
+    throw new Error("Doctor profile not found.");
   }
 
   // Today's date range
@@ -163,7 +163,9 @@ export const getDashboard = async (userId: string) => {
     totalPatients,
     appointments,
     weeklyAppointments,
+    earningsToday,
   ] = await Promise.all([
+    // Today's appointments
     prisma.appointment.count({
       where: {
         doctorId: doctor.id,
@@ -176,22 +178,25 @@ export const getDashboard = async (userId: string) => {
       },
     }),
 
+    // Pending appointments
     prisma.appointment.count({
       where: {
         doctorId: doctor.id,
         doctorArchived: false,
-        status: 'PENDING',
+        status: "PENDING",
       },
     }),
 
+    // Total unique patients
     prisma.appointment.groupBy({
-      by: ['patientId'],
+      by: ["patientId"],
       where: {
         doctorId: doctor.id,
         doctorArchived: false,
       },
     }),
 
+    // Recent appointments
     prisma.appointment.findMany({
       where: {
         doctorId: doctor.id,
@@ -209,12 +214,13 @@ export const getDashboard = async (userId: string) => {
       },
 
       orderBy: {
-        appointmentAt: 'asc',
+        appointmentAt: "asc",
       },
 
       take: 10,
     }),
 
+    // This week's appointments
     prisma.appointment.findMany({
       where: {
         doctorId: doctor.id,
@@ -237,7 +243,24 @@ export const getDashboard = async (userId: string) => {
       },
 
       orderBy: {
-        appointmentAt: 'asc',
+        appointmentAt: "asc",
+      },
+    }),
+
+    // Today's paid earnings
+    prisma.payment.aggregate({
+      where: {
+        doctorId: doctor.id,
+        status: "PAID",
+
+        paidAt: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+
+      _sum: {
+        amount: true,
       },
     }),
   ]);
@@ -247,7 +270,9 @@ export const getDashboard = async (userId: string) => {
       todayAppointments,
       totalPatients: totalPatients.length,
       pendingAppointments,
-      earningsToday: 0,
+
+      // Total amount of PAID payments received today
+      earningsToday: earningsToday._sum.amount ?? 0,
     },
 
     appointments,

@@ -28,9 +28,6 @@ const AppointmentTable = ({ appointments }: Props) => {
           Upcoming Appointments
         </h2>
 
-        <button className="text-emerald-600 font-semibold hover:underline">
-          View All
-        </button>
       </div>
 
       <div className="overflow-x-auto">

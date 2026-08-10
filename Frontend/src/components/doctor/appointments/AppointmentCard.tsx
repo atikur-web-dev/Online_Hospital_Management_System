@@ -64,28 +64,21 @@ const AppointmentCard = ({
 
   const initials = getInitials(appointment.patient.name);
 
-  const profileImage =
-    appointment.patient.user.profileImage;
+  const profileImage = appointment.patient.user.profileImage;
 
   const TimeIcon = timeOfDay.icon;
 
-  const isPending =
-    appointment.status === "PENDING";
+  const isPending = appointment.status === "PENDING";
 
-  const isConfirmed =
-    appointment.status === "CONFIRMED";
+  const isConfirmed = appointment.status === "CONFIRMED";
 
-  const isCompleted =
-    appointment.status === "COMPLETED";
+  const isCompleted = appointment.status === "COMPLETED";
 
-  const isCancelled =
-    appointment.status === "CANCELLED";
+  const isCancelled = appointment.status === "CANCELLED";
 
-  const showActions =
-    !isCompleted && !isCancelled;
+  const showActions = !isCompleted && !isCancelled;
 
-  const showDeletePermanently =
-    isCancelled;
+  const showDeletePermanently = isCancelled;
 
   const handleConfirm = () => {
     onConfirm(appointment.id);
@@ -104,9 +97,7 @@ const AppointmentCard = ({
   };
 
   const handlePrescription = () => {
-    navigate(
-      `/doctor/prescription/${appointment.id}`,
-    );
+    navigate(`/doctor/prescription/${appointment.id}`);
   };
 
   return (
@@ -153,9 +144,7 @@ const AppointmentCard = ({
                     <div className="flex items-center gap-1.5 text-sm text-gray-500">
                       <Phone className="w-4 h-4 shrink-0" />
 
-                      <span>
-                        {appointment.patient.phone}
-                      </span>
+                      <span>{appointment.patient.phone}</span>
                     </div>
                   )}
                 </div>
@@ -168,21 +157,13 @@ const AppointmentCard = ({
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Calendar className="w-4 h-4 text-emerald-500" />
 
-                <span className="font-medium">
-                  {dayLabel}
-                </span>
+                <span className="font-medium">{dayLabel}</span>
 
-                {(
-                  dayLabel === "Today" ||
+                {(dayLabel === "Today" ||
                   dayLabel === "Tomorrow" ||
-                  dayLabel === "Yesterday"
-                ) && (
+                  dayLabel === "Yesterday") && (
                   <span className="text-gray-400">
-                    (
-                    {formatAppointmentDate(
-                      appointment.appointmentAt,
-                    )}
-                    )
+                    ({formatAppointmentDate(appointment.appointmentAt)})
                   </span>
                 )}
               </div>
@@ -191,20 +172,14 @@ const AppointmentCard = ({
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Clock3 className="w-4 h-4 text-emerald-500" />
 
-                <span>
-                  {formatAppointmentTime(
-                    appointment.appointmentAt,
-                  )}
-                </span>
+                <span>{formatAppointmentTime(appointment.appointmentAt)}</span>
 
                 <span
                   className={`flex items-center gap-1 text-xs ${timeOfDay.color}`}
                 >
                   <TimeIcon className="w-3 h-3" />
 
-                  <span>
-                    {timeOfDay.label}
-                  </span>
+                  <span>{timeOfDay.label}</span>
                 </span>
               </div>
 
@@ -255,9 +230,7 @@ const AppointmentCard = ({
                 <button
                   type="button"
                   onClick={() =>
-                    navigate(
-                      `/doctor/prescription/${appointment.prescription?.id}`,
-                    )
+                    navigate(`/doctor/prescription/${appointment.id}`)
                   }
                   className="shrink-0 text-sm font-semibold text-emerald-700 hover:text-emerald-800 transition-colors"
                 >
@@ -269,22 +242,16 @@ const AppointmentCard = ({
 
           {/* Right Actions */}
           <div className="flex flex-col items-start lg:items-end gap-3 lg:gap-4 w-full lg:w-auto">
-            <AppointmentStatusBadge
-              status={appointment.status}
-            />
+            <AppointmentStatusBadge status={appointment.status} />
 
             <AppointmentActions
               appointmentId={appointment.id}
               isPending={isPending}
               isConfirmed={isConfirmed}
               isCompleted={isCompleted}
-              hasPrescription={
-                !!appointment.prescription
-              }
+              hasPrescription={!!appointment.prescription}
               showActions={showActions}
-              showDeletePermanently={
-                showDeletePermanently
-              }
+              showDeletePermanently={showDeletePermanently}
               isConfirming={isConfirming}
               isCompleting={isCompleting}
               isCanceling={isCanceling}
@@ -292,12 +259,8 @@ const AppointmentCard = ({
               onConfirm={handleConfirm}
               onComplete={handleComplete}
               onCancel={handleCancel}
-              onDeletePermanently={
-                handleDeletePermanently
-              }
-              onCreatePrescription={
-                handlePrescription
-              }
+              onDeletePermanently={handleDeletePermanently}
+              onCreatePrescription={handlePrescription}
             />
           </div>
         </div>

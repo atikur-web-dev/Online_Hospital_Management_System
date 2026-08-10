@@ -1,3 +1,4 @@
+// Frontend/src/components/doctor-dashboard/StatsCards.tsx
 import {
   Users,
   CalendarCheck,
