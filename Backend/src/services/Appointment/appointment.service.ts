@@ -406,3 +406,27 @@ export const deleteAppointmentForPatient = async (
     },
   });
 };
+
+/**
+ * Get Doctor Booked Appointment Times
+ */
+export const getDoctorBookedAppointments = async (
+  doctorId: string,
+) => {
+  const appointments = await prisma.appointment.findMany({
+    where: {
+      doctorId,
+      status: {
+        not: "CANCELLED",
+      },
+    },
+    select: {
+      appointmentAt: true,
+    },
+    orderBy: {
+      appointmentAt: "asc",
+    },
+  });
+
+  return appointments;
+};

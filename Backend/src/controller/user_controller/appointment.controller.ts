@@ -144,3 +144,38 @@ export const deleteAppointmentForPatient = async (
     return next(error);
   }
 };
+
+/**
+ * Get Doctor Booked Appointments
+ */
+export const getDoctorBookedAppointments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const doctorId = Array.isArray(req.params.doctorId)
+      ? req.params.doctorId[0]
+      : req.params.doctorId;
+
+    if (!doctorId) {
+      return res.status(400).json({
+        success: false,
+        message: "Doctor ID is required.",
+      });
+    }
+
+    const appointments =
+      await appointmentService.getDoctorBookedAppointments(
+        doctorId,
+      );
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor booked appointments fetched successfully.",
+      data: appointments,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};

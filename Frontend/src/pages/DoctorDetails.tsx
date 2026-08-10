@@ -326,6 +326,7 @@ const DoctorDetails = () => {
             >
               <AppointmentForm
                 doctorId={doctor.id}
+                schedules={doctor.schedules}
                 onSuccess={() => {
                   setOpenBooking(false);
                 }}
