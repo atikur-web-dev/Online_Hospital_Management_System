@@ -24,7 +24,6 @@ import EmailVerificationResult from "./pages/EmailVerification";
 import DoctorSchedule from "./pages/DoctorSchedule";
 import Doctors from "./pages/Doctors";
 import DoctorDetails from "./pages/DoctorDetails";
-
 import Departments from "./pages/Departments";
 import Services from "./pages/Services";
 import About from "./pages/About";

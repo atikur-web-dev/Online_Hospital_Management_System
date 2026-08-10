@@ -15,6 +15,7 @@ export interface Department {
   id: string;
   name: string;
 }
+
 export interface PatientProfile {
   id: string;
   userId: string;
@@ -28,27 +29,29 @@ export interface PatientProfile {
   user: User;
 }
 
+export interface DoctorSchedule {
+  id: string;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  isActive: boolean;
+}
+
 export interface DoctorProfile {
   id: string;
   userId: string;
-
   name: string;
   phone: string | null;
-
   departmentId: string | null;
   department: Department | null;
-
   specialization: string | null;
   qualification: string | null;
-
   experience: number | null;
   consultationFee: number | null;
-
   isAvailable: boolean;
-
+  schedules: DoctorSchedule[];
   createdAt: string;
   updatedAt: string;
-
   user: User;
 }
 
@@ -63,4 +66,7 @@ export interface AdminProfile {
   user: User;
 }
 
-export type Profile = PatientProfile | DoctorProfile | AdminProfile;
+export type Profile =
+  | PatientProfile
+  | DoctorProfile
+  | AdminProfile;

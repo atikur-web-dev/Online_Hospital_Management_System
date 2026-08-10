@@ -121,16 +121,31 @@ export const getDoctorById = async (doctorId: string) => {
           name: true,
         },
       },
+
+      schedules: {
+        where: {
+          isActive: true,
+        },
+        orderBy: {
+          dayOfWeek: "asc",
+        },
+        select: {
+          id: true,
+          dayOfWeek: true,
+          startTime: true,
+          endTime: true,
+          isActive: true,
+        },
+      },
     },
   });
 
   if (!doctor) {
-    throw new Error('Doctor not found.');
+    throw new Error("Doctor not found.");
   }
 
   return doctor;
 };
-
 /**
  * Doctor Dashboard
  */
