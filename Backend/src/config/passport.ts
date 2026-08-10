@@ -20,7 +20,6 @@ passport.use(
         }
 
         // Find existing user
-        // Find existing user
         let user = await prisma.user.findFirst({
           where: {
             OR: [{ email }, { googleId: profile.id }],

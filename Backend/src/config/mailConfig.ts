@@ -10,7 +10,6 @@ export async function sendMail(
   html: string,
 ): Promise<void> {
   try {
-    // Resend API কল
     const { data, error } = await resend.emails.send({
       from: 'CarePlus <onboarding@resend.dev>',
       to: to,

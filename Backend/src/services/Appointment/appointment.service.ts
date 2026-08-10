@@ -135,48 +135,59 @@ export const getMyAppointments = async (
   }
 
   const appointments = await prisma.appointment.findMany({
-    where: {
-      patientId: patient.id,
-      patientDeletedAt: null,
-    },
+  where: {
+    patientId: patient.id,
+    patientDeletedAt: null,
+  },
 
-    include: {
-      doctor: {
-        select: {
-          id: true,
-          name: true,
-          phone: true,
+  include: {
+    doctor: {
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        specialization: true,
+        qualification: true,
+        experience: true,
+        consultationFee: true,
+        isAvailable: true,
 
-          specialization: true,
-          qualification: true,
-          experience: true,
-          consultationFee: true,
-          isAvailable: true,
-
-          department: {
-            select: {
-              id: true,
-              name: true,
-            },
+        department: {
+          select: {
+            id: true,
+            name: true,
           },
+        },
 
-          user: {
-            select: {
-              profileImage: true,
-              email: true,
-            },
+        user: {
+          select: {
+            profileImage: true,
+            email: true,
           },
         },
       },
     },
-
-    orderBy: {
-      appointmentAt: "desc",
+    payment: {
+      select: {
+        id: true,
+        amount: true,
+        currency: true,
+        status: true,
+        transactionId: true,
+        paidAt: true,
+      },
     },
-  });
+  },
+
+  orderBy: {
+    appointmentAt: "desc",
+  },
+});
 
   return appointments;
 };
+
+
 
 export const cancelAppointment = async (
   patientUserId: string,

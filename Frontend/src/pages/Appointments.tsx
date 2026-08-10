@@ -8,11 +8,14 @@ import {
   CircleAlert,
   Eye,
   XCircle,
+  CreditCard,
+  CheckCircle2,
 } from "lucide-react";
 import { initiatePayment } from "../api/payment.api";
 import DeleteAppointmentModal from "../components/appointment/DeleteAppointmentModal";
 import { useAppointment } from "../hooks/useAppointment";
 import AppointmentDetailsModal from "../components/appointment/AppointmentDetailsModal";
+
 const statusStyle = (status: string) => {
   switch (status) {
     case "CONFIRMED":
@@ -53,8 +56,11 @@ const Appointments = () => {
   const handlePayment = async (appointmentId: string) => {
     try {
       setPaymentLoading(appointmentId);
+
       const response = await initiatePayment(appointmentId);
-      const gatewayPageURL = response?.data?.gatewayPageURL;
+
+      const gatewayPageURL =
+        response?.data?.gatewayPageURL ?? response?.data?.GatewayPageURL;
 
       if (!gatewayPageURL) {
         throw new Error("Payment gateway URL was not returned.");
@@ -64,6 +70,7 @@ const Appointments = () => {
       window.location.href = gatewayPageURL;
     } catch (error: any) {
       console.error("Payment initiation error:", error);
+
       toast.error(
         error?.response?.data?.message ??
           error?.message ??
@@ -246,9 +253,9 @@ const Appointments = () => {
 
               {/* Buttons */}
 
-              {/* Buttons */}
-
               <div className="mt-8 flex flex-wrap gap-4">
+                {/* View Details */}
+
                 <button
                   onClick={() => setSelectedAppointment(appointment)}
                   className="flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 transition px-6 py-3 text-white font-semibold"
@@ -258,18 +265,28 @@ const Appointments = () => {
                 </button>
 
                 {/* Payment */}
-                {appointment.status === "PENDING" && (
+
+                {appointment.payment?.status === "PAID" ? (
+                  <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-6 py-3 font-semibold text-emerald-700">
+                    <CheckCircle2 size={18} />
+                    Paid
+                  </div>
+                ) : appointment.status === "PENDING" ? (
                   <button
                     type="button"
                     onClick={() => handlePayment(appointment.id)}
                     disabled={paymentLoading === appointment.id}
-                    className="flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 transition px-6 py-3 text-white font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
+                    <CreditCard size={18} />
+
                     {paymentLoading === appointment.id
                       ? "Redirecting..."
                       : `Pay ৳${appointment.doctor.consultationFee ?? "N/A"}`}
                   </button>
-                )}
+                ) : null}
+
+                {/* Cancel / Delete */}
 
                 {appointment.status === "CANCELLED" ? (
                   <button
