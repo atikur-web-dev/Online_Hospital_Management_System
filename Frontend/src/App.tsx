@@ -21,7 +21,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import GoogleCallback from "./pages/GoogleCallback";
 import EmailVerificationResult from "./pages/EmailVerification";
-
+import DoctorSchedule from "./pages/DoctorSchedule";
 import Doctors from "./pages/Doctors";
 import DoctorDetails from "./pages/DoctorDetails";
 
@@ -47,7 +47,6 @@ import Appointments from "./pages/Appointments";
 import DoctorAppointments from "./pages/DoctorAppointments";
 import DoctorDashboard from "./pages/DoctorDashboard";
 
-
 function Layout() {
   const location = useLocation();
 
@@ -57,9 +56,7 @@ function Layout() {
     "/reset-password",
   ];
 
-  const hideNavbar = hideNavbarRoutes.includes(
-    location.pathname,
-  );
+  const hideNavbar = hideNavbarRoutes.includes(location.pathname);
 
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
@@ -77,7 +74,6 @@ function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       {/* ================= NAVBAR ================= */}
 
       {!hideNavbar && (
@@ -91,59 +87,27 @@ function Layout() {
       {/* ================= ROUTES ================= */}
 
       <Routes>
-
         {/* ================= PUBLIC ================= */}
 
-        <Route
-          path="/"
-          element={<Home />}
-        />
+        <Route path="/" element={<Home />} />
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+        <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/register"
-          element={<Register />}
-        />
+        <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/email-verified"
-          element={<EmailVerificationResult />}
-        />
+        <Route path="/email-verified" element={<EmailVerificationResult />} />
 
-        <Route
-          path="/auth/google/callback"
-          element={<GoogleCallback />}
-        />
+        <Route path="/auth/google/callback" element={<GoogleCallback />} />
 
-        <Route
-          path="/doctors"
-          element={<Doctors />}
-        />
+        <Route path="/doctors" element={<Doctors />} />
 
-        <Route
-          path="/doctors/:id"
-          element={<DoctorDetails />}
-        />
+        <Route path="/doctors/:id" element={<DoctorDetails />} />
 
-        <Route
-          path="/departments"
-          element={<Departments />}
-        />
+        <Route path="/departments" element={<Departments />} />
 
-        <Route
-          path="/services"
-          element={<Services />}
-        />
+        <Route path="/services" element={<Services />} />
 
-        <Route
-          path="/about"
-          element={<About />}
-        />
-
+        <Route path="/about" element={<About />} />
 
         {/* ================= PATIENT ================= */}
 
@@ -164,7 +128,6 @@ function Layout() {
             </ProtectedRoute>
           }
         />
-
 
         {/* ================= DOCTOR ================= */}
 
@@ -213,26 +176,23 @@ function Layout() {
           }
         />
 
+        <Route
+          path="/doctor/schedule"
+          element={
+            <ProtectedRoute>
+              <DoctorSchedule />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ================= PAYMENT ================= */}
 
-        <Route
-          path="/payment/success"
-          element={<PaymentSuccess />}
-        />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
 
-        <Route
-          path="/payment/fail"
-          element={<PaymentFail />}
-        />
+        <Route path="/payment/fail" element={<PaymentFail />} />
 
-        <Route
-          path="/payment/cancel"
-          element={<PaymentCancel />}
-        />
-
+        <Route path="/payment/cancel" element={<PaymentCancel />} />
       </Routes>
-
 
       {/* ================= TOASTER ================= */}
 
@@ -254,8 +214,7 @@ function Layout() {
             background: "#ffffff",
             color: "#064e3b",
             border: "1px solid #d1fae5",
-            boxShadow:
-              "0 16px 40px rgba(0,0,0,.15)",
+            boxShadow: "0 16px 40px rgba(0,0,0,.15)",
           },
 
           success: {
@@ -283,11 +242,9 @@ function Layout() {
           },
         }}
       />
-
     </div>
   );
 }
-
 
 export default function App() {
   return (

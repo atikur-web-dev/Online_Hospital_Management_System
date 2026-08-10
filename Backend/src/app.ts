@@ -17,6 +17,7 @@ import appointmentRoutes from "./routes/appointment.routes.js";
 import doctorAppointmentRoutes from "./routes/doctorAppointment.routes.js";
 import prescriptionRoutes from "./routes/prescription.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
+import doctorScheduleRoutes from "./routes/doctorSchedule.routes.js";
 
 
 dotenv.config();
@@ -84,6 +85,7 @@ app.use("/api/v1/appointments", appointmentRoutes);
 app.use("/api/v1/doctor/appointments", doctorAppointmentRoutes);
 app.use("/api/v1/prescriptions", prescriptionRoutes);
 app.use("/api/v1/payment", paymentRoutes);
+app.use("/api/v1/doctor-schedule", doctorScheduleRoutes);
 
 // Health Check
 app.get('/api/health', (_req: Request, res: Response) => {

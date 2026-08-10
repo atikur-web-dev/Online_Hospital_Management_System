@@ -284,3 +284,120 @@ export const getDashboard = async (userId: string) => {
     ),
   };
 };
+
+export const getMySchedule = async (userId: string) => {
+  const doctor = await prisma.doctorProfile.findUnique({
+    where: {
+      userId,
+    },
+    select: {
+      id: true,
+      isAvailable: true,
+      schedules: {
+        orderBy: {
+          dayOfWeek: "asc",
+        },
+      },
+    },
+  });
+
+  if (!doctor) {
+    throw new Error("Doctor profile not found.");
+  }
+
+  return doctor;
+};
+
+export const updateMySchedule = async (
+  userId: string,
+  schedules: {
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+    isActive: boolean;
+  }[],
+) => {
+  const doctor = await prisma.doctorProfile.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!doctor) {
+    throw new Error("Doctor profile not found.");
+  }
+
+  for (const schedule of schedules) {
+    if (
+      schedule.dayOfWeek < 0 ||
+      schedule.dayOfWeek > 6
+    ) {
+      throw new Error("Invalid day of week.");
+    }
+
+    if (
+      !/^\d{2}:\d{2}$/.test(schedule.startTime) ||
+      !/^\d{2}:\d{2}$/.test(schedule.endTime)
+    ) {
+      throw new Error(
+        "Time must be in HH:mm format.",
+      );
+    }
+
+    if (
+      schedule.isActive &&
+      schedule.startTime >= schedule.endTime
+    ) {
+      throw new Error(
+        "Start time must be earlier than end time.",
+      );
+    }
+  }
+
+  await prisma.$transaction(
+    schedules.map((schedule) =>
+      prisma.doctorSchedule.upsert({
+        where: {
+          doctorId_dayOfWeek: {
+            doctorId: doctor.id,
+            dayOfWeek: schedule.dayOfWeek,
+          },
+        },
+        update: {
+          startTime: schedule.startTime,
+          endTime: schedule.endTime,
+          isActive: schedule.isActive,
+        },
+        create: {
+          doctorId: doctor.id,
+          dayOfWeek: schedule.dayOfWeek,
+          startTime: schedule.startTime,
+          endTime: schedule.endTime,
+          isActive: schedule.isActive,
+        },
+      }),
+    ),
+  );
+
+  return getMySchedule(userId);
+};
+
+export const updateAvailability = async (
+  userId: string,
+  isAvailable: boolean,
+) => {
+  const doctor = await prisma.doctorProfile.update({
+    where: {
+      userId,
+    },
+    data: {
+      isAvailable,
+    },
+    select: {
+      id: true,
+      isAvailable: true,
+    },
+  });
+
+  return doctor;
+};
