@@ -24,6 +24,12 @@ const DoctorDetails = () => {
   const { id } = useParams();
 
   const { doctor, loading, error } = useDoctor(id);
+  console.log(
+  "DOCTOR SCHEDULES:",
+  JSON.stringify(doctor?.schedules, null, 2),
+);
+  console.log("DOCTOR ID:", id);
+  console.log("DOCTOR ERROR:", error);
 
   const [openBooking, setOpenBooking] = useState(false);
 

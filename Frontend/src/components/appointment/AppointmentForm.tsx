@@ -1,7 +1,11 @@
 // Frontend/src/components/appointment/AppointmentForm.tsx
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { Button } from "../common";
-import { createAppointment } from "../../api/appointment.api";
+import {
+  createAppointment,
+  getDoctorBookedAppointments,
+} from "../../api/appointment.api";
 import toast from "react-hot-toast";
 import type { DoctorSchedule } from "../../types/profile.types";
 
@@ -30,8 +34,18 @@ const AppointmentForm = ({
   const [appointmentTime, setAppointmentTime] = useState("");
   const [problem, setProblem] = useState("");
 
+  const [bookedAppointments, setBookedAppointments] = useState<
+    { appointmentAt: string }[]
+  >([]);
+
+  const [loadingBookedAppointments, setLoadingBookedAppointments] =
+    useState(false);
+
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Find schedule for selected day
+   */
   const selectedSchedule = appointmentDate
     ? schedules.find(
         (schedule) =>
@@ -40,6 +54,49 @@ const AppointmentForm = ({
       )
     : undefined;
 
+  const selectedDateBookedTimes = bookedAppointments
+    .filter((appointment) => {
+      const bookedDate = new Date(appointment.appointmentAt);
+
+      const selectedDate = new Date(`${appointmentDate}T00:00:00`);
+
+      return (
+        bookedDate.getFullYear() === selectedDate.getFullYear() &&
+        bookedDate.getMonth() === selectedDate.getMonth() &&
+        bookedDate.getDate() === selectedDate.getDate()
+      );
+    })
+    .map((appointment) => {
+      const date = new Date(appointment.appointmentAt);
+
+      return `${String(date.getHours()).padStart(2, "0")}:${String(
+        date.getMinutes(),
+      ).padStart(2, "0")}`;
+    });
+  /**
+   * Load doctor's booked appointments
+   */
+  useEffect(() => {
+    const loadBookedAppointments = async () => {
+      try {
+        setLoadingBookedAppointments(true);
+
+        const response = await getDoctorBookedAppointments(doctorId);
+
+        setBookedAppointments(response.data ?? []);
+      } catch (error) {
+        console.error("Failed to load booked appointments:", error);
+      } finally {
+        setLoadingBookedAppointments(false);
+      }
+    };
+
+    loadBookedAppointments();
+  }, [doctorId]);
+
+  /**
+   * Submit appointment
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -49,15 +106,19 @@ const AppointmentForm = ({
     }
 
     if (!selectedSchedule) {
-      toast.error(
-        "The doctor is not available on the selected day.",
-      );
+      toast.error("The doctor is not available on the selected day.");
       return;
     }
 
-    const [hour, minute] = appointmentTime
-      .split(":")
-      .map(Number);
+    if (selectedDateBookedTimes.includes(appointmentTime)) {
+      toast.error(
+        "This time slot is already booked. Please choose another time.",
+      );
+
+      return;
+    }
+
+    const [hour, minute] = appointmentTime.split(":").map(Number);
 
     const appointmentMinutes = hour * 60 + minute;
 
@@ -69,12 +130,13 @@ const AppointmentForm = ({
       .split(":")
       .map(Number);
 
-    const scheduleStartMinutes =
-      startHour * 60 + startMinute;
+    const scheduleStartMinutes = startHour * 60 + startMinute;
 
-    const scheduleEndMinutes =
-      endHour * 60 + endMinute;
+    const scheduleEndMinutes = endHour * 60 + endMinute;
 
+    /**
+     * Check schedule working hours
+     */
     if (
       appointmentMinutes < scheduleStartMinutes ||
       appointmentMinutes >= scheduleEndMinutes
@@ -82,6 +144,7 @@ const AppointmentForm = ({
       toast.error(
         `Doctor is available from ${selectedSchedule.startTime} to ${selectedSchedule.endTime} on ${DAYS[selectedSchedule.dayOfWeek]}.`,
       );
+
       return;
     }
 
@@ -98,9 +161,7 @@ const AppointmentForm = ({
         problem,
       });
 
-      toast.success(
-        "Your appointment has been booked successfully.",
-      );
+      toast.success("Your appointment has been booked successfully.");
 
       onSuccess?.();
     } catch (error: any) {
@@ -108,12 +169,12 @@ const AppointmentForm = ({
         toast.error(
           "Login required. Please login first to book an appointment.",
         );
+
         return;
       }
 
       toast.error(
-        error?.response?.data?.message ??
-          "Failed to book appointment.",
+        error?.response?.data?.message ?? "Failed to book appointment.",
       );
     } finally {
       setLoading(false);
@@ -134,6 +195,7 @@ const AppointmentForm = ({
           min={new Date().toISOString().split("T")[0]}
           onChange={(e) => {
             setAppointmentDate(e.target.value);
+
             setAppointmentTime("");
           }}
           className="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -148,8 +210,7 @@ const AppointmentForm = ({
 
         {selectedSchedule && (
           <p className="mt-2 text-sm text-emerald-600">
-            Available: {selectedSchedule.startTime} -{" "}
-            {selectedSchedule.endTime}
+            Available: {selectedSchedule.startTime} - {selectedSchedule.endTime}
           </p>
         )}
       </div>
@@ -165,13 +226,17 @@ const AppointmentForm = ({
           value={appointmentTime}
           min={selectedSchedule?.startTime}
           max={selectedSchedule?.endTime}
-          onChange={(e) =>
-            setAppointmentTime(e.target.value)
-          }
+          onChange={(e) => setAppointmentTime(e.target.value)}
           disabled={!selectedSchedule}
           className="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
           required
         />
+
+        {loadingBookedAppointments && (
+          <p className="mt-2 text-sm text-gray-500">
+            Checking available slots...
+          </p>
+        )}
       </div>
 
       {/* Problem */}
@@ -189,7 +254,12 @@ const AppointmentForm = ({
         />
       </div>
 
-      <Button type="submit" fullWidth isLoading={loading}>
+      {/* Submit */}
+      <Button
+        type="submit"
+        fullWidth
+        isLoading={loading || loadingBookedAppointments}
+      >
         Confirm Appointment
       </Button>
     </form>

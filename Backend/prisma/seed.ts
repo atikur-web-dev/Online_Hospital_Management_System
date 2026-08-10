@@ -20,7 +20,13 @@ const doctors = [
     experience: 12,
     consultationFee: 1200,
     image: 'https://randomuser.me/api/portraits/women/1.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 3, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Michael Brown',
     email: 'doctor2@careplus.com',
@@ -32,7 +38,13 @@ const doctors = [
     experience: 10,
     consultationFee: 1500,
     image: 'https://randomuser.me/api/portraits/men/2.jpg',
+    schedules: [
+      { dayOfWeek: 2, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 4, startTime: '09:00', endTime: '11:30' },
+      { dayOfWeek: 6, startTime: '10:00', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Emily Watson',
     email: 'doctor3@careplus.com',
@@ -44,7 +56,13 @@ const doctors = [
     experience: 9,
     consultationFee: 1000,
     image: 'https://randomuser.me/api/portraits/women/3.jpg',
+    schedules: [
+      { dayOfWeek: 0, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 2, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 4, startTime: '08:00', endTime: '10:00' },
+    ],
   },
+
   {
     name: 'Dr. David Lee',
     email: 'doctor4@careplus.com',
@@ -56,7 +74,13 @@ const doctors = [
     experience: 14,
     consultationFee: 1800,
     image: 'https://randomuser.me/api/portraits/men/4.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 3, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 6, startTime: '09:00', endTime: '11:00' },
+    ],
   },
+
   {
     name: 'Dr. Lisa Chen',
     email: 'doctor5@careplus.com',
@@ -68,7 +92,13 @@ const doctors = [
     experience: 8,
     consultationFee: 900,
     image: 'https://randomuser.me/api/portraits/women/5.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 2, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 5, startTime: '10:30', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. James Wilson',
     email: 'doctor6@careplus.com',
@@ -80,7 +110,13 @@ const doctors = [
     experience: 11,
     consultationFee: 1100,
     image: 'https://randomuser.me/api/portraits/men/6.jpg',
+    schedules: [
+      { dayOfWeek: 0, startTime: '09:00', endTime: '11:30' },
+      { dayOfWeek: 3, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Sophia Khan',
     email: 'doctor7@careplus.com',
@@ -92,7 +128,13 @@ const doctors = [
     experience: 13,
     consultationFee: 1300,
     image: 'https://randomuser.me/api/portraits/women/7.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 3, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 4, startTime: '10:00', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Robert Kim',
     email: 'doctor8@careplus.com',
@@ -104,7 +146,13 @@ const doctors = [
     experience: 9,
     consultationFee: 950,
     image: 'https://randomuser.me/api/portraits/men/8.jpg',
+    schedules: [
+      { dayOfWeek: 2, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 4, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 6, startTime: '10:30', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Emma Thompson',
     email: 'doctor9@careplus.com',
@@ -116,7 +164,13 @@ const doctors = [
     experience: 15,
     consultationFee: 1600,
     image: 'https://randomuser.me/api/portraits/women/9.jpg',
+    schedules: [
+      { dayOfWeek: 0, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 2, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 5, startTime: '09:00', endTime: '11:00' },
+    ],
   },
+
   {
     name: 'Dr. Daniel Martinez',
     email: 'doctor10@careplus.com',
@@ -128,7 +182,13 @@ const doctors = [
     experience: 8,
     consultationFee: 1400,
     image: 'https://randomuser.me/api/portraits/men/10.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '08:30', endTime: '11:00' },
+      { dayOfWeek: 3, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 6, startTime: '09:00', endTime: '11:30' },
+    ],
   },
+
   {
     name: 'Dr. Olivia Davis',
     email: 'doctor11@careplus.com',
@@ -140,7 +200,13 @@ const doctors = [
     experience: 7,
     consultationFee: 950,
     image: 'https://randomuser.me/api/portraits/women/11.jpg',
+    schedules: [
+      { dayOfWeek: 0, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 3, startTime: '08:00', endTime: '10:30' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. John Anderson',
     email: 'doctor12@careplus.com',
@@ -152,7 +218,13 @@ const doctors = [
     experience: 16,
     consultationFee: 2000,
     image: 'https://randomuser.me/api/portraits/men/12.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 4, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 6, startTime: '10:30', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Maria Garcia',
     email: 'doctor13@careplus.com',
@@ -164,7 +236,13 @@ const doctors = [
     experience: 10,
     consultationFee: 1100,
     image: 'https://randomuser.me/api/portraits/women/13.jpg',
+    schedules: [
+      { dayOfWeek: 2, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 3, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. William Taylor',
     email: 'doctor14@careplus.com',
@@ -176,7 +254,13 @@ const doctors = [
     experience: 12,
     consultationFee: 1200,
     image: 'https://randomuser.me/api/portraits/men/14.jpg',
+    schedules: [
+      { dayOfWeek: 0, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 2, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 4, startTime: '10:00', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Jennifer White',
     email: 'doctor15@careplus.com',
@@ -188,7 +272,13 @@ const doctors = [
     experience: 14,
     consultationFee: 1500,
     image: 'https://randomuser.me/api/portraits/women/15.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 3, startTime: '08:00', endTime: '10:30' },
+      { dayOfWeek: 5, startTime: '10:30', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Thomas Moore',
     email: 'doctor16@careplus.com',
@@ -200,7 +290,13 @@ const doctors = [
     experience: 11,
     consultationFee: 1050,
     image: 'https://randomuser.me/api/portraits/men/16.jpg',
+    schedules: [
+      { dayOfWeek: 0, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 2, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 6, startTime: '09:00', endTime: '11:30' },
+    ],
   },
+
   {
     name: 'Dr. Jessica Lee',
     email: 'doctor17@careplus.com',
@@ -212,7 +308,13 @@ const doctors = [
     experience: 9,
     consultationFee: 1250,
     image: 'https://randomuser.me/api/portraits/women/17.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 4, startTime: '09:00', endTime: '11:30' },
+      { dayOfWeek: 6, startTime: '10:00', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Mark Wilson',
     email: 'doctor18@careplus.com',
@@ -224,7 +326,13 @@ const doctors = [
     experience: 13,
     consultationFee: 1550,
     image: 'https://randomuser.me/api/portraits/men/18.jpg',
+    schedules: [
+      { dayOfWeek: 0, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 2, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 5, startTime: '10:30', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Laura Smith',
     email: 'doctor19@careplus.com',
@@ -236,7 +344,13 @@ const doctors = [
     experience: 6,
     consultationFee: 900,
     image: 'https://randomuser.me/api/portraits/women/19.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 3, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 6, startTime: '09:00', endTime: '11:00' },
+    ],
   },
+
   {
     name: 'Dr. Richard Johnson',
     email: 'doctor20@careplus.com',
@@ -248,7 +362,13 @@ const doctors = [
     experience: 10,
     consultationFee: 1700,
     image: 'https://randomuser.me/api/portraits/men/20.jpg',
+    schedules: [
+      { dayOfWeek: 0, startTime: '08:00', endTime: '10:30' },
+      { dayOfWeek: 2, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Patricia Brown',
     email: 'doctor21@careplus.com',
@@ -260,7 +380,13 @@ const doctors = [
     experience: 12,
     consultationFee: 1000,
     image: 'https://randomuser.me/api/portraits/women/21.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 3, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 4, startTime: '09:00', endTime: '11:00' },
+    ],
   },
+
   {
     name: 'Dr. Charles Davis',
     email: 'doctor22@careplus.com',
@@ -272,7 +398,13 @@ const doctors = [
     experience: 9,
     consultationFee: 1150,
     image: 'https://randomuser.me/api/portraits/men/22.jpg',
+    schedules: [
+      { dayOfWeek: 0, startTime: '09:00', endTime: '11:30' },
+      { dayOfWeek: 2, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 5, startTime: '10:30', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Michelle Rodriguez',
     email: 'doctor23@careplus.com',
@@ -284,7 +416,13 @@ const doctors = [
     experience: 11,
     consultationFee: 1350,
     image: 'https://randomuser.me/api/portraits/women/23.jpg',
+    schedules: [
+      { dayOfWeek: 1, startTime: '10:30', endTime: '12:00' },
+      { dayOfWeek: 3, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 6, startTime: '09:30', endTime: '11:30' },
+    ],
   },
+
   {
     name: 'Dr. George Martinez',
     email: 'doctor24@careplus.com',
@@ -296,7 +434,13 @@ const doctors = [
     experience: 10,
     consultationFee: 980,
     image: 'https://randomuser.me/api/portraits/men/24.jpg',
+    schedules: [
+      { dayOfWeek: 0, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 4, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 6, startTime: '10:00', endTime: '12:00' },
+    ],
   },
+
   {
     name: 'Dr. Amanda Wilson',
     email: 'doctor25@careplus.com',
@@ -308,6 +452,11 @@ const doctors = [
     experience: 13,
     consultationFee: 1400,
     image: 'https://randomuser.me/api/portraits/women/25.jpg',
+    schedules: [
+      { dayOfWeek: 2, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 4, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
   },
 ];
 
@@ -398,7 +547,7 @@ async function main(): Promise<void> {
     // Hash Password
     const hashedPassword = await bcrypt.hash(doctor.password, 10);
 
-    // Create User + Doctor Profile
+    // Create User + Doctor Profile + Consultation Schedule
     await prisma.$transaction(async (tx) => {
       const newUser = await tx.user.create({
         data: {
@@ -411,7 +560,7 @@ async function main(): Promise<void> {
         },
       });
 
-      await tx.doctorProfile.create({
+      const newDoctor = await tx.doctorProfile.create({
         data: {
           userId: newUser.id,
           name: doctor.name,
@@ -423,6 +572,19 @@ async function main(): Promise<void> {
           consultationFee: doctor.consultationFee,
           isAvailable: true,
         },
+      });
+
+      // Doctor-specific consultation schedule
+      const doctorSchedules = getDoctorSchedule(doctor.email);
+
+      await tx.doctorSchedule.createMany({
+        data: doctorSchedules.map((schedule) => ({
+          doctorId: newDoctor.id,
+          dayOfWeek: schedule.dayOfWeek,
+          startTime: schedule.startTime,
+          endTime: schedule.endTime,
+          isActive: true,
+        })),
       });
     });
 
@@ -494,6 +656,169 @@ async function main(): Promise<void> {
   console.log(`Password: ${adminPassword}`);
   console.log(`Admin ID: ${admin.id}`);
 }
+
+const getDoctorSchedule = (email: string) => {
+  const schedules: Record<
+    string,
+    {
+      dayOfWeek: number;
+      startTime: string;
+      endTime: string;
+    }[]
+  > = {
+    'doctor1@careplus.com': [
+      { dayOfWeek: 1, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 3, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
+
+    'doctor2@careplus.com': [
+      { dayOfWeek: 2, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 4, startTime: '09:00', endTime: '11:30' },
+      { dayOfWeek: 6, startTime: '10:00', endTime: '12:00' },
+    ],
+
+    'doctor3@careplus.com': [
+      { dayOfWeek: 0, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 2, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 4, startTime: '08:00', endTime: '10:00' },
+    ],
+
+    'doctor4@careplus.com': [
+      { dayOfWeek: 1, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 3, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 6, startTime: '09:00', endTime: '11:00' },
+    ],
+
+    'doctor5@careplus.com': [
+      { dayOfWeek: 1, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 2, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 5, startTime: '10:30', endTime: '12:00' },
+    ],
+
+    'doctor6@careplus.com': [
+      { dayOfWeek: 0, startTime: '09:00', endTime: '11:30' },
+      { dayOfWeek: 3, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
+
+    'doctor7@careplus.com': [
+      { dayOfWeek: 1, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 3, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 4, startTime: '10:00', endTime: '12:00' },
+    ],
+
+    'doctor8@careplus.com': [
+      { dayOfWeek: 2, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 4, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 6, startTime: '10:30', endTime: '12:00' },
+    ],
+
+    'doctor9@careplus.com': [
+      { dayOfWeek: 0, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 2, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 5, startTime: '09:00', endTime: '11:00' },
+    ],
+
+    'doctor10@careplus.com': [
+      { dayOfWeek: 1, startTime: '08:30', endTime: '11:00' },
+      { dayOfWeek: 3, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 6, startTime: '09:00', endTime: '11:30' },
+    ],
+
+    'doctor11@careplus.com': [
+      { dayOfWeek: 0, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 3, startTime: '08:00', endTime: '10:30' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
+
+    'doctor12@careplus.com': [
+      { dayOfWeek: 1, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 4, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 6, startTime: '10:30', endTime: '12:00' },
+    ],
+
+    'doctor13@careplus.com': [
+      { dayOfWeek: 2, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 3, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
+
+    'doctor14@careplus.com': [
+      { dayOfWeek: 0, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 2, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 4, startTime: '10:00', endTime: '12:00' },
+    ],
+
+    'doctor15@careplus.com': [
+      { dayOfWeek: 1, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 3, startTime: '08:00', endTime: '10:30' },
+      { dayOfWeek: 5, startTime: '10:30', endTime: '12:00' },
+    ],
+
+    'doctor16@careplus.com': [
+      { dayOfWeek: 0, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 2, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 6, startTime: '09:00', endTime: '11:30' },
+    ],
+
+    'doctor17@careplus.com': [
+      { dayOfWeek: 1, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 4, startTime: '09:00', endTime: '11:30' },
+      { dayOfWeek: 6, startTime: '10:00', endTime: '12:00' },
+    ],
+
+    'doctor18@careplus.com': [
+      { dayOfWeek: 0, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 2, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 5, startTime: '10:30', endTime: '12:00' },
+    ],
+
+    'doctor19@careplus.com': [
+      { dayOfWeek: 1, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 3, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 6, startTime: '09:00', endTime: '11:00' },
+    ],
+
+    'doctor20@careplus.com': [
+      { dayOfWeek: 0, startTime: '08:00', endTime: '10:30' },
+      { dayOfWeek: 2, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
+
+    'doctor21@careplus.com': [
+      { dayOfWeek: 1, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 3, startTime: '10:00', endTime: '12:00' },
+      { dayOfWeek: 4, startTime: '09:00', endTime: '11:00' },
+    ],
+
+    'doctor22@careplus.com': [
+      { dayOfWeek: 0, startTime: '09:00', endTime: '11:30' },
+      { dayOfWeek: 2, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 5, startTime: '10:30', endTime: '12:00' },
+    ],
+
+    'doctor23@careplus.com': [
+      { dayOfWeek: 1, startTime: '10:30', endTime: '12:00' },
+      { dayOfWeek: 3, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 6, startTime: '09:30', endTime: '11:30' },
+    ],
+
+    'doctor24@careplus.com': [
+      { dayOfWeek: 0, startTime: '08:00', endTime: '10:00' },
+      { dayOfWeek: 4, startTime: '09:00', endTime: '11:00' },
+      { dayOfWeek: 6, startTime: '10:00', endTime: '12:00' },
+    ],
+
+    'doctor25@careplus.com': [
+      { dayOfWeek: 2, startTime: '08:30', endTime: '10:30' },
+      { dayOfWeek: 4, startTime: '09:30', endTime: '11:30' },
+      { dayOfWeek: 5, startTime: '10:00', endTime: '12:00' },
+    ],
+  };
+
+  return schedules[email] ?? [];
+};
 
 main()
   .catch((e) => {

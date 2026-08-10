@@ -37,3 +37,13 @@ export const deleteAppointmentForPatient = async (
     `/appointments/${appointmentId}/delete`,
   );
 };
+
+export const getDoctorBookedAppointments = async (
+  doctorId: string,
+) => {
+  const response = await api.get(
+    `/appointments/doctor/${doctorId}/booked`,
+  );
+
+  return response.data;
+};

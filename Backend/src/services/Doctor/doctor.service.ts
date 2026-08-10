@@ -100,6 +100,19 @@ export const getAllDoctors = async ({
  * Get Single Doctor
  */
 export const getDoctorById = async (doctorId: string) => {
+  console.log("CHECKING DOCTOR ID:", doctorId);
+
+  const rawSchedules = await prisma.doctorSchedule.findMany({
+    where: {
+      doctorId,
+    },
+  });
+
+  console.log(
+    "RAW SCHEDULES FROM DATABASE:",
+    JSON.stringify(rawSchedules, null, 2),
+  );
+
   const doctor = await prisma.doctorProfile.findUnique({
     where: {
       id: doctorId,
@@ -123,9 +136,6 @@ export const getDoctorById = async (doctorId: string) => {
       },
 
       schedules: {
-        where: {
-          isActive: true,
-        },
         orderBy: {
           dayOfWeek: "asc",
         },
@@ -143,6 +153,11 @@ export const getDoctorById = async (doctorId: string) => {
   if (!doctor) {
     throw new Error("Doctor not found.");
   }
+
+  console.log(
+    "DOCTOR RESULT:",
+    JSON.stringify(doctor, null, 2),
+  );
 
   return doctor;
 };
