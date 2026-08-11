@@ -27,7 +27,7 @@ import DoctorDetails from "./pages/DoctorDetails";
 import Departments from "./pages/Departments";
 import Services from "./pages/Services";
 import About from "./pages/About";
-
+import MedicalRecords from "./pages/MedicalRecords";
 // Payment
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
 import PaymentFail from "./pages/payment/PaymentFail";
@@ -124,6 +124,35 @@ function Layout() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ================= PATIENT ================= */}
+
+        <Route
+          path="/appointments"
+          element={
+            <ProtectedRoute>
+              <Appointments />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/medical-records"
+          element={
+            <ProtectedRoute>
+              <MedicalRecords />
             </ProtectedRoute>
           }
         />
