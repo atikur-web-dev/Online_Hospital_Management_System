@@ -5,7 +5,10 @@ import {
   updateMedicalHistorySchema,
   createMedicalReportSchema,
 } from "../../validators/medicalRecord.validator.js";
-import { uploadImage, deleteImage } from "../cloudinary.service.js";
+import {
+  uploadMedicalFile,
+  deleteImage,
+} from "../cloudinary.service.js";
 
 
 // ============================================================
@@ -159,10 +162,10 @@ export const uploadMedicalReport = async (
 
   const data = createMedicalReportSchema.parse(body);
 
-  const uploadedFile = await uploadImage(
-    file,
-    "careplus/medical-reports",
-  );
+  const uploadedFile = await uploadMedicalFile(
+  file,
+  "careplus/medical-reports",
+);
 
   return prisma.medicalReport.create({
     data: {

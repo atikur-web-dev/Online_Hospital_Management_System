@@ -1,60 +1,43 @@
 // Frontend/src/api/medicalRecord.api.ts
 import api from "./axios";
 
-export interface MedicalHistory {
-  id: string;
-  patientId: string;
-  condition: string;
-  details: string | null;
-  diagnosedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MedicalReport {
-  id: string;
-  patientId: string;
-  title: string;
-  description: string | null;
-  fileUrl: string;
-  filePublicId: string | null;
-  fileType: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface MedicalRecords {
-  medicalHistories: MedicalHistory[];
-  medicalReports: MedicalReport[];
-}
+import type {
+  MedicalHistory,
+  MedicalReport,
+  MedicalRecords,
+  CreateMedicalHistoryPayload,
+  UpdateMedicalHistoryPayload,
+  CreateMedicalReportPayload,
+} from "../types/medicalRecord.types";
 
 // ============================================================
 // Medical History
 // ============================================================
 
-export const createMedicalHistory = async (data: {
-  condition: string;
-  details?: string;
-  diagnosedAt?: string;
-}) => {
-  const response = await api.post("/medical-records/history", data);
+export const createMedicalHistory = async (
+  data: CreateMedicalHistoryPayload,
+) => {
+  const response = await api.post(
+    "/medical-records/history",
+    data,
+  );
 
   return response.data;
 };
 
-export const getMedicalHistories = async (): Promise<MedicalHistory[]> => {
-  const response = await api.get("/medical-records/history");
+export const getMedicalHistories = async (): Promise<
+  MedicalHistory[]
+> => {
+  const response = await api.get(
+    "/medical-records/history",
+  );
 
   return response.data.data;
 };
 
 export const updateMedicalHistory = async (
   historyId: string,
-  data: {
-    condition?: string;
-    details?: string;
-    diagnosedAt?: string | null;
-  },
+  data: UpdateMedicalHistoryPayload,
 ) => {
   const response = await api.put(
     `/medical-records/history/${historyId}`,
@@ -80,10 +63,7 @@ export const deleteMedicalHistory = async (
 
 export const uploadMedicalReport = async (
   file: File,
-  data: {
-    title: string;
-    description?: string;
-  },
+  data: CreateMedicalReportPayload,
 ) => {
   const formData = new FormData();
 
@@ -107,8 +87,12 @@ export const uploadMedicalReport = async (
   return response.data;
 };
 
-export const getMedicalReports = async (): Promise<MedicalReport[]> => {
-  const response = await api.get("/medical-records/reports");
+export const getMedicalReports = async (): Promise<
+  MedicalReport[]
+> => {
+  const response = await api.get(
+    "/medical-records/reports",
+  );
 
   return response.data.data;
 };
@@ -129,7 +113,9 @@ export const deleteMedicalReport = async (
 
 export const getMyMedicalRecords =
   async (): Promise<MedicalRecords> => {
-    const response = await api.get("/medical-records");
+    const response = await api.get(
+      "/medical-records",
+    );
 
     return response.data.data;
   };

@@ -1,7 +1,7 @@
 // Frontend/src/components/medical-record/MedicalReportCard.tsx
 import toast from "react-hot-toast";
 
-import type { MedicalReport } from "../../api/medicalRecord.api";
+import type { MedicalReport } from "../../types/medicalRecord.types";
 import useMedicalRecord from "../../hooks/useMedicalRecord";
 
 interface MedicalReportCardProps {
@@ -11,19 +11,29 @@ interface MedicalReportCardProps {
 const MedicalReportCard = ({
   report,
 }: MedicalReportCardProps) => {
-  const { removeMedicalReport, reportLoading } =
-    useMedicalRecord();
+  const {
+    removeMedicalReport,
+    reportLoading,
+  } = useMedicalRecord();
 
   const createdDate = report.createdAt
-    ? new Date(report.createdAt).toLocaleDateString()
+    ? new Date(
+        report.createdAt,
+      ).toLocaleDateString()
     : null;
 
   const isPdf =
     report.fileType === "application/pdf";
 
+  const fileLabel = isPdf
+    ? "PDF Document"
+    : "Image";
+
   const handleOpenReport = () => {
     if (!report.fileUrl) {
-      toast.error("Report file is unavailable.");
+      toast.error(
+        "Report file is unavailable.",
+      );
       return;
     }
 
@@ -56,6 +66,7 @@ const MedicalReportCard = ({
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md">
       {/* Header */}
+
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h3 className="wrap-break-word text-lg font-semibold text-gray-900">
@@ -75,6 +86,7 @@ const MedicalReportCard = ({
       </div>
 
       {/* Description */}
+
       {report.description ? (
         <p className="mt-4 whitespace-pre-wrap wrap-break-word text-sm leading-6 text-gray-600">
           {report.description}
@@ -85,18 +97,24 @@ const MedicalReportCard = ({
         </p>
       )}
 
-      {/* File information */}
+      {/* File Information */}
+
       <div className="mt-4 rounded-xl bg-gray-50 px-4 py-3">
         <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
           File type
         </p>
 
-        <p className="mt-1 break-all text-sm text-gray-700">
+        <p className="mt-1 text-sm font-medium text-gray-700">
+          {fileLabel}
+        </p>
+
+        <p className="mt-1 break-all text-xs text-gray-500">
           {report.fileType || "Unknown"}
         </p>
       </div>
 
       {/* Actions */}
+
       <div className="mt-5 flex items-center gap-3 border-t border-gray-100 pt-4">
         <button
           type="button"
@@ -104,7 +122,7 @@ const MedicalReportCard = ({
           disabled={reportLoading}
           className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          View Report
+          View {isPdf ? "PDF" : "Report"}
         </button>
 
         <button
@@ -113,7 +131,9 @@ const MedicalReportCard = ({
           disabled={reportLoading}
           className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {reportLoading ? "Deleting..." : "Delete"}
+          {reportLoading
+            ? "Deleting..."
+            : "Delete"}
         </button>
       </div>
     </div>

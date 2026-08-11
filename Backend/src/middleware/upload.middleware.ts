@@ -3,35 +3,34 @@ import multer from "multer";
 
 /**
  * Store file in memory
- * (We upload directly to Cloudinary)
+ * Files are uploaded directly to Cloudinary.
  */
 const storage = multer.memoryStorage();
 
 /**
- * Allow only image files
+ * Allow medical report images and PDF documents.
  */
 const fileFilter: multer.Options["fileFilter"] = (
   _req,
   file,
-  cb
+  cb,
 ) => {
   const allowedMimeTypes = [
     "image/jpeg",
     "image/jpg",
     "image/png",
     "image/webp",
+    "application/pdf",
   ];
 
-  if (
-    allowedMimeTypes.includes(file.mimetype)
-  ) {
+  if (allowedMimeTypes.includes(file.mimetype)) {
     return cb(null, true);
   }
 
   return cb(
     new Error(
-      "Only JPG, JPEG, PNG and WEBP images are allowed."
-    )
+      "Only JPG, JPEG, PNG, WEBP images and PDF files are allowed.",
+    ),
   );
 };
 
@@ -44,6 +43,6 @@ export const upload = multer({
   fileFilter,
 
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5 MB
+    fileSize: 10 * 1024 * 1024, // 10 MB
   },
 });

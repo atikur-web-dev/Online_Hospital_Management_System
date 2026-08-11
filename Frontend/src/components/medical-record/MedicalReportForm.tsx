@@ -9,13 +9,14 @@ interface MedicalReportFormProps {
   onCancel?: () => void;
 }
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 const ALLOWED_FILE_TYPES = [
   "image/jpeg",
   "image/jpg",
   "image/png",
   "image/webp",
+  "application/pdf",
 ];
 
 const MedicalReportForm = ({
@@ -25,25 +26,32 @@ const MedicalReportForm = ({
   const { addMedicalReport, reportLoading } =
     useMedicalRecord();
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputRef =
+    useRef<HTMLInputElement | null>(null);
 
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] =
+    useState("");
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const selectedFile = event.target.files?.[0];
+    const selectedFile =
+      event.target.files?.[0];
 
     if (!selectedFile) {
       setFile(null);
       return;
     }
 
-    if (!ALLOWED_FILE_TYPES.includes(selectedFile.type)) {
+    if (
+      !ALLOWED_FILE_TYPES.includes(
+        selectedFile.type,
+      )
+    ) {
       toast.error(
-        "Only JPG, JPEG, PNG and WEBP images are allowed.",
+        "Only JPG, JPEG, PNG, WEBP and PDF files are allowed.",
       );
 
       event.target.value = "";
@@ -52,7 +60,9 @@ const MedicalReportForm = ({
     }
 
     if (selectedFile.size > MAX_FILE_SIZE) {
-      toast.error("File size must be under 5 MB.");
+      toast.error(
+        "File size must be under 10 MB.",
+      );
 
       event.target.value = "";
       setFile(null);
@@ -68,15 +78,20 @@ const MedicalReportForm = ({
     event.preventDefault();
 
     const trimmedTitle = title.trim();
-    const trimmedDescription = description.trim();
+    const trimmedDescription =
+      description.trim();
 
     if (!trimmedTitle) {
-      toast.error("Please enter a report title.");
+      toast.error(
+        "Please enter a report title.",
+      );
       return;
     }
 
     if (!file) {
-      toast.error("Please select a medical report.");
+      toast.error(
+        "Please select a medical report.",
+      );
       return;
     }
 
@@ -84,7 +99,10 @@ const MedicalReportForm = ({
       await addMedicalReport(file, {
         title: trimmedTitle,
         ...(trimmedDescription
-          ? { description: trimmedDescription }
+          ? {
+              description:
+                trimmedDescription,
+            }
           : {}),
       });
 
@@ -105,12 +123,16 @@ const MedicalReportForm = ({
     }
   };
 
+  const isPdf =
+    file?.type === "application/pdf";
+
   return (
     <form
       onSubmit={handleSubmit}
       className="space-y-5"
     >
       {/* Title */}
+
       <div>
         <label
           htmlFor="medical-report-title"
@@ -135,6 +157,7 @@ const MedicalReportForm = ({
       </div>
 
       {/* Description */}
+
       <div>
         <label
           htmlFor="medical-report-description"
@@ -161,6 +184,7 @@ const MedicalReportForm = ({
       </div>
 
       {/* File */}
+
       <div>
         <label
           htmlFor="medical-report-file"
@@ -173,7 +197,7 @@ const MedicalReportForm = ({
           ref={fileInputRef}
           id="medical-report-file"
           type="file"
-          accept=".jpg,.jpeg,.png,.webp"
+          accept=".jpg,.jpeg,.png,.webp,.pdf,application/pdf,image/jpeg,image/png,image/webp"
           onChange={handleFileChange}
           disabled={reportLoading}
           className="block w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:px-4 file:py-2 file:font-medium file:text-emerald-700 hover:file:bg-emerald-100 disabled:cursor-not-allowed disabled:bg-gray-100"
@@ -181,23 +205,38 @@ const MedicalReportForm = ({
         />
 
         <p className="mt-2 text-xs text-gray-500">
-          JPG, JPEG, PNG or WEBP — maximum 5 MB.
+          JPG, JPEG, PNG, WEBP or PDF — maximum
+          10 MB.
         </p>
+
+        {/* Selected file */}
 
         {file && (
           <div className="mt-3 rounded-xl bg-gray-50 px-4 py-3">
-            <p className="truncate text-sm font-medium text-gray-700">
-              {file.name}
-            </p>
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium text-gray-700">
+                  {file.name}
+                </p>
 
-            <p className="mt-1 text-xs text-gray-500">
-              {(file.size / (1024 * 1024)).toFixed(2)} MB
-            </p>
+                <p className="mt-1 text-xs text-gray-500">
+                  {(file.size / (1024 * 1024)).toFixed(
+                    2,
+                  )}{" "}
+                  MB
+                </p>
+              </div>
+
+              <span className="shrink-0 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
+                {isPdf ? "PDF" : "IMAGE"}
+              </span>
+            </div>
           </div>
         )}
       </div>
 
       {/* Actions */}
+
       <div className="flex gap-3 pt-2">
         <button
           type="submit"

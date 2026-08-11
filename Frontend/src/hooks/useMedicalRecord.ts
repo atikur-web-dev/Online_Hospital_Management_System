@@ -10,9 +10,15 @@ import {
   uploadMedicalReport,
   getMedicalReports,
   deleteMedicalReport,
-  type MedicalHistory,
-  type MedicalReport,
 } from "../api/medicalRecord.api";
+
+import type {
+  MedicalHistory,
+  MedicalReport,
+  CreateMedicalHistoryPayload,
+  UpdateMedicalHistoryPayload,
+  CreateMedicalReportPayload,
+} from "../types/medicalRecord.types";
 
 const useMedicalRecord = () => {
   const [medicalHistories, setMedicalHistories] = useState<

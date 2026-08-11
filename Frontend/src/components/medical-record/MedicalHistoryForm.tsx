@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-import type { MedicalHistory } from "../../api/medicalRecord.api";
+import type { MedicalHistory } from "../../types/medicalRecord.types";
 import useMedicalRecord from "../../hooks/useMedicalRecord";
 
 interface MedicalHistoryFormProps {
