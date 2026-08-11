@@ -6,6 +6,11 @@ import {
   createAppointment,
   getDoctorBookedAppointments,
 } from "../../api/appointment.api";
+import {
+  getMyMedicalRecords,
+  type MedicalHistory,
+  type MedicalReport,
+} from "../../api/medicalRecord.api";
 import toast from "react-hot-toast";
 import type { DoctorSchedule } from "../../types/profile.types";
 
@@ -41,6 +46,22 @@ const AppointmentForm = ({
   const [loadingBookedAppointments, setLoadingBookedAppointments] =
     useState(false);
 
+  const [loadingMedicalRecords, setLoadingMedicalRecords] = useState(false);
+
+  const [medicalHistories, setMedicalHistories] = useState<MedicalHistory[]>(
+    [],
+  );
+
+  const [medicalReports, setMedicalReports] = useState<MedicalReport[]>([]);
+
+  const [selectedMedicalHistoryIds, setSelectedMedicalHistoryIds] = useState<
+    string[]
+  >([]);
+
+  const [selectedMedicalReportIds, setSelectedMedicalReportIds] = useState<
+    string[]
+  >([]);
+
   const [loading, setLoading] = useState(false);
 
   /**
@@ -57,7 +78,6 @@ const AppointmentForm = ({
   const selectedDateBookedTimes = bookedAppointments
     .filter((appointment) => {
       const bookedDate = new Date(appointment.appointmentAt);
-
       const selectedDate = new Date(`${appointmentDate}T00:00:00`);
 
       return (
@@ -73,6 +93,7 @@ const AppointmentForm = ({
         date.getMinutes(),
       ).padStart(2, "0")}`;
     });
+
   /**
    * Load doctor's booked appointments
    */
@@ -93,6 +114,52 @@ const AppointmentForm = ({
 
     loadBookedAppointments();
   }, [doctorId]);
+
+  /**
+   * Load patient's medical records
+   */
+  useEffect(() => {
+    const loadMedicalRecords = async () => {
+      try {
+        setLoadingMedicalRecords(true);
+
+        const records = await getMyMedicalRecords();
+
+        setMedicalHistories(records.medicalHistories ?? []);
+        setMedicalReports(records.medicalReports ?? []);
+      } catch (error) {
+        console.error("Failed to load medical records:", error);
+
+        toast.error("Failed to load your medical records.");
+      } finally {
+        setLoadingMedicalRecords(false);
+      }
+    };
+
+    loadMedicalRecords();
+  }, []);
+
+  /**
+   * Toggle medical history selection
+   */
+  const toggleMedicalHistory = (historyId: string) => {
+    setSelectedMedicalHistoryIds((current) =>
+      current.includes(historyId)
+        ? current.filter((id) => id !== historyId)
+        : [...current, historyId],
+    );
+  };
+
+  /**
+   * Toggle medical report selection
+   */
+  const toggleMedicalReport = (reportId: string) => {
+    setSelectedMedicalReportIds((current) =>
+      current.includes(reportId)
+        ? current.filter((id) => id !== reportId)
+        : [...current, reportId],
+    );
+  };
 
   /**
    * Submit appointment
@@ -158,7 +225,10 @@ const AppointmentForm = ({
       await createAppointment({
         doctorId,
         appointmentAt,
-        problem,
+        problem: problem.trim() || undefined,
+
+        medicalHistoryIds: selectedMedicalHistoryIds,
+        medicalReportIds: selectedMedicalReportIds,
       });
 
       toast.success("Your appointment has been booked successfully.");
@@ -195,7 +265,6 @@ const AppointmentForm = ({
           min={new Date().toISOString().split("T")[0]}
           onChange={(e) => {
             setAppointmentDate(e.target.value);
-
             setAppointmentTime("");
           }}
           className="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -210,7 +279,8 @@ const AppointmentForm = ({
 
         {selectedSchedule && (
           <p className="mt-2 text-sm text-emerald-600">
-            Available: {selectedSchedule.startTime} - {selectedSchedule.endTime}
+            Available: {selectedSchedule.startTime} -{" "}
+            {selectedSchedule.endTime}
           </p>
         )}
       </div>
@@ -254,11 +324,149 @@ const AppointmentForm = ({
         />
       </div>
 
+      {/* Medical Records */}
+      <div className="border border-emerald-100 rounded-2xl p-4 space-y-5 bg-emerald-50/30">
+        <div>
+          <h3 className="text-lg font-semibold text-emerald-800">
+            Share Medical Records
+          </h3>
+
+          <p className="text-sm text-gray-600 mt-1">
+            Select the medical history and reports you want to share with the
+            doctor for this appointment.
+          </p>
+        </div>
+
+        {loadingMedicalRecords ? (
+          <p className="text-sm text-gray-500">
+            Loading your medical records...
+          </p>
+        ) : (
+          <>
+            {/* Medical History */}
+            <div>
+              <h4 className="font-medium text-gray-800 mb-3">
+                Medical History
+              </h4>
+
+              {medicalHistories.length === 0 ? (
+                <p className="text-sm text-gray-500">
+                  No medical history found.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {medicalHistories.map((history) => (
+                    <label
+                      key={history.id}
+                      className="flex items-start gap-3 p-3 bg-white border rounded-xl cursor-pointer hover:border-emerald-400 transition"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedMedicalHistoryIds.includes(
+                          history.id,
+                        )}
+                        onChange={() => toggleMedicalHistory(history.id)}
+                        className="mt-1 h-4 w-4 accent-emerald-600"
+                      />
+
+                      <div>
+                        <p className="font-medium text-gray-800">
+                          {history.condition}
+                        </p>
+
+                        {history.details && (
+                          <p className="text-sm text-gray-600 mt-1">
+                            {history.details}
+                          </p>
+                        )}
+
+                        {history.diagnosedAt && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Diagnosed:{" "}
+                            {new Date(
+                              history.diagnosedAt,
+                            ).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Medical Reports */}
+            <div>
+              <h4 className="font-medium text-gray-800 mb-3">
+                Medical Reports
+              </h4>
+
+              {medicalReports.length === 0 ? (
+                <p className="text-sm text-gray-500">
+                  No medical reports found.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {medicalReports.map((report) => (
+                    <label
+                      key={report.id}
+                      className="flex items-start gap-3 p-3 bg-white border rounded-xl cursor-pointer hover:border-emerald-400 transition"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedMedicalReportIds.includes(report.id)}
+                        onChange={() => toggleMedicalReport(report.id)}
+                        className="mt-1 h-4 w-4 accent-emerald-600"
+                      />
+
+                      <div className="min-w-0">
+                        <p className="font-medium text-gray-800">
+                          {report.title}
+                        </p>
+
+                        {report.description && (
+                          <p className="text-sm text-gray-600 mt-1">
+                            {report.description}
+                          </p>
+                        )}
+
+                        <p className="text-xs text-gray-500 mt-1">
+                          Uploaded:{" "}
+                          {new Date(
+                            report.createdAt,
+                          ).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Selection Summary */}
+            {(selectedMedicalHistoryIds.length > 0 ||
+              selectedMedicalReportIds.length > 0) && (
+              <div className="rounded-xl bg-emerald-100 px-4 py-3 text-sm text-emerald-800">
+                <span className="font-medium">
+                  Selected for this appointment:
+                </span>{" "}
+                {selectedMedicalHistoryIds.length} medical history record
+                {selectedMedicalHistoryIds.length !== 1 ? "s" : ""} and{" "}
+                {selectedMedicalReportIds.length} medical report
+                {selectedMedicalReportIds.length !== 1 ? "s" : ""}.
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
       {/* Submit */}
       <Button
         type="submit"
         fullWidth
-        isLoading={loading || loadingBookedAppointments}
+        isLoading={
+          loading || loadingBookedAppointments || loadingMedicalRecords
+        }
       >
         Confirm Appointment
       </Button>

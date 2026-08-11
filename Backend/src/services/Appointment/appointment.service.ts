@@ -201,6 +201,72 @@ export const createAppointment = async (
     },
   });
 
+ 
+  // Share Patient Medical History & Reports
+  const { medicalHistoryIds = [], medicalReportIds = [] } = data;
+
+  // Validate selected medical histories belong to this patient
+  if (medicalHistoryIds.length > 0) {
+    const histories = await prisma.medicalHistory.findMany({
+      where: {
+        id: {
+          in: medicalHistoryIds,
+        },
+        patientId: patient.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (histories.length !== medicalHistoryIds.length) {
+      throw new ApiError(
+        400,
+        'One or more selected medical history records are invalid.',
+        {},
+      );
+    }
+
+    await prisma.appointmentMedicalHistory.createMany({
+      data: medicalHistoryIds.map((medicalHistoryId) => ({
+        appointmentId: appointment.id,
+        medicalHistoryId,
+      })),
+      skipDuplicates: true,
+    });
+  }
+
+  // Validate selected medical reports belong to this patient
+  if (medicalReportIds.length > 0) {
+    const reports = await prisma.medicalReport.findMany({
+      where: {
+        id: {
+          in: medicalReportIds,
+        },
+        patientId: patient.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (reports.length !== medicalReportIds.length) {
+      throw new ApiError(
+        400,
+        'One or more selected medical reports are invalid.',
+        {},
+      );
+    }
+
+    await prisma.appointmentMedicalReport.createMany({
+      data: medicalReportIds.map((medicalReportId) => ({
+        appointmentId: appointment.id,
+        medicalReportId,
+      })),
+      skipDuplicates: true,
+    });
+  }
+
   const patientUser = await prisma.user.findUnique({
     where: {
       id: patient.userId,
@@ -239,9 +305,6 @@ export const createAppointment = async (
   return appointment;
 };
 
-/**
- * Get Patient Appointments
- */
 export const getMyAppointments = async (patientUserId: string) => {
   const patient = await prisma.patientProfile.findUnique({
     where: {
@@ -407,24 +470,19 @@ export const deleteAppointmentForPatient = async (
   });
 };
 
-/**
- * Get Doctor Booked Appointment Times
- */
-export const getDoctorBookedAppointments = async (
-  doctorId: string,
-) => {
+export const getDoctorBookedAppointments = async (doctorId: string) => {
   const appointments = await prisma.appointment.findMany({
     where: {
       doctorId,
       status: {
-        not: "CANCELLED",
+        not: 'CANCELLED',
       },
     },
     select: {
       appointmentAt: true,
     },
     orderBy: {
-      appointmentAt: "asc",
+      appointmentAt: 'asc',
     },
   });
 

@@ -3,8 +3,11 @@ import api from "./axios";
 
 export interface CreateAppointmentPayload {
   doctorId: string;
-  appointmentAt: string; 
+  appointmentAt: string;
   problem?: string;
+
+  medicalHistoryIds?: string[];
+  medicalReportIds?: string[];
 }
 
 export const createAppointment = async (
