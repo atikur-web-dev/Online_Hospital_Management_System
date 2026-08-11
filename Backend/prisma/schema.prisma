@@ -68,9 +68,11 @@ model PatientProfile {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  appointments Appointment[]
-  payments     Payment[]
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments     Appointment[]
+  payments         Payment[]
+  medicalHistories MedicalHistory[]
+  medicalReports   MedicalReport[]
 
   @@map("patient_profiles")
 }
@@ -184,6 +186,9 @@ model Appointment {
 
   prescription Prescription?
 
+  sharedMedicalHistories AppointmentMedicalHistory[]
+  sharedMedicalReports   AppointmentMedicalReport[]
+
   @@unique([doctorId, appointmentAt])
   @@map("appointments")
 }
@@ -251,4 +256,68 @@ model Payment {
   @@index([status])
   @@index([paidAt])
   @@map("payments")
+}
+
+model MedicalHistory {
+  id          String    @id @default(cuid())
+  patientId   String
+  condition   String
+  details     String?
+  diagnosedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  patient PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  sharedAppointments AppointmentMedicalHistory[]
+
+  @@index([patientId])
+  @@map("medical_histories")
+}
+
+model MedicalReport {
+  id           String   @id @default(cuid())
+  patientId    String
+  title        String
+  description  String?
+  fileUrl      String
+  filePublicId String?
+  fileType     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  patient PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  sharedAppointments AppointmentMedicalReport[]
+
+  @@index([patientId])
+  @@map("medical_reports")
+}
+
+model AppointmentMedicalHistory {
+  id               String @id @default(cuid())
+  appointmentId    String
+  medicalHistoryId String
+
+  appointment    Appointment    @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  medicalHistory MedicalHistory @relation(fields: [medicalHistoryId], references: [id], onDelete: Cascade)
+
+  @@unique([appointmentId, medicalHistoryId])
+  @@index([appointmentId])
+  @@index([medicalHistoryId])
+  @@map("appointment_medical_histories")
+}
+
+model AppointmentMedicalReport {
+  id              String @id @default(cuid())
+  appointmentId   String
+  medicalReportId String
+
+  appointment   Appointment   @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  medicalReport MedicalReport @relation(fields: [medicalReportId], references: [id], onDelete: Cascade)
+
+  @@unique([appointmentId, medicalReportId])
+  @@index([appointmentId])
+  @@index([medicalReportId])
+  @@map("appointment_medical_reports")
 }
