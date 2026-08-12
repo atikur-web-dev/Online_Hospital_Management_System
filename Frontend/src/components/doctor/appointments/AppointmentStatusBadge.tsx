@@ -1,11 +1,20 @@
 // Frontend/src/components/doctor/appointments/AppointmentStatusBadge.tsx
-import { AppointmentStatus } from "../../../types/appointment";
+
+import type { AppointmentStatus } from "../../../types/appointment";
 
 interface Props {
   status: AppointmentStatus;
 }
 
-const statusConfig = {
+const statusConfig: Record<
+  AppointmentStatus,
+  {
+    label: string;
+    bg: string;
+    text: string;
+    dot: string;
+  }
+> = {
   PENDING: {
     label: "Pending",
     bg: "bg-amber-50",
@@ -33,7 +42,14 @@ const statusConfig = {
     text: "text-red-700",
     dot: "bg-red-500",
   },
-} as const;
+
+  NO_SHOW: {
+    label: "No Show",
+    bg: "bg-gray-100",
+    text: "text-gray-700",
+    dot: "bg-gray-500",
+  },
+};
 
 const AppointmentStatusBadge = ({ status }: Props) => {
   const config = statusConfig[status];
@@ -44,7 +60,7 @@ const AppointmentStatusBadge = ({ status }: Props) => {
     >
       <span
         className={`w-2 h-2 rounded-full ${config.dot}`}
-      ></span>
+      />
 
       <span
         className={`text-sm font-semibold ${config.text}`}

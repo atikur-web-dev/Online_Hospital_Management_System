@@ -1,9 +1,13 @@
 // Frontend/src/hooks/useDoctorAppointment.ts
+
 import { useCallback, useEffect, useState } from "react";
-import { getMyDoctorAppointments } from "../api/doctorAppointment.api";
+import {
+  getMyDoctorAppointments,
+} from "../api/doctorAppointment.api";
+import type { Appointment } from "../types/appointment";
 
 export const useDoctorAppointment = () => {
-  const [appointments, setAppointments] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,7 +18,7 @@ export const useDoctorAppointment = () => {
 
       const response = await getMyDoctorAppointments();
 
-      setAppointments(response.data);
+      setAppointments(response);
     } catch (err: any) {
       console.error(err);
       console.log(err.response);

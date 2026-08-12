@@ -1,5 +1,3 @@
-// Frontend/src/components/doctor/appointments/AppointmentActions.tsx
-
 import {
   Ban,
   CheckCircle2,
@@ -7,6 +5,7 @@ import {
   Loader2,
   Trash2,
   UserCheck,
+  FileSearch,
 } from "lucide-react";
 
 interface Props {
@@ -30,6 +29,7 @@ interface Props {
   onCancel: () => void;
   onDeletePermanently: () => void;
   onCreatePrescription: () => void;
+  onViewMedicalReports: () => void;
 }
 
 const AppointmentActions = ({
@@ -50,6 +50,7 @@ const AppointmentActions = ({
   onCancel,
   onDeletePermanently,
   onCreatePrescription,
+  onViewMedicalReports,
 }: Props) => {
   return (
     <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full lg:w-auto">
@@ -61,10 +62,7 @@ const AppointmentActions = ({
             <button
               type="button"
               onClick={onConfirm}
-              disabled={
-                isConfirming ||
-                isCanceling
-              }
+              disabled={isConfirming || isCanceling}
               className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md active:scale-95"
             >
               {isConfirming ? (
@@ -83,17 +81,29 @@ const AppointmentActions = ({
 
           {/* Prescription */}
           {(isConfirmed || isCompleted) && (
-            <button
-              type="button"
-              onClick={onCreatePrescription}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md active:scale-95"
-            >
-              <FileText className="w-4 h-4" />
+            <>
+              <button
+                type="button"
+                onClick={onCreatePrescription}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md active:scale-95"
+              >
+                <FileText className="w-4 h-4" />
 
-              {hasPrescription
-                ? "View Prescription"
-                : "Create Prescription"}
-            </button>
+                {hasPrescription
+                  ? "View Prescription"
+                  : "Create Prescription"}
+              </button>
+
+              {/* View Medical Reports */}
+              <button
+                type="button"
+                onClick={onViewMedicalReports}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-600 hover:bg-slate-700 text-white text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md active:scale-95"
+              >
+                <FileSearch className="w-4 h-4" />
+                View Medical Reports
+              </button>
+            </>
           )}
 
           {/* Complete */}

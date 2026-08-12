@@ -1,5 +1,3 @@
-// Frontend/src/types/appointment.ts
-
 export type AppointmentStatus =
   | "PENDING"
   | "CONFIRMED"
@@ -51,6 +49,22 @@ export interface PrescriptionDetails {
   updatedAt: string;
 }
 
+export interface MedicalHistorySummary {
+  id: string;
+  condition: string;
+  details: string | null;
+  diagnosedAt: string | null;
+}
+
+export interface MedicalReportSummary {
+  id: string;
+  title: string;
+  description: string | null;
+  fileUrl: string;
+  fileType: string;
+  createdAt: string;
+}
+
 export interface Appointment {
   id: string;
   status: AppointmentStatus;
@@ -58,4 +72,12 @@ export interface Appointment {
   appointmentAt: string;
   patient: Patient;
   prescription: PrescriptionSummary | null;
+}
+
+export interface AppointmentDetails
+  extends Omit<Appointment, "prescription"> {
+  prescription: PrescriptionDetails | null;
+
+  medicalHistories: MedicalHistorySummary[];
+  medicalReports: MedicalReportSummary[];
 }
