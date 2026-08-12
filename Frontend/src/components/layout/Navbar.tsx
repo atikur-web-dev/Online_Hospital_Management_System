@@ -1,6 +1,9 @@
 // src/components/layout/Navbar.tsx
+
 import { useState, useEffect } from "react";
+
 import { Link, useNavigate, useLocation } from "react-router-dom";
+
 import {
   Home,
   Stethoscope,
@@ -12,9 +15,9 @@ import {
   Building2,
   Briefcase,
   Users,
-  Phone,
   Heart,
 } from "lucide-react";
+
 import { Button } from "../common";
 
 interface NavbarProps {
@@ -30,6 +33,7 @@ const Navbar = ({
 }: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,12 +41,17 @@ const Navbar = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
+
       if (!target.closest(".dropdown-container")) {
         setIsDropdownOpen(false);
       }
     };
+
     document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, []);
 
   const handleLogout = () => {
@@ -51,33 +60,112 @@ const Navbar = ({
     setIsDropdownOpen(false);
   };
 
-  // Visitor links
+  // ============================================================
+  // Visitor Links
+  // ============================================================
+
   const visitorLinks = [
-    { name: "Home", path: "/", icon: Home },
-    { name: "Doctors", path: "/doctors", icon: Stethoscope },
-    { name: "Departments", path: "/departments", icon: Building2 },
-    { name: "Services", path: "/services", icon: Briefcase },
-    { name: "About", path: "/about", icon: Users },
+    {
+      name: "Home",
+      path: "/",
+      icon: Home,
+    },
+    {
+      name: "Doctors",
+      path: "/doctors",
+      icon: Stethoscope,
+    },
+    {
+      name: "Departments",
+      path: "/departments",
+      icon: Building2,
+    },
+    {
+      name: "Services",
+      path: "/services",
+      icon: Briefcase,
+    },
+    {
+      name: "About",
+      path: "/about",
+      icon: Users,
+    },
   ];
 
-  // Logged-in user links
+  // ============================================================
+  // Patient Links
+  // ============================================================
+
   const patientLinks = [
-    { name: "Home", path: "/", icon: Home },
-    { name: "Doctors", path: "/doctors", icon: Stethoscope },
-    { name: "Appointments", path: "/appointments", icon: CalendarDays },
+    {
+      name: "Home",
+      path: "/",
+      icon: Home,
+    },
+    {
+      name: "Doctors",
+      path: "/doctors",
+      icon: Stethoscope,
+    },
+    {
+      name: "Appointments",
+      path: "/appointments",
+      icon: CalendarDays,
+    },
+    {
+      name: "Medical Records",
+      path: "/medical-records",
+      icon: Heart,
+    },
   ];
+
+  // ============================================================
+  // Doctor Links
+  // ============================================================
 
   const doctorLinks = [
-    { name: "Home", path: "/", icon: Home },
-    { name: "Dashboard", path: "/doctor/dashboard", icon: Briefcase },
-    { name: "Appointments", path: "/doctor/appointments", icon: CalendarDays },
+    {
+      name: "Home",
+      path: "/",
+      icon: Home,
+    },
+    {
+      name: "Dashboard",
+      path: "/doctor/dashboard",
+      icon: Briefcase,
+    },
+    {
+      name: "Appointments",
+      path: "/doctor/appointments",
+      icon: CalendarDays,
+    },
   ];
 
+  // ============================================================
+  // Admin Links
+  // ============================================================
+
   const adminLinks = [
-    { name: "Home", path: "/", icon: Home },
-    { name: "Dashboard", path: "/admin/dashboard", icon: Briefcase },
-    { name: "Doctors", path: "/admin/doctors", icon: Stethoscope },
+    {
+      name: "Home",
+      path: "/",
+      icon: Home,
+    },
+    {
+      name: "Dashboard",
+      path: "/admin/dashboard",
+      icon: Briefcase,
+    },
+    {
+      name: "Doctors",
+      path: "/admin/doctors",
+      icon: Stethoscope,
+    },
   ];
+
+  // ============================================================
+  // Select Navigation Based on Role
+  // ============================================================
 
   let navLinks = visitorLinks;
 
@@ -86,66 +174,97 @@ const Navbar = ({
       case "PATIENT":
         navLinks = patientLinks;
         break;
+
       case "DOCTOR":
         navLinks = doctorLinks;
         break;
+
       case "ADMIN":
         navLinks = adminLinks;
         break;
+
       default:
         navLinks = visitorLinks;
     }
   }
 
+  // ============================================================
+  // Active Link
+  // ============================================================
+
   const isActiveLink = (path: string) => {
     if (path === "/") {
       return location.pathname === "/";
     }
+
     return location.pathname.startsWith(path);
   };
+
+  // ============================================================
+  // Navigation
+  // ============================================================
 
   const handleNavigation = (path: string) => {
     navigate(path);
     setIsMobileMenuOpen(false);
   };
+
   console.log("Navbar userImage =", userImage);
+
+  // ============================================================
+  // Render
+  // ============================================================
+
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-emerald-100">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-20 relative">
-          {/* Logo - Left (starts from edge) */}
+
+          {/* ================================================== */}
+          {/* Logo */}
+          {/* ================================================== */}
+
           <div className="flex items-center gap-2 shrink-0">
             <Link to="/" className="flex items-center gap-2">
               <div className="bg-linear-to-br from-emerald-600 to-emerald-500 p-2.5 rounded-xl shadow-lg shadow-emerald-200">
                 <Heart className="w-8 h-8 text-white" />
               </div>
+
               <span className="text-3xl font-bold text-emerald-800 tracking-tight">
                 Care<span className="text-emerald-600">Plus</span>
               </span>
             </Link>
           </div>
 
-          {/* Desktop Navigation - Perfectly Centered */}
+          {/* ================================================== */}
+          {/* Desktop Navigation */}
+          {/* ================================================== */}
+
           <div className="hidden md:flex items-center gap-1 absolute left-1/2 transform -translate-x-1/2">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const active = isActiveLink(link.path);
+
               return (
                 <button
                   key={link.name}
                   onClick={() => handleNavigation(link.path)}
-                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 relative group whitespace-nowrap
-                    ${
-                      active
-                        ? "text-emerald-700 bg-emerald-50"
-                        : "text-gray-600 hover:text-emerald-700 hover:bg-emerald-50/50"
-                    }
-                  `}
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 relative group whitespace-nowrap ${
+                    active
+                      ? "text-emerald-700 bg-emerald-50"
+                      : "text-gray-600 hover:text-emerald-700 hover:bg-emerald-50/50"
+                  }`}
                 >
                   <Icon
-                    className={`w-5 h-5 transition-colors duration-200 ${active ? "text-emerald-600" : "text-gray-400 group-hover:text-emerald-500"}`}
+                    className={`w-5 h-5 transition-colors duration-200 ${
+                      active
+                        ? "text-emerald-600"
+                        : "text-gray-400 group-hover:text-emerald-500"
+                    }`}
                   />
+
                   {link.name}
+
                   {active && (
                     <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-emerald-600 rounded-full" />
                   )}
@@ -154,10 +273,14 @@ const Navbar = ({
             })}
           </div>
 
-          {/* Right Side - Auth Buttons (starts from edge) */}
+          {/* ================================================== */}
+          {/* Right Side - Auth Buttons */}
+          {/* ================================================== */}
+
           <div className="hidden md:flex items-center gap-3 shrink-0 ml-auto">
             {isLoggedIn ? (
               <div className="relative dropdown-container">
+
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-full p-1 hover:bg-emerald-50 transition-colors"
@@ -175,16 +298,23 @@ const Navbar = ({
                         "https://ui-avatars.com/api/?name=User&background=10b981&color=fff";
                     }}
                   />
+
                   <span className="text-sm font-semibold text-emerald-800 max-w-30 truncate">
                     {localStorage.getItem("name") ?? "User"}
                   </span>
+
                   <ChevronDown
-                    className={`w-5 h-5 text-emerald-600 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                    className={`w-5 h-5 text-emerald-600 transition-transform duration-200 ${
+                      isDropdownOpen ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
 
+                {/* Dropdown */}
+
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-emerald-100 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+
                     <Link
                       to="/profile"
                       onClick={() => setIsDropdownOpen(false)}
@@ -193,7 +323,9 @@ const Navbar = ({
                       <User className="w-4 h-4" />
                       Profile
                     </Link>
+
                     <hr className="my-1 border-emerald-100" />
+
                     <button
                       onClick={handleLogout}
                       className="flex items-center gap-3 w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
@@ -201,6 +333,7 @@ const Navbar = ({
                       <span className="w-4 h-4 flex items-center justify-center">
                         ✕
                       </span>
+
                       Logout
                     </button>
                   </div>
@@ -213,8 +346,13 @@ const Navbar = ({
                     Login
                   </Button>
                 </Link>
+
                 <Link to="/register">
-                  <Button variant="primary" size="md" icon={CalendarDays}>
+                  <Button
+                    variant="primary"
+                    size="md"
+                    icon={CalendarDays}
+                  >
                     Register
                   </Button>
                 </Link>
@@ -222,10 +360,15 @@ const Navbar = ({
             )}
           </div>
 
+          {/* ================================================== */}
           {/* Mobile Menu Button */}
+          {/* ================================================== */}
+
           <div className="md:hidden ml-auto">
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={() =>
+                setIsMobileMenuOpen(!isMobileMenuOpen)
+              }
               className="p-2 rounded-lg text-emerald-700 hover:bg-emerald-50 transition-colors"
             >
               {isMobileMenuOpen ? (
@@ -238,12 +381,17 @@ const Navbar = ({
         </div>
       </div>
 
+      {/* ================================================== */}
       {/* Mobile Menu */}
+      {/* ================================================== */}
+
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-emerald-100 py-4 px-4 max-h-[80vh] overflow-y-auto animate-in slide-in-from-top duration-200">
+
           {navLinks.map((link) => {
             const Icon = link.icon;
             const active = isActiveLink(link.path);
+
             return (
               <button
                 key={link.name}
@@ -255,8 +403,13 @@ const Navbar = ({
                 }`}
               >
                 <Icon
-                  className={`w-5 h-5 ${active ? "text-emerald-600" : "text-gray-400"}`}
+                  className={`w-5 h-5 ${
+                    active
+                      ? "text-emerald-600"
+                      : "text-gray-400"
+                  }`}
                 />
+
                 {link.name}
               </button>
             );
@@ -264,16 +417,23 @@ const Navbar = ({
 
           <hr className="my-3 border-emerald-100" />
 
+          {/* ================================================== */}
+          {/* Mobile Auth */}
+          {/* ================================================== */}
+
           {isLoggedIn ? (
             <div className="flex items-center gap-3 px-4 py-2">
+
               <img
                 src={userImage}
                 alt="Profile"
                 className="w-12 h-12 rounded-full border-2 border-emerald-500"
               />
+
               <span className="text-base font-semibold text-emerald-800 truncate flex-1">
                 {localStorage.getItem("name") ?? "User"}
               </span>
+
               <button
                 onClick={handleLogout}
                 className="text-red-600 hover:text-red-700 font-medium text-sm"
@@ -283,16 +443,33 @@ const Navbar = ({
             </div>
           ) : (
             <div className="flex flex-col gap-2 px-4 py-2">
-              <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button variant="ghost" fullWidth size="lg">
+
+              <Link
+                to="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Button
+                  variant="ghost"
+                  fullWidth
+                  size="lg"
+                >
                   Login
                 </Button>
               </Link>
-              <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button variant="primary" fullWidth size="lg">
+
+              <Link
+                to="/register"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Button
+                  variant="primary"
+                  fullWidth
+                  size="lg"
+                >
                   Register
                 </Button>
               </Link>
+
             </div>
           )}
         </div>

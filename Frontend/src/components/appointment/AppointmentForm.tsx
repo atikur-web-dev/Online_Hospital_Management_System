@@ -2,15 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "../common";
+
 import {
   createAppointment,
   getDoctorBookedAppointments,
 } from "../../api/appointment.api";
-import {
-  getMyMedicalRecords,
-  type MedicalHistory,
-  type MedicalReport,
-} from "../../api/medicalRecord.api";
+
+import { getMyMedicalRecords } from "../../api/medicalRecord.api";
+
+import type {
+  MedicalHistory,
+  MedicalReport,
+} from "../../types/medicalRecord.types";
+
 import toast from "react-hot-toast";
 import type { DoctorSchedule } from "../../types/profile.types";
 
@@ -75,6 +79,9 @@ const AppointmentForm = ({
       )
     : undefined;
 
+  /**
+   * Get booked times for selected date
+   */
   const selectedDateBookedTimes = bookedAppointments
     .filter((appointment) => {
       const bookedDate = new Date(appointment.appointmentAt);
@@ -140,7 +147,7 @@ const AppointmentForm = ({
   }, []);
 
   /**
-   * Toggle medical history selection
+   * Toggle medical history
    */
   const toggleMedicalHistory = (historyId: string) => {
     setSelectedMedicalHistoryIds((current) =>
@@ -151,7 +158,7 @@ const AppointmentForm = ({
   };
 
   /**
-   * Toggle medical report selection
+   * Toggle medical report
    */
   const toggleMedicalReport = (reportId: string) => {
     setSelectedMedicalReportIds((current) =>
@@ -164,7 +171,7 @@ const AppointmentForm = ({
   /**
    * Submit appointment
    */
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!appointmentDate || !appointmentTime) {
@@ -181,7 +188,6 @@ const AppointmentForm = ({
       toast.error(
         "This time slot is already booked. Please choose another time.",
       );
-
       return;
     }
 
@@ -198,7 +204,6 @@ const AppointmentForm = ({
       .map(Number);
 
     const scheduleStartMinutes = startHour * 60 + startMinute;
-
     const scheduleEndMinutes = endHour * 60 + endMinute;
 
     /**
@@ -226,7 +231,6 @@ const AppointmentForm = ({
         doctorId,
         appointmentAt,
         problem: problem.trim() || undefined,
-
         medicalHistoryIds: selectedMedicalHistoryIds,
         medicalReportIds: selectedMedicalReportIds,
       });
@@ -252,7 +256,17 @@ const AppointmentForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    /*
+     * IMPORTANT:
+     *
+     * The ENTIRE form is scrollable.
+     * Confirm Appointment is intentionally inside
+     * the scroll area.
+     */
+    <form
+      onSubmit={handleSubmit}
+      className="w-full max-h-[70vh] overflow-y-auto pr-2 space-y-5"
+    >
       {/* Date */}
       <div>
         <label className="block mb-2 font-medium text-emerald-700">
@@ -267,8 +281,9 @@ const AppointmentForm = ({
             setAppointmentDate(e.target.value);
             setAppointmentTime("");
           }}
-          className="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          disabled={loading}
           required
+          className="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
         />
 
         {appointmentDate && !selectedSchedule && (
@@ -297,9 +312,9 @@ const AppointmentForm = ({
           min={selectedSchedule?.startTime}
           max={selectedSchedule?.endTime}
           onChange={(e) => setAppointmentTime(e.target.value)}
-          disabled={!selectedSchedule}
-          className="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+          disabled={!selectedSchedule || loading}
           required
+          className="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
         />
 
         {loadingBookedAppointments && (
@@ -320,7 +335,8 @@ const AppointmentForm = ({
           value={problem}
           onChange={(e) => setProblem(e.target.value)}
           placeholder="Write your problem..."
-          className="w-full border rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          disabled={loading}
+          className="w-full border rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
         />
       </div>
 
@@ -365,17 +381,20 @@ const AppointmentForm = ({
                         checked={selectedMedicalHistoryIds.includes(
                           history.id,
                         )}
-                        onChange={() => toggleMedicalHistory(history.id)}
+                        onChange={() =>
+                          toggleMedicalHistory(history.id)
+                        }
+                        disabled={loading}
                         className="mt-1 h-4 w-4 accent-emerald-600"
                       />
 
-                      <div>
+                      <div className="min-w-0">
                         <p className="font-medium text-gray-800">
                           {history.condition}
                         </p>
 
                         {history.details && (
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-gray-600 mt-1 break-words">
                             {history.details}
                           </p>
                         )}
@@ -414,8 +433,13 @@ const AppointmentForm = ({
                     >
                       <input
                         type="checkbox"
-                        checked={selectedMedicalReportIds.includes(report.id)}
-                        onChange={() => toggleMedicalReport(report.id)}
+                        checked={selectedMedicalReportIds.includes(
+                          report.id,
+                        )}
+                        onChange={() =>
+                          toggleMedicalReport(report.id)
+                        }
+                        disabled={loading}
                         className="mt-1 h-4 w-4 accent-emerald-600"
                       />
 
@@ -425,16 +449,18 @@ const AppointmentForm = ({
                         </p>
 
                         {report.description && (
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-gray-600 mt-1 break-words">
                             {report.description}
                           </p>
                         )}
 
                         <p className="text-xs text-gray-500 mt-1">
                           Uploaded:{" "}
-                          {new Date(
-                            report.createdAt,
-                          ).toLocaleDateString()}
+                          {report.createdAt
+                            ? new Date(
+                                report.createdAt,
+                              ).toLocaleDateString()
+                            : "Unknown"}
                         </p>
                       </div>
                     </label>
@@ -460,16 +486,20 @@ const AppointmentForm = ({
         )}
       </div>
 
-      {/* Submit */}
-      <Button
-        type="submit"
-        fullWidth
-        isLoading={
-          loading || loadingBookedAppointments || loadingMedicalRecords
-        }
-      >
-        Confirm Appointment
-      </Button>
+      {/* Confirm Appointment */}
+      <div className="pt-2 pb-4">
+        <Button
+          type="submit"
+          fullWidth
+          isLoading={
+            loading ||
+            loadingBookedAppointments ||
+            loadingMedicalRecords
+          }
+        >
+          Confirm Appointment
+        </Button>
+      </div>
     </form>
   );
 };
