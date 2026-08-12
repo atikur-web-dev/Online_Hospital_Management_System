@@ -394,7 +394,7 @@ const AppointmentForm = ({
                         </p>
 
                         {history.details && (
-                          <p className="text-sm text-gray-600 mt-1 break-words">
+                          <p className="text-sm text-gray-600 mt-1 wrap-break-words">
                             {history.details}
                           </p>
                         )}
@@ -449,7 +449,7 @@ const AppointmentForm = ({
                         </p>
 
                         {report.description && (
-                          <p className="text-sm text-gray-600 mt-1 break-words">
+                          <p className="text-sm text-gray-600 mt-1 wrap-break-word">
                             {report.description}
                           </p>
                         )}

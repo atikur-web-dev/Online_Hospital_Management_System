@@ -1,9 +1,11 @@
 // Frontend/src/types/appointment.ts
+
 export type AppointmentStatus =
   | "PENDING"
   | "CONFIRMED"
   | "COMPLETED"
-  | "CANCELLED";
+  | "CANCELLED"
+  | "NO_SHOW";
 
 export interface Patient {
   id: string;
@@ -22,6 +24,31 @@ export interface PrescriptionSummary {
   id: string;
   diagnosis: string;
   createdAt: string;
+}
+
+export interface PrescriptionMedicine {
+  id: string;
+  medicineName: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  instructions: string | null;
+}
+
+export interface PrescriptionTest {
+  id: string;
+  testName: string;
+}
+
+export interface PrescriptionDetails {
+  id: string;
+  diagnosis: string;
+  advice: string | null;
+  followUpDate: string | null;
+  medicines: PrescriptionMedicine[];
+  tests: PrescriptionTest[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Appointment {

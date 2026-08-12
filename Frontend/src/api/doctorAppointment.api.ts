@@ -1,9 +1,12 @@
 // Frontend/src/api/doctorAppointment.api.ts
-import api from "./axios";
 
-export const getMyDoctorAppointments = async () => {
+import api from "./axios";
+import type { Appointment } from "../types/appointment";
+
+export const getMyDoctorAppointments = async (): Promise<Appointment[]> => {
   const response = await api.get("/doctor/appointments");
-  return response.data;
+
+  return response.data.data;
 };
 
 export const getDoctorAppointmentById = async (
@@ -16,7 +19,9 @@ export const getDoctorAppointmentById = async (
   return response.data;
 };
 
-export const confirmAppointment = async (id: string) => {
+export const confirmAppointment = async (
+  id: string,
+) => {
   const response = await api.patch(
     `/doctor/appointments/${id}/confirm`,
   );
@@ -24,7 +29,9 @@ export const confirmAppointment = async (id: string) => {
   return response.data;
 };
 
-export const completeAppointment = async (id: string) => {
+export const completeAppointment = async (
+  id: string,
+) => {
   const response = await api.patch(
     `/doctor/appointments/${id}/complete`,
   );
@@ -32,7 +39,9 @@ export const completeAppointment = async (id: string) => {
   return response.data;
 };
 
-export const cancelAppointment = async (id: string) => {
+export const cancelAppointment = async (
+  id: string,
+) => {
   const response = await api.patch(
     `/doctor/appointments/${id}/cancel`,
   );
@@ -40,7 +49,9 @@ export const cancelAppointment = async (id: string) => {
   return response.data;
 };
 
-export const archiveAppointment = async (id: string) => {
+export const archiveAppointment = async (
+  id: string,
+) => {
   const response = await api.patch(
     `/doctor/appointments/${id}/archive`,
   );

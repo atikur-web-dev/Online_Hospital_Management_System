@@ -1,6 +1,4 @@
 // Backend/src/services/Doctor/doctorSchedule.service.ts
-// Backend/src/services/Doctor/doctorSchedule.service.ts
-
 import {
   getMySchedule,
   updateMySchedule,
