@@ -162,6 +162,10 @@ export const envSchema = z.object({
   CLIENT_URL: z
     .string()
     .url(),
+
+  PRESCRIPTION_VIEW_SECRET: z
+  .string()
+  .min(32, "PRESCRIPTION_VIEW_SECRET must be at least 32 characters"),
 });
 
 export type Env = z.infer<typeof envSchema>;

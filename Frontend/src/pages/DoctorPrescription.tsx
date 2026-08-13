@@ -95,10 +95,10 @@ const DoctorPrescription = () => {
       try {
         setAppointmentLoading(true);
 
-        const response = await getDoctorAppointmentById(appointmentId);
-        const appointmentData = response.data;
+        const appointmentData = await getDoctorAppointmentById(appointmentId);
 
-        setAppointment(appointmentData);
+        // cast to any to accommodate differing AppointmentDetails types from API
+        setAppointment(appointmentData as any);
 
         if (appointmentData.prescription?.id) {
           navigate(
@@ -118,7 +118,7 @@ const DoctorPrescription = () => {
     };
 
     fetchAppointment();
-  }, [appointmentId, fetchById]);
+  }, [appointmentId, navigate]);
 
   useEffect(() => {
     if (!prescription) return;

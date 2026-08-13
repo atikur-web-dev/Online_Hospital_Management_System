@@ -1,10 +1,15 @@
 // Backend/src/routes/prescription.routes.ts
 import { Router } from "express";
+
 import {
   createPrescription,
   getPrescription,
   updatePrescription,
 } from "../controller/doctor_controller/prescription.controller.js";
+
+import {
+  sendPrescriptionEmailController,
+} from "../controller/Prescription/prescription.controller.js";
 
 import {
   authenticate,
@@ -13,8 +18,8 @@ import {
 
 const router = Router();
 
+// ================= Create Prescription =================
 
-// Create Prescription
 router.post(
   "/",
   authenticate,
@@ -22,7 +27,8 @@ router.post(
   createPrescription,
 );
 
-// Get Prescription By ID
+// ================= Get Prescription By ID =================
+
 router.get(
   "/:id",
   authenticate,
@@ -30,12 +36,22 @@ router.get(
   getPrescription,
 );
 
-// Update Prescription
+// ================= Update Prescription =================
+
 router.patch(
   "/:id",
   authenticate,
   authorize("DOCTOR"),
   updatePrescription,
+);
+
+// ================= Send Prescription To Patient =================
+
+router.post(
+  "/:prescriptionId/send-email",
+  authenticate,
+  authorize("DOCTOR"),
+  sendPrescriptionEmailController,
 );
 
 export default router;
