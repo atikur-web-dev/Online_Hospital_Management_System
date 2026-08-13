@@ -8,6 +8,7 @@ import {
   cancelAppointment,
   completeAppointment,
   confirmAppointment,
+  getDoctorAppointmentById,
 } from "../api/doctorAppointment.api";
 
 import {
@@ -19,9 +20,14 @@ import {
   EmptyState,
 } from "../components/doctor/appointments";
 
+import MedicalReportsModal from "../components/doctor/appointments/MedicalReportsModal";
+
 import { useDoctorAppointment } from "../hooks/useDoctorAppointment";
 
-import type { Appointment } from "../types/appointment";
+import type {
+  Appointment,
+  AppointmentDetails,
+} from "../types/appointment";
 
 import {
   getDayLabel,
@@ -36,6 +42,10 @@ const DoctorAppointments = () => {
     fetchAppointments,
   } = useDoctorAppointment();
 
+  // ============================================================
+  // Appointment Action States
+  // ============================================================
+
   const [confirmingId, setConfirmingId] =
     useState<string | null>(null);
 
@@ -48,11 +58,32 @@ const DoctorAppointments = () => {
   const [deletingId, setDeletingId] =
     useState<string | null>(null);
 
+  // ============================================================
+  // Search
+  // ============================================================
+
   const [search, setSearch] = useState("");
+
+  // ============================================================
+  // Delete Confirmation
+  // ============================================================
 
   const [modalAppointment, setModalAppointment] =
     useState<Appointment | null>(null);
 
+  // ============================================================
+  // Medical Records
+  // ============================================================
+
+  const [medicalRecordsAppointment, setMedicalRecordsAppointment] =
+    useState<AppointmentDetails | null>(null);
+
+  const [medicalRecordsLoading, setMedicalRecordsLoading] =
+    useState(false);
+
+  // ============================================================
+  // Filter Appointments
+  // ============================================================
 
   const filteredAppointments = useMemo(() => {
     if (!search.trim()) {
@@ -72,16 +103,18 @@ const DoctorAppointments = () => {
           patient.user.email
             .toLowerCase()
             .includes(searchLower) ||
-          (
-            patient.phone &&
+          (patient.phone &&
             patient.phone
               .toLowerCase()
-              .includes(searchLower)
-          )
+              .includes(searchLower))
         );
       },
     );
   }, [appointments, search]);
+
+  // ============================================================
+  // Statistics
+  // ============================================================
 
   const totalAppointments =
     appointments.length;
@@ -110,6 +143,9 @@ const DoctorAppointments = () => {
         appointment.status === "CANCELLED",
     ).length;
 
+  // ============================================================
+  // Confirm Appointment
+  // ============================================================
 
   const handleConfirm = async (
     id: string,
@@ -138,6 +174,9 @@ const DoctorAppointments = () => {
     }
   };
 
+  // ============================================================
+  // Complete Appointment
+  // ============================================================
 
   const handleComplete = async (
     id: string,
@@ -185,6 +224,10 @@ const DoctorAppointments = () => {
     }
   };
 
+  // ============================================================
+  // Cancel Appointment
+  // ============================================================
+
   const handleCancel = async (
     id: string,
   ) => {
@@ -212,6 +255,9 @@ const DoctorAppointments = () => {
     }
   };
 
+  // ============================================================
+  // Delete / Archive Appointment
+  // ============================================================
 
   const handleDeletePermanently = (
     id: string,
@@ -265,11 +311,70 @@ const DoctorAppointments = () => {
       }
     };
 
+  // ============================================================
+  // View Medical Records
+  // ============================================================
+  //
+  // IMPORTANT:
+  // We do NOT use the appointment from the list directly here.
+  //
+  // Instead we call:
+  //
+  // GET /doctor/appointments/:id
+  //
+  // because the detailed endpoint returns:
+  //
+  // - medicalHistories
+  // - medicalReports
+  // - prescription details
+  //
+  // ============================================================
+
+  const handleViewMedicalReports = async (
+    id: string,
+  ) => {
+    try {
+      setMedicalRecordsLoading(true);
+
+      const appointment =
+        await getDoctorAppointmentById(id);
+
+      setMedicalRecordsAppointment(
+        appointment,
+      );
+    } catch (err) {
+      console.error(
+        "Get medical records error:",
+        err,
+      );
+
+      toast.error(
+        "Failed to load patient's medical records.",
+      );
+    } finally {
+      setMedicalRecordsLoading(false);
+    }
+  };
+
+  // ============================================================
+  // Close Medical Records Modal
+  // ============================================================
+
+  const handleCloseMedicalRecords = () => {
+    setMedicalRecordsAppointment(null);
+  };
+
+  // ============================================================
+  // Loading State
+  // ============================================================
 
   if (loading) {
     return <LoadingScreen />;
   }
 
+  // ============================================================
+  // Error State
+  // ============================================================
 
   if (error) {
     return (
@@ -302,11 +407,15 @@ const DoctorAppointments = () => {
     );
   }
 
-// Main UI
+  // ============================================================
+  // Main UI
+  // ============================================================
+
   return (
     <>
       <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-emerald-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+
           {/* Header */}
           <AppointmentHeader
             search={search}
@@ -327,8 +436,7 @@ const DoctorAppointments = () => {
             <EmptyState
               type="appointments"
             />
-          ) : filteredAppointments.length ===
-            0 ? (
+          ) : filteredAppointments.length === 0 ? (
             <EmptyState
               type="search"
               search={search}
@@ -359,6 +467,10 @@ const DoctorAppointments = () => {
 
                     onDeletePermanently={
                       handleDeletePermanently
+                    }
+
+                    onViewMedicalReports={
+                      handleViewMedicalReports
                     }
 
                     isConfirming={
@@ -400,7 +512,10 @@ const DoctorAppointments = () => {
         </div>
       </div>
 
-      {/* Permanent Delete Confirmation */}
+      {/* ========================================================
+          Permanent Delete Confirmation
+          ======================================================== */}
+
       <ConfirmationModal
         isOpen={
           !!modalAppointment
@@ -419,6 +534,31 @@ const DoctorAppointments = () => {
           !!deletingId
         }
       />
+
+      {/* ========================================================
+          Medical Records Modal
+          ======================================================== */}
+
+      {medicalRecordsAppointment && (
+    <MedicalReportsModal
+  isOpen={!!medicalRecordsAppointment}
+  onClose={handleCloseMedicalRecords}
+  appointment={medicalRecordsAppointment}
+/>
+      )}
+
+      {/* Medical records loading overlay */}
+      {medicalRecordsLoading && (
+        <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="flex items-center gap-3 rounded-xl bg-white px-6 py-4 shadow-xl">
+            <RefreshCw className="h-5 w-5 animate-spin text-emerald-600" />
+
+            <span className="text-sm font-medium text-gray-700">
+              Loading medical records...
+            </span>
+          </div>
+        </div>
+      )}
     </>
   );
 };

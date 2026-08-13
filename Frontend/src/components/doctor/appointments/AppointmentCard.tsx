@@ -29,6 +29,7 @@ interface AppointmentCardProps {
   onComplete: (id: string) => void;
   onCancel: (id: string) => void;
   onDeletePermanently: (id: string) => void;
+  onViewMedicalReports: (id: string) => void;
 
   isConfirming: boolean;
   isCompleting: boolean;
@@ -51,6 +52,7 @@ const AppointmentCard = ({
   onComplete,
   onCancel,
   onDeletePermanently,
+  onViewMedicalReports,
 
   isConfirming,
   isCompleting,
@@ -63,21 +65,15 @@ const AppointmentCard = ({
   const navigate = useNavigate();
 
   const initials = getInitials(appointment.patient.name);
-
   const profileImage = appointment.patient.user.profileImage;
-
   const TimeIcon = timeOfDay.icon;
 
   const isPending = appointment.status === "PENDING";
-
   const isConfirmed = appointment.status === "CONFIRMED";
-
   const isCompleted = appointment.status === "COMPLETED";
-
   const isCancelled = appointment.status === "CANCELLED";
 
   const showActions = !isCompleted && !isCancelled;
-
   const showDeletePermanently = isCancelled;
 
   const handleConfirm = () => {
@@ -94,6 +90,10 @@ const AppointmentCard = ({
 
   const handleDeletePermanently = () => {
     onDeletePermanently(appointment.id);
+  };
+
+  const handleViewMedicalReports = () => {
+    onViewMedicalReports(appointment.id);
   };
 
   const handlePrescription = () => {
@@ -172,7 +172,9 @@ const AppointmentCard = ({
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Clock3 className="w-4 h-4 text-emerald-500" />
 
-                <span>{formatAppointmentTime(appointment.appointmentAt)}</span>
+                <span>
+                  {formatAppointmentTime(appointment.appointmentAt)}
+                </span>
 
                 <span
                   className={`flex items-center gap-1 text-xs ${timeOfDay.color}`}
@@ -261,6 +263,7 @@ const AppointmentCard = ({
               onCancel={handleCancel}
               onDeletePermanently={handleDeletePermanently}
               onCreatePrescription={handlePrescription}
+              onViewMedicalReports={handleViewMedicalReports}
             />
           </div>
         </div>
