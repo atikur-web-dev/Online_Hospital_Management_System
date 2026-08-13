@@ -37,3 +37,50 @@ export interface UpdatePrescriptionInput {
   advice?: string;
   followUpDate?: Date | null;
 }
+
+export interface PrescriptionMedicine {
+  id: string;
+  prescriptionId: string;
+  medicineName: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  instructions?: string | null;
+}
+
+export interface PrescriptionTest {
+  id: string;
+  prescriptionId: string;
+  testName: string;
+  instructions?: string | null;
+}
+
+export interface PrescriptionPatient {
+  id: string;
+  name: string;
+  gender?: string | null;
+  phone?: string | null;
+}
+
+export interface PrescriptionDoctor {
+  id: string;
+  name: string;
+}
+
+export interface PrescriptionAppointment {
+  id: string;
+  appointmentAt: Date | string;
+  patient: PrescriptionPatient;
+  doctor: PrescriptionDoctor;
+}
+
+export interface PrescriptionResponse {
+  id: string;
+  diagnosis: string;
+  advice?: string | null;
+  followUpDate?: Date | string | null;
+  createdAt: Date | string;
+  medicines: PrescriptionMedicine[];
+  tests: PrescriptionTest[];
+  appointment: PrescriptionAppointment;
+}

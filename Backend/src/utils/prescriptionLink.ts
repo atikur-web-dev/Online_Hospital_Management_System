@@ -1,4 +1,3 @@
-// Backend/src/utils/prescriptionLink.ts
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 

@@ -9,6 +9,7 @@ import {
 
 import {
   sendPrescriptionEmailController,
+  getPublicPrescription,
 } from "../controller/Prescription/prescription.controller.js";
 
 import {
@@ -18,7 +19,9 @@ import {
 
 const router = Router();
 
-// ================= Create Prescription =================
+// ============================================================
+// Create Prescription
+// ============================================================
 
 router.post(
   "/",
@@ -27,7 +30,9 @@ router.post(
   createPrescription,
 );
 
-// ================= Get Prescription By ID =================
+// ============================================================
+// Get Prescription By ID
+// ============================================================
 
 router.get(
   "/:id",
@@ -36,7 +41,9 @@ router.get(
   getPrescription,
 );
 
-// ================= Update Prescription =================
+// ============================================================
+// Update Prescription
+// ============================================================
 
 router.patch(
   "/:id",
@@ -45,13 +52,27 @@ router.patch(
   updatePrescription,
 );
 
-// ================= Send Prescription To Patient =================
+// ============================================================
+// Send Prescription To Patient
+// ============================================================
 
 router.post(
   "/:prescriptionId/send-email",
   authenticate,
   authorize("DOCTOR"),
   sendPrescriptionEmailController,
+);
+
+// ============================================================
+// Public Prescription View
+// IMPORTANT:
+// This route does NOT use authenticate/authorize.
+// The JWT prescription token itself provides access.
+// ============================================================
+
+router.get(
+  "/public/view/:token",
+  getPublicPrescription,
 );
 
 export default router;

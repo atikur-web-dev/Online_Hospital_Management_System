@@ -1,5 +1,4 @@
 // Frontend/src/App.tsx
-
 import {
   BrowserRouter as Router,
   Routes,
@@ -28,6 +27,8 @@ import Departments from "./pages/Departments";
 import Services from "./pages/Services";
 import About from "./pages/About";
 import MedicalRecords from "./pages/MedicalRecords";
+import PublicPrescriptionView from "./pages/PublicPrescriptionView";
+
 // Payment
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
 import PaymentFail from "./pages/payment/PaymentFail";
@@ -94,9 +95,15 @@ function Layout() {
 
         <Route path="/register" element={<Register />} />
 
-        <Route path="/email-verified" element={<EmailVerificationResult />} />
+        <Route
+          path="/email-verified"
+          element={<EmailVerificationResult />}
+        />
 
-        <Route path="/auth/google/callback" element={<GoogleCallback />} />
+        <Route
+          path="/auth/google/callback"
+          element={<GoogleCallback />}
+        />
 
         <Route path="/doctors" element={<Doctors />} />
 
@@ -108,24 +115,17 @@ function Layout() {
 
         <Route path="/about" element={<About />} />
 
-        {/* ================= PATIENT ================= */}
+        {/* ================= PUBLIC PRESCRIPTION ================= */}
+
+        {/* 
+          IMPORTANT:
+          This route is NOT protected.
+          The JWT token inside the URL is verified by the backend.
+        */}
 
         <Route
-          path="/appointments"
-          element={
-            <ProtectedRoute>
-              <Appointments />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
+          path="/prescription/view/:token"
+          element={<PublicPrescriptionView />}
         />
 
         {/* ================= PATIENT ================= */}
@@ -215,11 +215,20 @@ function Layout() {
 
         {/* ================= PAYMENT ================= */}
 
-        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route
+          path="/payment/success"
+          element={<PaymentSuccess />}
+        />
 
-        <Route path="/payment/fail" element={<PaymentFail />} />
+        <Route
+          path="/payment/fail"
+          element={<PaymentFail />}
+        />
 
-        <Route path="/payment/cancel" element={<PaymentCancel />} />
+        <Route
+          path="/payment/cancel"
+          element={<PaymentCancel />}
+        />
       </Routes>
 
       {/* ================= TOASTER ================= */}
