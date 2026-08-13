@@ -1,4 +1,4 @@
-import express, {  type Request, type Response } from 'express';
+import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -6,6 +6,7 @@ import rateLimit from 'express-rate-limit';
 import hpp from 'hpp';
 import session from 'express-session';
 import passport from 'passport';
+import './config/passport.js';
 import { errorHandler } from "./middleware/error.middleware.js";
 import dotenv from 'dotenv';
 import doctorRoutes from "./routes/doctor.routes.js";
@@ -19,6 +20,7 @@ import prescriptionRoutes from "./routes/prescription.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import doctorScheduleRoutes from "./routes/doctorSchedule.routes.js";
 import medicalRecordRoutes from "./routes/medicalRecord.routes.js";
+
 
 dotenv.config();
 

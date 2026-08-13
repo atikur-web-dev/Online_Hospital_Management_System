@@ -4,12 +4,16 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import prisma from '../lib/prisma.js';
 
+console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+console.log("GOOGLE_CLIENT_SECRET exists:", !!process.env.GOOGLE_CLIENT_SECRET);
+console.log("GOOGLE_REDIRECT_URL:", process.env.GOOGLE_REDIRECT_URL);
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL!,
+      callbackURL: process.env.GOOGLE_REDIRECT_URL!,
     },
     async (_accessToken, _refreshToken, profile, done) => {
       try {

@@ -1,10 +1,10 @@
 // Frontend/src/pages/DoctorPrescriptionView.tsx
-
-import { useEffect } from "react";
-import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Edit3, Send } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Edit3 } from "lucide-react";
+
+import { sendPrescriptionEmail } from "../api/prescription.api";
 import PrescriptionDocument from "../components/doctor/prescription/PrescriptionDocument";
 import { usePrescription } from "../hooks/usePrescription";
 
@@ -16,6 +16,8 @@ const DoctorPrescriptionView = () => {
   const navigate = useNavigate();
 
   const { prescription, loading, fetchById } = usePrescription();
+
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   /**
    * Load Prescription
@@ -38,6 +40,39 @@ const DoctorPrescriptionView = () => {
     }
 
     navigate(`/doctor/prescription/edit/${prescription.id}`);
+  };
+
+  /**
+   * Send Prescription To Patient
+   */
+  const handleSendToPatient = async () => {
+    if (!prescription) {
+      return;
+    }
+
+    try {
+      setSendingEmail(true);
+
+      const response = await sendPrescriptionEmail(
+        prescription.id,
+      );
+
+      toast.success(
+        response.message ||
+          "Prescription sent to patient successfully.",
+      );
+    } catch (error) {
+      console.error(
+        "Failed to send prescription email:",
+        error,
+      );
+
+      toast.error(
+        "Failed to send prescription to patient.",
+      );
+    } finally {
+      setSendingEmail(false);
+    }
   };
 
   /**
@@ -110,6 +145,7 @@ const DoctorPrescriptionView = () => {
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Top Navigation */}
+
       <div className="mb-6">
         <button
           type="button"
@@ -141,28 +177,77 @@ const DoctorPrescriptionView = () => {
       </div>
 
       {/* Prescription Document */}
+
       <PrescriptionDocument prescription={prescription} />
-      <div className="mt-6 flex justify-end">
+
+      {/* Actions */}
+
+      <div className="mt-6 flex flex-col justify-end gap-3 sm:flex-row">
+        {/* Send Prescription */}
+
+        <button
+          type="button"
+          onClick={handleSendToPatient}
+          disabled={sendingEmail}
+          className="
+            inline-flex
+            items-center
+            justify-center
+            gap-2
+            rounded-xl
+            border
+            border-emerald-200
+            bg-emerald-50
+            px-6
+            py-3
+            text-sm
+            font-semibold
+            text-emerald-700
+            shadow-sm
+            transition-all
+            hover:bg-emerald-100
+            hover:shadow-md
+            active:scale-95
+            disabled:cursor-not-allowed
+            disabled:opacity-60
+          "
+        >
+          {sendingEmail ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-300 border-t-emerald-700" />
+              Sending...
+            </>
+          ) : (
+            <>
+              <Send className="h-4 w-4" />
+              Send to Patient
+            </>
+          )}
+        </button>
+
+        {/* Edit Prescription */}
+
         <button
           type="button"
           onClick={handleEdit}
           className="
-      inline-flex
-      items-center
-      gap-2
-      rounded-xl
-      bg-emerald-600
-      px-6
-      py-3
-      text-sm
-      font-semibold
-      text-white
-      shadow-sm
-      transition-all
-      hover:bg-emerald-700
-      hover:shadow-md
-      active:scale-95
-    "
+            inline-flex
+            items-center
+            justify-center
+            gap-2
+            rounded-xl
+            bg-emerald-600
+            px-6
+            py-3
+            text-sm
+            font-semibold
+            text-white
+            shadow-sm
+            transition-all
+            hover:bg-emerald-700
+            hover:shadow-md
+            active:scale-95
+          "
         >
           <Edit3 className="h-4 w-4" />
           Edit Prescription

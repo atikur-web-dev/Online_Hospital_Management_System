@@ -9,11 +9,19 @@ import {
 } from "../utils/jwt.js";
 
 export const getGoogleAuthUrl = () => {
-  return googleClient.generateAuthUrl({
+  const url = googleClient.generateAuthUrl({
     access_type: "offline",
     prompt: "select_account",
     scope: ["openid", "email", "profile"],
   });
+
+  console.log("========== GOOGLE AUTH ==========");
+  console.log("Client ID:", process.env.GOOGLE_CLIENT_ID);
+  console.log("Redirect URL:", process.env.GOOGLE_REDIRECT_URL);
+  console.log("Generated Google URL:", url);
+  console.log("=================================");
+
+  return url;
 };
 
 export const handleGoogleCallback = async (code: string) => {

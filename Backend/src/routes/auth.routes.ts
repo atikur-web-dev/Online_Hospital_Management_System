@@ -21,7 +21,6 @@ router.post('/login', login);
 router.get('/google', googleLogin);
 router.post('/refresh-token', refreshToken);
 router.get('/verify/:token', emailVerify);
-router.get('/google', googleLogin);
 router.get('/google/callback', googleCallback);
 
 // ============ Protected Routes ============

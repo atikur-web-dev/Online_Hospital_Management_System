@@ -49,3 +49,13 @@ export const updatePrescription = async (
     data,
   );
 };
+
+export const sendPrescriptionEmail = async (
+  prescriptionId: string,
+) => {
+  const response = await api.post(
+    `/prescriptions/${prescriptionId}/send-email`,
+  );
+
+  return response.data;
+};
