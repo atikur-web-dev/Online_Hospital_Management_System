@@ -1,6 +1,7 @@
+// Backend/src/controller/Prescription/prescription.controller.ts
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-
+import { generatePrescriptionPdf } from "../../services/Prescription/prescriptionPdf.service.js";
 import prisma from '../../lib/prisma.js';
 import { env } from '../../config/env.js';
 
@@ -377,7 +378,8 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
     // Download URL
     // --------------------------------------------------------
 
-    const downloadUrl = `${env.SERVER_URL}/prescriptions/public/${token}/download`;
+    const downloadUrl =
+  `${env.SERVER_URL}/api/v1/prescriptions/public/${token}/download`;
 
     // --------------------------------------------------------
     // Medicines HTML
@@ -1274,5 +1276,113 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
         </body>
       </html>
     `);
+  }
+};
+
+export const downloadPublicPrescription = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const { token } = req.params;
+
+    // ============================================================
+    // Validate token
+    // ============================================================
+
+    if (!token || Array.isArray(token)) {
+      return res.status(400).json({
+        success: false,
+        message: "Prescription token is required",
+      });
+    }
+
+    // ============================================================
+    // Verify JWT
+    // ============================================================
+
+    let decoded: {
+      prescriptionId: string;
+    };
+
+    try {
+      decoded = jwt.verify(
+        token,
+        env.PRESCRIPTION_VIEW_SECRET,
+      ) as {
+        prescriptionId: string;
+      };
+    } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        return res.status(401).json({
+          success: false,
+          message: "Prescription link has expired",
+        });
+      }
+
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid prescription link",
+        });
+      }
+
+      throw error;
+    }
+
+    // ============================================================
+    // Validate payload
+    // ============================================================
+
+    if (!decoded?.prescriptionId) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid prescription token",
+      });
+    }
+
+    // ============================================================
+    // Generate PDF
+    // ============================================================
+
+    const pdf = await generatePrescriptionPdf(
+      decoded.prescriptionId,
+    );
+
+    // ============================================================
+    // Download response
+    // ============================================================
+
+    res.setHeader(
+      "Content-Type",
+      "application/pdf",
+    );
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="CarePlus-Prescription-${decoded.prescriptionId}.pdf"`,
+    );
+
+    res.setHeader(
+      "Content-Length",
+      pdf.length.toString(),
+    );
+
+    res.setHeader(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate",
+    );
+
+    return res.status(200).send(pdf);
+  } catch (error) {
+    console.error(
+      "DOWNLOAD PUBLIC PRESCRIPTION ERROR:",
+      error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to generate prescription PDF",
+    });
   }
 };

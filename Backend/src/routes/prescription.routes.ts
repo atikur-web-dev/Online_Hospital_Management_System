@@ -1,4 +1,5 @@
 // Backend/src/routes/prescription.routes.ts
+
 import { Router } from "express";
 
 import {
@@ -10,6 +11,7 @@ import {
 import {
   sendPrescriptionEmailController,
   getPublicPrescription,
+  downloadPublicPrescription,
 } from "../controller/Prescription/prescription.controller.js";
 
 import {
@@ -65,14 +67,26 @@ router.post(
 
 // ============================================================
 // Public Prescription View
-// IMPORTANT:
-// This route does NOT use authenticate/authorize.
-// The JWT prescription token itself provides access.
+// ============================================================
+// No authenticate / authorize here.
+// The JWT token itself provides access.
 // ============================================================
 
 router.get(
   "/public/view/:token",
   getPublicPrescription,
+);
+
+// ============================================================
+// Public Prescription Download
+// ============================================================
+// No authenticate / authorize here.
+// The JWT token itself provides access.
+// ============================================================
+
+router.get(
+  "/public/:token/download",
+  downloadPublicPrescription,
 );
 
 export default router;

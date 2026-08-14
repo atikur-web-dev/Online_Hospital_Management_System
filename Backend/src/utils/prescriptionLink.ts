@@ -1,3 +1,5 @@
+// Backend/src/utils/prescriptionLink.ts
+
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 
@@ -14,5 +16,5 @@ export const generatePrescriptionLink = (
     },
   );
 
-  return `${env.CLIENT_URL}/prescription/view/${token}`;
+  return `${env.SERVER_URL}/api/v1/prescriptions/public/view/${token}`;
 };
