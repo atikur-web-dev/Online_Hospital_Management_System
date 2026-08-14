@@ -100,17 +100,7 @@ ${problem || "Not Provided"}
 
 </table>
 
-<p style="
-margin-top:35px;
-color:#666;
-line-height:1.8;
-">
 
-Please arrive at least
-<b>15 minutes earlier</b>
-than your appointment time.
-
-</p>
 
 <div
 style="

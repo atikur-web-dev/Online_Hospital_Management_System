@@ -157,7 +157,7 @@ const Departments = () => {
                 className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden border border-gray-100"
               >
                 {/* Colored Top Bar */}
-                <div className={`h-1.5 bg-gradient-to-r ${dept.color}`} />
+                <div className={`h-1.5 bg-linear-to-r ${dept.color}`} />
                 
                 <div className="p-6">
                   {/* Icon with Gradient Background */}
@@ -205,7 +205,7 @@ const Departments = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="mt-16 bg-gradient-to-r from-emerald-700 to-emerald-600 rounded-3xl p-10 md:p-14 text-center text-white relative overflow-hidden">
+        <div className="mt-16 bg-linear-to-r from-emerald-700 to-emerald-600 rounded-3xl p-10 md:p-14 text-center text-white relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-300 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-400 rounded-full blur-3xl" />
