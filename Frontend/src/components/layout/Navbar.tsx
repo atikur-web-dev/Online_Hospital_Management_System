@@ -145,23 +145,28 @@ const Navbar = ({
   // Admin Links
   // ============================================================
 
-  const adminLinks = [
-    {
-      name: "Home",
-      path: "/",
-      icon: Home,
-    },
-    {
-      name: "Dashboard",
-      path: "/admin/dashboard",
-      icon: Briefcase,
-    },
-    {
-      name: "Doctors",
-      path: "/admin/doctors",
-      icon: Stethoscope,
-    },
-  ];
+const adminLinks = [
+  {
+    name: "Home",
+    path: "/",
+    icon: Home,
+  },
+  {
+    name: "Dashboard",
+    path: "/admin/dashboard",
+    icon: Briefcase,
+  },
+  {
+    name: "Doctors",
+    path: "/admin/doctors",
+    icon: Stethoscope,
+  },
+  {
+    name: "Patients",
+    path: "/admin/patients",
+    icon: Users,
+  },
+];
 
   // ============================================================
   // Select Navigation Based on Role

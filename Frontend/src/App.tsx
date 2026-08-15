@@ -28,6 +28,7 @@ import Services from "./pages/Services";
 import About from "./pages/About";
 import MedicalRecords from "./pages/MedicalRecords";
 import PublicPrescriptionView from "./pages/PublicPrescriptionView";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 // Payment
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
@@ -114,6 +115,14 @@ function Layout() {
         <Route path="/services" element={<Services />} />
 
         <Route path="/about" element={<About />} />
+        <Route
+  path="/admin/dashboard"
+  element={
+    <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
 
         {/* ================= PUBLIC PRESCRIPTION ================= */}
 
