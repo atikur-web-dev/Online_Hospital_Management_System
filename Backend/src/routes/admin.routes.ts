@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/auth.middleware.js';
 import { isAdmin } from '../middleware/admin.middleware.js';
-
+import { getDashboard } from "../controller/admin_controller/dashboard.controller.js";
 import {
   createAdmin,
   getAllAdmins,
@@ -13,6 +13,7 @@ const router = Router();
 
 router.use(authenticate, isAdmin);
 
+router.get("/dashboard", getDashboard);
 router.get('/', getAllAdmins);
 router.post('/', createAdmin);
 router.patch('/:adminId/toggle', toggleAdminStatus);

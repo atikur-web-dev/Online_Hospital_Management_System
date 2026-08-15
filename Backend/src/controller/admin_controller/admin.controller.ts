@@ -1,230 +1,141 @@
-import type { Request, Response } from 'express';
-import prisma from '../../lib/prisma.js';
-import { hashPassword } from '../../utils/bcrypt.js';
+// Backend/src/controller/admin_controller/admin.controller.ts
+import type {
+  Request,
+  Response,
+  NextFunction,
+} from "express";
+
+import * as adminService from "../../services/Admin/admin.service.js";
 
 type AdminParams = {
   adminId: string;
 };
 
-// ============ CREATE NEW ADMIN ============
+// ============================================================
+// CREATE NEW ADMIN
+// ============================================================
+
 export const createAdmin = async (
   req: Request,
-  res: Response
-): Promise<Response> => {
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const { email, password, name, phone } = req.body;
+    const {
+      email,
+      password,
+      name,
+      phone,
+    } = req.body;
 
-    // Check if user exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser) {
+    if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'User already exists with this email',
+        message: "Email and password are required.",
       });
     }
 
-    const hashedPassword = await hashPassword(password);
-
-    const admin = await prisma.$transaction(async (tx) => {
-      const newUser = await tx.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-          role: 'ADMIN',
-          isEmailVerified: true,
-          isActive: true,
-        },
-      });
-
-      await tx.adminProfile.create({
-        data: {
-          userId: newUser.id,
-          name: name || email.split('@')[0],
-          phone: phone || null,
-          permissions: [
-            'MANAGE_USERS',
-            'MANAGE_DOCTORS',
-            'MANAGE_PATIENTS',
-            'MANAGE_APPOINTMENTS',
-            'MANAGE_PAYMENTS',
-            'VIEW_ANALYTICS',
-          ],
-        },
-      });
-
-      return newUser;
+    const admin = await adminService.createAdmin({
+      email,
+      password,
+      name,
+      phone,
     });
 
     return res.status(201).json({
       success: true,
-      message: 'Admin created successfully',
-      data: {
-        id: admin.id,
-        email: admin.email,
-        role: admin.role,
-      },
+      message: "Admin created successfully.",
+      data: admin,
     });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : String(error);
-    return res.status(500).json({
-      success: false,
-      message: message || 'Failed to create admin',
-    });
+  } catch (error) {
+    return next(error);
   }
 };
 
-// ============ GET ALL ADMINS ============
+// ============================================================
+// GET ALL ADMINS
+// ============================================================
+
 export const getAllAdmins = async (
   _req: Request,
-  res: Response
-): Promise<Response> => {
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const admins = await prisma.user.findMany({
-      where: {
-        role: 'ADMIN',
-      },
-      select: {
-        id: true,
-        email: true,
-        isActive: true,
-        lastLogin: true,
-        createdAt: true,
-        adminProfile: {
-          select: {
-            name: true,
-            phone: true,
-            permissions: true,
-          },
-        },
-      },
-    });
+    const admins = await adminService.getAllAdmins();
 
-    return res.json({
+    return res.status(200).json({
       success: true,
+      message: "Admins fetched successfully.",
       data: admins,
     });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : String(error);
-    return res.status(500).json({
-      success: false,
-      message: message || 'Failed to get admins',
-    });
+  } catch (error) {
+    return next(error);
   }
 };
 
-// ============ TOGGLE ADMIN STATUS ============
+// ============================================================
+// TOGGLE ADMIN STATUS
+// ============================================================
+
 export const toggleAdminStatus = async (
   req: Request<AdminParams>,
-  res: Response
-): Promise<Response> => {
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const adminId = req.params.adminId;
+    const { adminId } = req.params;
 
-    const admin = await prisma.user.findUnique({
-      where: {
-        id: adminId,
-      },
-    });
-
-    if (!admin || admin.role !== 'ADMIN') {
-      return res.status(404).json({
+    if (!adminId || Array.isArray(adminId)) {
+      return res.status(400).json({
         success: false,
-        message: 'Admin not found',
+        message: "Invalid admin id.",
       });
     }
 
-    if (admin.email === 'atikuradmin@gmail.com') {
-      return res.status(403).json({
-        success: false,
-        message: 'Cannot deactivate the main admin account',
-      });
-    }
+    const admin =
+      await adminService.toggleAdminStatus(adminId);
 
-    const updatedAdmin = await prisma.user.update({
-      where: {
-        id: adminId,
-      },
-      data: {
-        isActive: !admin.isActive,
-      },
-    });
-
-    return res.json({
+    return res.status(200).json({
       success: true,
       message: `Admin ${
-        updatedAdmin.isActive ? 'activated' : 'deactivated'
-      } successfully`,
-      data: {
-        id: updatedAdmin.id,
-        email: updatedAdmin.email,
-        isActive: updatedAdmin.isActive,
-      },
+        admin.isActive
+          ? "activated"
+          : "deactivated"
+      } successfully.`,
+      data: admin,
     });
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to toggle admin status',
-    });
+    return next(error);
   }
 };
 
-// ============ DELETE ADMIN ============
+// ============================================================
+// DELETE ADMIN
+// ============================================================
+
 export const deleteAdmin = async (
   req: Request<AdminParams>,
-  res: Response
-): Promise<Response> => {
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const adminId = req.params.adminId;
+    const { adminId } = req.params;
 
-    const admin = await prisma.user.findUnique({
-      where: {
-        id: adminId,
-      },
-    });
-
-    if (!admin || admin.role !== 'ADMIN') {
-      return res.status(404).json({
+    if (!adminId || Array.isArray(adminId)) {
+      return res.status(400).json({
         success: false,
-        message: 'Admin not found',
+        message: "Invalid admin id.",
       });
     }
 
-    if (admin.email === 'atikuradmin@gmail.com') {
-      return res.status(403).json({
-        success: false,
-        message: 'Cannot delete the main admin account',
-      });
-    }
+    await adminService.deleteAdmin(adminId);
 
-    await prisma.$transaction(async (tx) => {
-      await tx.adminProfile.delete({
-        where: {
-          userId: adminId,
-        },
-      });
-
-      await tx.user.delete({
-        where: {
-          id: adminId,
-        },
-      });
-    });
-
-    return res.json({
+    return res.status(200).json({
       success: true,
-      message: 'Admin deleted successfully',
+      message: "Admin deleted successfully.",
     });
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error ? error.message : 'Failed to delete admin',
-    });
+    return next(error);
   }
 };
