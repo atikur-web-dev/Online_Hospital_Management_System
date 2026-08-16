@@ -9,39 +9,39 @@ import { hashPassword } from "../../utils/bcrypt.js";
 
 export const getAllDoctors = async () => {
   const query = `
-    SELECT 
-      dp.id, 
-      dp.name, 
-      dp.phone, 
-      dp.specialization, 
-      dp.qualification, 
-      dp.experience, 
-      dp.consultation_fee AS "consultationFee", 
-      dp.is_available AS "isAvailable", 
-      dp.created_at AS "createdAt",
+    SELECT
+      dp.id,
+      dp.name,
+      dp.phone,
+      dp.specialization,
+      dp.qualification,
+      dp.experience,
+      dp."consultationFee" AS "consultationFee",
+      dp."isAvailable" AS "isAvailable",
+      dp."createdAt" AS "createdAt",
 
-      u.id AS "userId", 
-      u.email, 
-      u.is_active AS "isActive", 
-      u.is_email_verified AS "isEmailVerified", 
-      u.profile_image AS "profileImage", 
-      u.last_login AS "lastLogin", 
-      u.created_at AS "userCreatedAt",
+      u.id AS "userId",
+      u.email,
+      u."isActive" AS "isActive",
+      u."isEmailVerified" AS "isEmailVerified",
+      u."profileImage" AS "profileImage",
+      u."lastLogin" AS "lastLogin",
+      u."createdAt" AS "userCreatedAt",
 
-      d.id AS "departmentId", 
+      d.id AS "departmentId",
       d.name AS "departmentName"
 
     FROM doctor_profiles dp
 
     INNER JOIN users u
-      ON u.id = dp.user_id
+      ON u.id = dp."userId"
 
     LEFT JOIN departments d
-      ON d.id = dp.department_id
+      ON d.id = dp."departmentId"
 
     WHERE u.role = 'DOCTOR'
 
-    ORDER BY dp.created_at DESC;
+    ORDER BY dp."createdAt" DESC;
   `;
 
   const result = await pool.query(query);
@@ -126,7 +126,7 @@ export const createDoctor = async (
         SELECT id
         FROM departments
         WHERE id = $1
-          AND is_active = TRUE
+          AND "isActive" = TRUE
         LIMIT 1;
       `;
 
@@ -168,11 +168,11 @@ export const createDoctor = async (
         email,
         password,
         role,
-        is_active,
-        is_email_verified,
-        profile_image,
-        created_at,
-        updated_at
+        "isActive",
+        "isEmailVerified",
+        "profileImage",
+        "createdAt",
+        "updatedAt"
       )
       VALUES (
         $1,
@@ -180,7 +180,7 @@ export const createDoctor = async (
         $3,
         'DOCTOR',
         TRUE,
-        FALSE,
+        TRUE,
         $4,
         NOW(),
         NOW()
@@ -189,10 +189,10 @@ export const createDoctor = async (
         id,
         email,
         role,
-        is_active AS "isActive",
-        is_email_verified AS "isEmailVerified",
-        profile_image AS "profileImage",
-        created_at AS "createdAt";
+        "isActive" AS "isActive",
+        "isEmailVerified" AS "isEmailVerified",
+        "profileImage" AS "profileImage",
+        "createdAt" AS "createdAt";
     `;
 
     const userResult = await client.query(
@@ -211,9 +211,10 @@ export const createDoctor = async (
     // GENERATE DOCTOR PROFILE ID
     // ----------------------------------------------------------
 
-    const doctorProfileId = `doctor_profile_${Date.now()}_${Math.random()
-      .toString(36)
-      .substring(2, 10)}`;
+    const doctorProfileId =
+      `doctor_profile_${Date.now()}_${Math.random()
+        .toString(36)
+        .substring(2, 10)}`;
 
     // ----------------------------------------------------------
     // INSERT DOCTOR PROFILE
@@ -222,17 +223,17 @@ export const createDoctor = async (
     const insertDoctorQuery = `
       INSERT INTO doctor_profiles (
         id,
-        user_id,
+        "userId",
         name,
         phone,
-        department_id,
+        "departmentId",
         specialization,
         qualification,
         experience,
-        consultation_fee,
-        is_available,
-        created_at,
-        updated_at
+        "consultationFee",
+        "isAvailable",
+        "createdAt",
+        "updatedAt"
       )
       VALUES (
         $1,
@@ -250,16 +251,16 @@ export const createDoctor = async (
       )
       RETURNING
         id,
-        user_id AS "userId",
+        "userId" AS "userId",
         name,
         phone,
-        department_id AS "departmentId",
+        "departmentId" AS "departmentId",
         specialization,
         qualification,
         experience,
-        consultation_fee AS "consultationFee",
-        is_available AS "isAvailable",
-        created_at AS "createdAt";
+        "consultationFee" AS "consultationFee",
+        "isAvailable" AS "isAvailable",
+        "createdAt" AS "createdAt";
     `;
 
     const doctorResult = await client.query(
@@ -306,6 +307,96 @@ export const createDoctor = async (
     // RELEASE CONNECTION
     // ----------------------------------------------------------
 
+    client.release();
+  }
+};
+
+// ============================================================
+// DELETE / DEACTIVATE DOCTOR
+// ============================================================
+
+export const deleteDoctor = async (doctorId: string) => {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    // ----------------------------------------------------------
+    // FIND DOCTOR
+    // ----------------------------------------------------------
+
+    const doctorQuery = `
+      SELECT
+        dp.id,
+        dp."userId" AS "userId",
+        u.email,
+        u."isActive" AS "isActive"
+      FROM doctor_profiles dp
+      INNER JOIN users u
+        ON u.id = dp."userId"
+      WHERE dp.id = $1
+        AND u.role = 'DOCTOR'
+      LIMIT 1;
+    `;
+
+    const doctorResult = await client.query(
+      doctorQuery,
+      [doctorId],
+    );
+
+    if (doctorResult.rows.length === 0) {
+      throw new Error("Doctor not found.");
+    }
+
+    const doctor = doctorResult.rows[0];
+
+    // ----------------------------------------------------------
+    // DEACTIVATE USER ACCOUNT
+    // ----------------------------------------------------------
+
+    await client.query(
+      `
+        UPDATE users
+        SET
+          "isActive" = FALSE,
+          "updatedAt" = NOW()
+        WHERE id = $1;
+      `,
+      [doctor.userId],
+    );
+
+    // ----------------------------------------------------------
+    // MAKE DOCTOR UNAVAILABLE
+    // ----------------------------------------------------------
+
+    await client.query(
+      `
+        UPDATE doctor_profiles
+        SET
+          "isAvailable" = FALSE,
+          "updatedAt" = NOW()
+        WHERE id = $1;
+      `,
+      [doctorId],
+    );
+
+    // ----------------------------------------------------------
+    // COMMIT
+    // ----------------------------------------------------------
+
+    await client.query("COMMIT");
+
+    return {
+      id: doctor.id,
+      userId: doctor.userId,
+      email: doctor.email,
+      isActive: false,
+      isAvailable: false,
+    };
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
     client.release();
   }
 };

@@ -127,3 +127,36 @@ export const createDoctor = async (
     return next(error);
   }
 };
+
+// ============================================================
+// DELETE / DEACTIVATE DOCTOR
+// ============================================================
+
+export const deleteDoctor = async (
+  req: Request<{ doctorId: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { doctorId } = req.params;
+
+    if (!doctorId || Array.isArray(doctorId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid doctor id.",
+      });
+    }
+
+    const doctor = await doctorService.deleteDoctor(
+      doctorId,
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor deactivated successfully.",
+      data: doctor,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};

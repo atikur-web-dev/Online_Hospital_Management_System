@@ -26,6 +26,7 @@ import {
 import {
   getAllDoctors,
   createDoctor,
+  deleteDoctor,
 } from "../controller/admin_controller/doctor.controller.js";
 
 const router = Router();
@@ -55,6 +56,8 @@ router.get("/patients", getAllPatients);
 router.get("/doctors", getAllDoctors);
 
 router.post("/doctors", createDoctor);
+
+router.delete("/doctors/:doctorId", deleteDoctor);
 
 // ============================================================
 // MANAGE ADMINS
