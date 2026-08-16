@@ -29,6 +29,7 @@ import About from "./pages/About";
 import MedicalRecords from "./pages/MedicalRecords";
 import PublicPrescriptionView from "./pages/PublicPrescriptionView";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminPatients from "./pages/admin/AdminPatients";
 
 // Payment
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
@@ -96,15 +97,9 @@ function Layout() {
 
         <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/email-verified"
-          element={<EmailVerificationResult />}
-        />
+        <Route path="/email-verified" element={<EmailVerificationResult />} />
 
-        <Route
-          path="/auth/google/callback"
-          element={<GoogleCallback />}
-        />
+        <Route path="/auth/google/callback" element={<GoogleCallback />} />
 
         <Route path="/doctors" element={<Doctors />} />
 
@@ -116,13 +111,21 @@ function Layout() {
 
         <Route path="/about" element={<About />} />
         <Route
-  path="/admin/dashboard"
-  element={
-    <ProtectedRoute allowedRoles={["ADMIN"]}>
-      <AdminDashboard />
-    </ProtectedRoute>
-  }
-/>
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/patients"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminPatients />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ================= PUBLIC PRESCRIPTION ================= */}
 
@@ -224,20 +227,11 @@ function Layout() {
 
         {/* ================= PAYMENT ================= */}
 
-        <Route
-          path="/payment/success"
-          element={<PaymentSuccess />}
-        />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
 
-        <Route
-          path="/payment/fail"
-          element={<PaymentFail />}
-        />
+        <Route path="/payment/fail" element={<PaymentFail />} />
 
-        <Route
-          path="/payment/cancel"
-          element={<PaymentCancel />}
-        />
+        <Route path="/payment/cancel" element={<PaymentCancel />} />
       </Routes>
 
       {/* ================= TOASTER ================= */}

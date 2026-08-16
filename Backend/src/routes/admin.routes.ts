@@ -8,12 +8,15 @@ import {
   toggleAdminStatus,
   deleteAdmin,
 } from '../controller/admin_controller/admin.controller.js';
-
+import {
+  getAllPatients,
+} from "../controller/admin_controller/patient.controller.js";
 const router = Router();
 
 router.use(authenticate, isAdmin);
 
 router.get("/dashboard", getDashboard);
+router.get("/patients", getAllPatients);
 router.get('/', getAllAdmins);
 router.post('/', createAdmin);
 router.patch('/:adminId/toggle', toggleAdminStatus);
