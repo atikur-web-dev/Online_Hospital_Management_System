@@ -30,3 +30,38 @@ export const getAllDepartments = async (
     return next(error);
   }
 };
+
+// ============================================================
+// CREATE DEPARTMENT
+// ============================================================
+
+export const createDepartment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { name, description } = req.body;
+
+    if (!name || typeof name !== "string") {
+      return res.status(400).json({
+        success: false,
+        message: "Department name is required.",
+      });
+    }
+
+    const department =
+      await departmentService.createDepartment({
+        name,
+        description,
+      });
+
+    return res.status(201).json({
+      success: true,
+      message: "Department created successfully.",
+      data: department,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
