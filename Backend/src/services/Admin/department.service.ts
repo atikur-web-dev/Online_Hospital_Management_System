@@ -131,3 +131,149 @@ export const createDepartment = async (
 
   return result.rows[0];
 };
+
+// ============================================================
+// UPDATE DEPARTMENT
+// ============================================================
+
+export interface UpdateDepartmentData {
+  name?: string;
+  description?: string | null;
+}
+
+export const updateDepartment = async (
+  departmentId: string,
+  data: UpdateDepartmentData,
+) => {
+  // ----------------------------------------------------------
+  // NORMALIZE INPUT
+  // ----------------------------------------------------------
+
+  const name =
+    typeof data.name === "string"
+      ? data.name.trim()
+      : undefined;
+
+  const description =
+    typeof data.description === "string"
+      ? data.description.trim()
+      : data.description;
+
+  // ----------------------------------------------------------
+  // CHECK DEPARTMENT EXISTS
+  // ----------------------------------------------------------
+
+  const existingQuery = `
+    SELECT
+      id,
+      name,
+      description
+    FROM departments
+    WHERE id = $1
+    LIMIT 1;
+  `;
+
+  const existingResult = await pool.query(
+    existingQuery,
+    [departmentId],
+  );
+
+  if (existingResult.rows.length === 0) {
+    throw new Error("Department not found.");
+  }
+
+  // ----------------------------------------------------------
+  // CHECK AT LEAST ONE FIELD
+  // ----------------------------------------------------------
+
+  if (name === undefined && description === undefined) {
+    throw new Error(
+      "At least one field is required to update.",
+    );
+  }
+
+  // ----------------------------------------------------------
+  // CHECK DUPLICATE NAME
+  // ----------------------------------------------------------
+
+  if (name !== undefined) {
+    if (!name) {
+      throw new Error(
+        "Department name cannot be empty.",
+      );
+    }
+
+    const duplicateQuery = `
+      SELECT id
+      FROM departments
+      WHERE LOWER(name) = LOWER($1)
+        AND id <> $2
+      LIMIT 1;
+    `;
+
+    const duplicateResult = await pool.query(
+      duplicateQuery,
+      [name, departmentId],
+    );
+
+    if (duplicateResult.rows.length > 0) {
+      throw new Error(
+        "A department already exists with this name.",
+      );
+    }
+  }
+
+  // ----------------------------------------------------------
+  // BUILD UPDATE QUERY
+  // ----------------------------------------------------------
+
+  const fields: string[] = [];
+  const values: unknown[] = [];
+  let parameterIndex = 1;
+
+  if (name !== undefined) {
+    fields.push(`"name" = $${parameterIndex}`);
+    values.push(name);
+    parameterIndex++;
+  }
+
+  if (description !== undefined) {
+    fields.push(
+      `"description" = $${parameterIndex}`,
+    );
+    values.push(description || null);
+    parameterIndex++;
+  }
+
+  fields.push(`"updatedAt" = NOW()`);
+
+  values.push(departmentId);
+
+  // ----------------------------------------------------------
+  // UPDATE
+  // ----------------------------------------------------------
+
+  const updateQuery = `
+    UPDATE departments
+    SET ${fields.join(", ")}
+    WHERE id = $${parameterIndex}
+    RETURNING
+      id,
+      name,
+      description,
+      "isActive" AS "isActive",
+      "createdAt" AS "createdAt",
+      "updatedAt" AS "updatedAt";
+  `;
+
+  const result = await pool.query(
+    updateQuery,
+    values,
+  );
+
+  if (result.rows.length === 0) {
+    throw new Error("Department update failed.");
+  }
+
+  return result.rows[0];
+};

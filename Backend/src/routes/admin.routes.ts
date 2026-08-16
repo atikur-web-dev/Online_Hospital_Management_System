@@ -34,6 +34,7 @@ import {
 import {
   getAllDepartments,
   createDepartment,
+  updateDepartment,
 } from "../controller/admin_controller/department.controller.js";
 
 const router = Router();
@@ -74,6 +75,8 @@ router.delete("/doctors/:doctorId", deleteDoctor);
 // ALl departments
 router.get("/departments", getAllDepartments);
 router.post("/departments", createDepartment);
+router.patch("/departments/:departmentId",updateDepartment,
+);
 
 router.get("/", getAllAdmins);
 
