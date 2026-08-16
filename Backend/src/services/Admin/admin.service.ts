@@ -152,3 +152,4 @@ export const deleteAdmin = async (adminId: string) => {
     });
   });
 };
+

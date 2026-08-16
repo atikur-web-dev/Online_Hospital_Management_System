@@ -20,6 +20,7 @@ import {
 // Patient Controllers
 import {
   getAllPatients,
+  deletePatient,
 } from "../controller/admin_controller/patient.controller.js";
 
 // Doctor Controllers
@@ -28,6 +29,11 @@ import {
   createDoctor,
   deleteDoctor,
 } from "../controller/admin_controller/doctor.controller.js";
+
+// Department controllers
+import {
+  getAllDepartments,
+} from "../controller/admin_controller/department.controller.js";
 
 const router = Router();
 
@@ -48,6 +54,7 @@ router.get("/dashboard", getDashboard);
 // ============================================================
 
 router.get("/patients", getAllPatients);
+router.delete("/patients/:patientId", deletePatient);
 
 // ============================================================
 // MANAGE DOCTORS
@@ -62,6 +69,9 @@ router.delete("/doctors/:doctorId", deleteDoctor);
 // ============================================================
 // MANAGE ADMINS
 // ============================================================
+
+// ALl departments
+router.get("/departments", getAllDepartments);
 
 router.get("/", getAllAdmins);
 
