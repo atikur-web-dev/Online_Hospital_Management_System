@@ -127,3 +127,41 @@ export const updateDepartment = async (
     return next(error);
   }
 };
+
+// ============================================================
+// TOGGLE DEPARTMENT STATUS
+// ============================================================
+
+export const toggleDepartmentStatus = async (
+  req: Request<DepartmentParams>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { departmentId } = req.params;
+
+    if (!departmentId || Array.isArray(departmentId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid department id.",
+      });
+    }
+
+    const department =
+      await departmentService.toggleDepartmentStatus(
+        departmentId,
+      );
+
+    return res.status(200).json({
+      success: true,
+      message: `Department ${
+        department.isActive
+          ? "activated"
+          : "deactivated"
+      } successfully.`,
+      data: department,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};

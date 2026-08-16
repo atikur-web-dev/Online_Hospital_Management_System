@@ -277,3 +277,55 @@ export const updateDepartment = async (
 
   return result.rows[0];
 };
+
+// ============================================================
+// TOGGLE DEPARTMENT STATUS
+// ============================================================
+
+export const toggleDepartmentStatus = async (
+  departmentId: string,
+) => {
+  const existingQuery = `
+    SELECT
+      id,
+      name,
+      "isActive"
+    FROM departments
+    WHERE id = $1
+    LIMIT 1;
+  `;
+
+  const existingResult = await pool.query(
+    existingQuery,
+    [departmentId],
+  );
+
+  if (existingResult.rows.length === 0) {
+    throw new Error("Department not found.");
+  }
+
+  const currentStatus =
+    existingResult.rows[0].isActive;
+
+  const updateQuery = `
+    UPDATE departments
+    SET
+      "isActive" = $1,
+      "updatedAt" = NOW()
+    WHERE id = $2
+    RETURNING
+      id,
+      name,
+      description,
+      "isActive" AS "isActive",
+      "createdAt" AS "createdAt",
+      "updatedAt" AS "updatedAt";
+  `;
+
+  const result = await pool.query(
+    updateQuery,
+    [!currentStatus, departmentId],
+  );
+
+  return result.rows[0];
+};
