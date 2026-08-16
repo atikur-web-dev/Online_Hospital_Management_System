@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import { authenticate } from "../middleware/auth.middleware.js";
 import { isAdmin } from "../middleware/admin.middleware.js";
+import { isActiveAdmin } from "../middleware/active-admin.middleware.js";
 
 // ============================================================
 // ADMIN CONTROLLERS
@@ -62,7 +63,7 @@ const router = Router();
 // ADMIN AUTHORIZATION
 // ============================================================
 
-router.use(authenticate, isAdmin);
+router.use(authenticate, isAdmin, isActiveAdmin);
 
 // ============================================================
 // ADMIN DASHBOARD
