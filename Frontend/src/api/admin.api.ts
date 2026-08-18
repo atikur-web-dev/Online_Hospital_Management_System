@@ -93,3 +93,100 @@ export const getAllPatients =
 
     return response.data;
   };
+
+  // ============================================================
+// ADMIN DEPARTMENTS
+// ============================================================
+
+export interface AdminDepartment {
+  id: string;
+  name: string;
+  description: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  doctorCount: number;
+}
+
+export interface AdminDepartmentsResponse {
+  success: boolean;
+  message: string;
+  data: AdminDepartment[];
+}
+
+export interface AdminDepartmentResponse {
+  success: boolean;
+  message: string;
+  data: AdminDepartment;
+}
+
+export interface CreateDepartmentPayload {
+  name: string;
+  description?: string;
+}
+
+export interface UpdateDepartmentPayload {
+  name?: string;
+  description?: string | null;
+}
+
+/**
+ * Get all departments
+ */
+export const getAllDepartments =
+  async (): Promise<AdminDepartmentsResponse> => {
+    const response =
+      await api.get<AdminDepartmentsResponse>(
+        "/admin/departments",
+      );
+
+    return response.data;
+  };
+
+/**
+ * Create department
+ */
+export const createDepartment =
+  async (
+    data: CreateDepartmentPayload,
+  ): Promise<AdminDepartmentResponse> => {
+    const response =
+      await api.post<AdminDepartmentResponse>(
+        "/admin/departments",
+        data,
+      );
+
+    return response.data;
+  };
+
+/**
+ * Update department
+ */
+export const updateDepartment =
+  async (
+    departmentId: string,
+    data: UpdateDepartmentPayload,
+  ): Promise<AdminDepartmentResponse> => {
+    const response =
+      await api.patch<AdminDepartmentResponse>(
+        `/admin/departments/${departmentId}`,
+        data,
+      );
+
+    return response.data;
+  };
+
+/**
+ * Toggle department status
+ */
+export const toggleDepartmentStatus =
+  async (
+    departmentId: string,
+  ): Promise<AdminDepartmentResponse> => {
+    const response =
+      await api.patch<AdminDepartmentResponse>(
+        `/admin/departments/${departmentId}/toggle`,
+      );
+
+    return response.data;
+  };
