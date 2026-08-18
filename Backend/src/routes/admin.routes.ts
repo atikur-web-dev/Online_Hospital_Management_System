@@ -35,6 +35,8 @@ import {
 import {
   getAllDoctors,
   createDoctor,
+  updateDoctor,
+  toggleDoctorStatus,
   deleteDoctor,
 } from "../controller/admin_controller/doctor.controller.js";
 
@@ -84,6 +86,8 @@ router.delete("/patients/:patientId", deletePatient);
 
 router.get("/doctors", getAllDoctors);
 router.post("/doctors", createDoctor);
+router.patch("/doctors/:doctorId", updateDoctor);
+router.patch("/doctors/:doctorId/toggle", toggleDoctorStatus);
 router.delete("/doctors/:doctorId", deleteDoctor);
 
 // ============================================================

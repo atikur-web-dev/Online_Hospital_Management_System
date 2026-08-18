@@ -352,3 +352,12 @@ export const getAllPayments = async (): Promise<AdminPaymentsResponse> => {
 
   return response.data;
 };
+
+/**
+ * Deactivate / Block patient
+ */
+export const deletePatient = async (patientId: string): Promise<any> => {
+  const response = await api.delete<any>(`/admin/patients/${patientId}`);
+  return response.data;
+};
+

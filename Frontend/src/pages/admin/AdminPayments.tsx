@@ -20,12 +20,24 @@ const AdminPayments = () => {
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-            <div className="flex items-center justify-center gap-3 py-16">
-              <div className="w-6 h-6 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
+        <div className="max-w-7xl mx-auto animate-pulse">
+          {/* Header Skeleton */}
+          <div className="mb-8 flex justify-between items-center">
+            <div>
+              <div className="h-8 w-56 bg-gray-200 rounded-lg" />
+              <div className="mt-3 h-4 w-72 bg-gray-200 rounded-md" />
+            </div>
+            <div className="h-10 w-24 bg-gray-200 rounded-lg" />
+          </div>
 
-              <p className="text-gray-500 font-medium">Loading payments...</p>
+          {/* Table Skeleton */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div className="h-6 w-48 bg-gray-200 rounded-md mb-4" />
+            <div className="space-y-3">
+              <div className="h-8 bg-gray-100 rounded-md" />
+              <div className="h-12 bg-gray-50 rounded-md" />
+              <div className="h-12 bg-gray-50 rounded-md" />
+              <div className="h-12 bg-gray-50 rounded-md" />
             </div>
           </div>
         </div>

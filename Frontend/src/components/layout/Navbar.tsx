@@ -16,6 +16,7 @@ import {
   Briefcase,
   Users,
   Heart,
+  CreditCard,
 } from "lucide-react";
 
 import { Button } from "../common";
@@ -165,6 +166,16 @@ const adminLinks = [
     name: "Patients",
     path: "/admin/patients",
     icon: Users,
+  },
+  {
+    name: "Departments",
+    path: "/admin/departments",
+    icon: Building2,
+  },
+  {
+    name: "Payments",
+    path: "/admin/payments",
+    icon: CreditCard,
   },
 ];
 

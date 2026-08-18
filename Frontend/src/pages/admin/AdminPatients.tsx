@@ -1,10 +1,13 @@
 // Frontend/src/pages/admin/AdminPatients.tsx
+import { useState } from "react";
 import {
   Mail,
   Phone,
   CalendarDays,
   UserRound,
   RefreshCw,
+  Search,
+  UserX,
 } from "lucide-react";
 
 import useAdminPatients from "../../hooks/useAdminPatients";
@@ -15,23 +18,63 @@ const AdminPatients = () => {
     loading,
     error,
     fetchPatients,
+    deactivatePatient,
   } = useAdminPatients();
 
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [actionPatientId, setActionPatientId] = useState<string | null>(null);
+
+  // Deactivate handler
+  const handleDeactivate = async (patientId: string) => {
+    if (!window.confirm("Are you sure you want to block/deactivate this patient?")) {
+      return;
+    }
+    try {
+      setActionPatientId(patientId);
+      await deactivatePatient(patientId);
+    } catch (err) {
+      console.error("Failed to deactivate patient:", err);
+    } finally {
+      setActionPatientId(null);
+    }
+  };
+
+  // Search filtering
+  const filteredPatients = patients.filter((patient) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      patient.name.toLowerCase().includes(query) ||
+      patient.email.toLowerCase().includes(query) ||
+      (patient.phone && patient.phone.toLowerCase().includes(query))
+    );
+  });
+
   // ============================================================
-  // LOADING
+  // LOADING SKELETON
   // ============================================================
 
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-            <div className="flex items-center justify-center gap-3 py-16">
-              <div className="w-6 h-6 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
+        <div className="max-w-7xl mx-auto animate-pulse">
+          {/* Header Skeleton */}
+          <div className="mb-8 flex justify-between items-center">
+            <div>
+              <div className="h-8 w-56 bg-gray-200 rounded-lg" />
+              <div className="mt-3 h-4 w-72 bg-gray-200 rounded-md" />
+            </div>
+            <div className="h-10 w-24 bg-gray-200 rounded-lg" />
+          </div>
 
-              <p className="text-gray-500 font-medium">
-                Loading patients...
-              </p>
+          {/* Table Skeleton */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div className="h-6 w-48 bg-gray-200 rounded-md mb-4" />
+            <div className="space-y-3">
+              <div className="h-8 bg-gray-100 rounded-md" />
+              <div className="h-12 bg-gray-50 rounded-md" />
+              <div className="h-12 bg-gray-50 rounded-md" />
+              <div className="h-12 bg-gray-50 rounded-md" />
             </div>
           </div>
         </div>
@@ -116,19 +159,32 @@ const AdminPatients = () => {
 
         <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
-          {/* Table Header */}
+          {/* Table Header with Search */}
 
-          <div className="px-5 sm:px-6 py-5 border-b border-gray-100">
-            <h2 className="text-lg font-bold text-gray-800">
-              Registered Patients
-            </h2>
+          <div className="px-5 sm:px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-bold text-gray-800">
+                Registered Patients
+              </h2>
 
-            <p className="mt-1 text-sm text-gray-500">
-              Patient accounts registered in the system.
-            </p>
+              <p className="mt-0.5 text-sm text-gray-500">
+                Patient accounts registered in the system.
+              </p>
+            </div>
+
+            <div className="relative max-w-md w-full sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search name, email, phone..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+              />
+            </div>
           </div>
 
-          {patients.length === 0 ? (
+          {filteredPatients.length === 0 ? (
             <div className="py-16 flex flex-col items-center justify-center text-center">
               <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center">
                 <UserRound className="w-7 h-7 text-emerald-600" />
@@ -139,12 +195,12 @@ const AdminPatients = () => {
               </h3>
 
               <p className="mt-1 text-sm text-gray-500">
-                There are currently no registered patients.
+                There are currently no patients matching your search.
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-225">
+              <table className="w-full min-w-[1000px]">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-100">
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -170,11 +226,15 @@ const AdminPatients = () => {
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       Registered
                     </th>
+
+                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
 
                 <tbody className="divide-y divide-gray-100">
-                  {patients.map((patient) => (
+                  {filteredPatients.map((patient) => (
                     <tr
                       key={patient.id}
                       className="hover:bg-emerald-50/30 transition-colors"
@@ -318,6 +378,25 @@ const AdminPatients = () => {
                             },
                           )}
                         </span>
+                      </td>
+
+                      {/* Actions */}
+
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-end">
+                          <button
+                            onClick={() => handleDeactivate(patient.id)}
+                            disabled={!patient.isActive || actionPatientId === patient.id}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {actionPatientId === patient.id ? (
+                              <span className="w-4 h-4 border-2 border-red-700 border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <UserX className="w-4 h-4" />
+                            )}
+                            Block
+                          </button>
+                        </div>
                       </td>
 
                     </tr>

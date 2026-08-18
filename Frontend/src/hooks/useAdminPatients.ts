@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import {
   getAllPatients,
+  deletePatient,
   type AdminPatient,
 } from "../api/admin.api";
 
@@ -35,6 +36,22 @@ const useAdminPatients = () => {
     }
   }, []);
 
+  const deactivatePatient = useCallback(async (patientId: string) => {
+    try {
+      const response = await deletePatient(patientId);
+      // Since deletePatient returns updated status, we update local state
+      setPatients((prev) =>
+        prev.map((pat) =>
+          pat.id === patientId ? { ...pat, isActive: false } : pat
+        )
+      );
+      return response;
+    } catch (err: any) {
+      console.error("Failed to deactivate patient:", err);
+      throw err;
+    }
+  }, []);
+
   useEffect(() => {
     fetchPatients();
   }, [fetchPatients]);
@@ -44,6 +61,7 @@ const useAdminPatients = () => {
     loading,
     error,
     fetchPatients,
+    deactivatePatient,
   };
 };
 

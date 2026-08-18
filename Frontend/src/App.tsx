@@ -30,6 +30,9 @@ import MedicalRecords from "./pages/MedicalRecords";
 import PublicPrescriptionView from "./pages/PublicPrescriptionView";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminPatients from "./pages/admin/AdminPatients";
+import AdminDoctors from "./pages/admin/AdminDoctors";
+import AdminDepartments from "./pages/admin/AdminDepartments";
+import AdminPayments from "./pages/admin/AdminPayments";
 
 // Payment
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
@@ -123,6 +126,30 @@ function Layout() {
           element={
             <ProtectedRoute allowedRoles={["ADMIN"]}>
               <AdminPatients />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/doctors"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminDoctors />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/departments"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminDepartments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/payments"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminPayments />
             </ProtectedRoute>
           }
         />

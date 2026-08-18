@@ -176,14 +176,35 @@ const AdminDepartments = () => {
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-            <div className="flex items-center justify-center gap-3 py-16">
-              <div className="w-6 h-6 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
+        <div className="max-w-7xl mx-auto animate-pulse">
+          {/* Header Skeleton */}
+          <div className="mb-8 flex justify-between items-center">
+            <div>
+              <div className="h-8 w-56 bg-gray-200 rounded-lg" />
+              <div className="mt-3 h-4 w-72 bg-gray-200 rounded-md" />
+            </div>
+            <div className="h-10 w-36 bg-gray-200 rounded-lg" />
+          </div>
 
-              <p className="text-gray-500 font-medium">
-                Loading departments...
-              </p>
+          {/* Stats Skeletons */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="bg-white rounded-2xl border border-gray-100 p-5">
+                <div className="w-12 h-12 rounded-xl bg-gray-200" />
+                <div className="mt-5 h-4 w-28 bg-gray-200 rounded-md" />
+                <div className="mt-2 h-8 w-20 bg-gray-200 rounded-md" />
+              </div>
+            ))}
+          </div>
+
+          {/* Table Skeleton */}
+          <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div className="h-6 w-48 bg-gray-200 rounded-md mb-4" />
+            <div className="space-y-3">
+              <div className="h-8 bg-gray-100 rounded-md" />
+              <div className="h-12 bg-gray-50 rounded-md" />
+              <div className="h-12 bg-gray-50 rounded-md" />
+              <div className="h-12 bg-gray-50 rounded-md" />
             </div>
           </div>
         </div>
