@@ -3,21 +3,13 @@ import axios from 'axios';
 import prisma from '../../lib/prisma.js';
 
 const SSL_PAYMENT_API = process.env.SSL_PAYMENT_API!;
-
 const SSL_VALIDATION_API = process.env.SSL_VALIDATION_API!;
-
 const SSL_STORE_ID = process.env.SSL_STORE_ID!;
-
 const SSL_STORE_PASSWORD = process.env.SSL_STORE_PASSWORD!;
-
 const SSL_SUCCESS_BACKEND_URL = process.env.SSL_SUCCESS_BACKEND_URL!;
-
 const SSL_FAIL_BACKEND_URL = process.env.SSL_FAIL_BACKEND_URL!;
-
 const SSL_CANCEL_BACKEND_URL = process.env.SSL_CANCEL_BACKEND_URL!;
-
 const SSL_IPN_URL = process.env.SSL_IPN_URL!;
-
 const generateTransactionId = () => {
   return `CP-${Date.now()}-${Math.random()
     .toString(36)
@@ -25,9 +17,7 @@ const generateTransactionId = () => {
     .toUpperCase()}`;
 };
 
-/**
- * Initialize SSLCommerz payment
- */
+// Initialize SSLCommerz payment
 export const initiatePayment = async (
   appointmentId: string,
   patientUserId: string,
@@ -81,9 +71,7 @@ export const initiatePayment = async (
 
   const transactionId = generateTransactionId();
 
-  /**
-   * Create / reset pending payment
-   */
+// Create / reset pending payment
   const payment = appointment.payment
     ? await prisma.payment.update({
         where: {
@@ -186,9 +174,7 @@ export const initiatePayment = async (
   }
 };
 
-/**
- * Validate successful SSLCommerz transaction
- */
+// Validate successful SSLCommerz transaction
 export const validatePayment = async (valId: string) => {
   const response = await axios.get(SSL_VALIDATION_API, {
     params: {
@@ -217,19 +203,12 @@ export const validatePayment = async (valId: string) => {
     throw new Error('Payment record not found.');
   }
 
-  /**
-   * IMPORTANT:
-   * Never trust the amount coming
-   * from the gateway blindly.
-   */
+
   if (Number(data.amount) !== Number(payment.amount)) {
     throw new Error('Payment amount mismatch.');
   }
 
-  /**
-   * Idempotency:
-   * Don't process the same payment twice.
-   */
+ 
   if (payment.status === 'PAID') {
     return payment;
   }

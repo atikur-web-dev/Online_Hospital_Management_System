@@ -8,9 +8,7 @@ import {
 
 import { setRefreshTokenCookie } from "../utils/cookies.js";
 
-/**
- * Redirect user to Google OAuth page
- */
+//Redirect user to Google OAuth page
 export const googleLogin = async (
   _req: Request,
   res: Response
@@ -29,9 +27,7 @@ export const googleLogin = async (
   }
 };
 
-/**
- * Google OAuth Callback
- */
+// Google OAuth Callback
 export const googleCallback = async (
   req: Request,
   res: Response

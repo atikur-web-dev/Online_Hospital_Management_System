@@ -8,10 +8,7 @@ import type {
 
 import * as doctorService from "../../services/Admin/doctor.service.js";
 
-// ============================================================
 // GET ALL DOCTORS
-// ============================================================
-
 export const getAllDoctors = async (
   _req: Request,
   res: Response,
@@ -30,10 +27,8 @@ export const getAllDoctors = async (
   }
 };
 
-// ============================================================
-// CREATE NEW DOCTOR
-// ============================================================
 
+// CREATE NEW DOCTOR
 export const createDoctor = async (
   req: Request,
   res: Response,
@@ -53,10 +48,8 @@ export const createDoctor = async (
       profileImage,
     } = req.body;
 
-    // ----------------------------------------------------------
-    // REQUIRED FIELDS
-    // ----------------------------------------------------------
 
+    // REQUIRED FIELDS
     if (!email || !password || !name) {
       return res.status(400).json({
         success: false,
@@ -65,10 +58,8 @@ export const createDoctor = async (
       });
     }
 
-    // ----------------------------------------------------------
-    // VALIDATE EXPERIENCE
-    // ----------------------------------------------------------
 
+    // VALIDATE EXPERIENCE
     if (
       experience !== undefined &&
       experience !== null &&
@@ -80,10 +71,7 @@ export const createDoctor = async (
       });
     }
 
-    // ----------------------------------------------------------
     // VALIDATE CONSULTATION FEE
-    // ----------------------------------------------------------
-
     if (
       consultationFee !== undefined &&
       consultationFee !== null &&
@@ -97,10 +85,7 @@ export const createDoctor = async (
       });
     }
 
-    // ----------------------------------------------------------
     // CREATE DOCTOR
-    // ----------------------------------------------------------
-
     const doctor = await doctorService.createDoctor({
       email,
       password,
@@ -114,10 +99,8 @@ export const createDoctor = async (
       profileImage,
     });
 
-    // ----------------------------------------------------------
+ 
     // RESPONSE
-    // ----------------------------------------------------------
-
     return res.status(201).json({
       success: true,
       message: "Doctor created successfully.",
@@ -128,10 +111,7 @@ export const createDoctor = async (
   }
 };
 
-// ============================================================
 // DELETE / DEACTIVATE DOCTOR
-// ============================================================
-
 export const deleteDoctor = async (
   req: Request<{ doctorId: string }>,
   res: Response,
@@ -161,10 +141,8 @@ export const deleteDoctor = async (
   }
 };
 
-// ============================================================
-// UPDATE DOCTOR DETAILS
-// ============================================================
 
+// UPDATE DOCTOR DETAILS
 export const updateDoctor = async (
   req: Request<{ doctorId: string }>,
   res: Response,

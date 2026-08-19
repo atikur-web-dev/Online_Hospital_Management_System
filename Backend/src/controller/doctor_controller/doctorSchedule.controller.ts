@@ -1,12 +1,8 @@
 // Backend/src/controller/doctor_controller/doctorSchedule.controller.ts
-// Backend/src/controller/doctor_controller/doctorSchedule.controller.ts
-
 import type { Request, Response, NextFunction } from "express";
 import * as doctorScheduleService from "../../services/Doctor/doctorSchedule.service.js";
 
-/**
- * Get logged-in doctor's schedule
- */
+// Get logged-in doctor's schedule
 export const getMySchedule = async (
   req: Request,
   res: Response,
@@ -35,9 +31,7 @@ export const getMySchedule = async (
   }
 };
 
-/**
- * Update logged-in doctor's schedule
- */
+// Update logged-in doctor's schedule
 export const updateMySchedule = async (
   req: Request,
   res: Response,
@@ -78,9 +72,7 @@ export const updateMySchedule = async (
   }
 };
 
-/**
- * Update logged-in doctor's availability
- */
+// Update logged-in doctor's availability
 export const updateAvailability = async (
   req: Request,
   res: Response,

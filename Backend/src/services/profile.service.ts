@@ -10,9 +10,8 @@ import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
 import type { UserRole } from '../generated/prisma/index.js';
 import { uploadImage, deleteImage } from './cloudinary.service.js';
-/**
- * Get Logged In User Profile
- */
+
+// Get Logged In User Profile
 export const getMyProfile = async (
   userId: string,
   role: UserRole
@@ -73,9 +72,9 @@ export const getMyProfile = async (
       throw new Error("Invalid user role");
   }
 };
-/**
- * Update Logged In User Profile
- */
+
+
+// Update Logged In User Profile
 export const updateMyProfile = async (
   userId: string,
   role: UserRole,
@@ -181,9 +180,9 @@ export const updateMyProfile = async (
       throw new Error("Invalid user role");
   }
 };
-/**
- * Upload Profile Image
- */
+
+
+// Upload Profile Image
 export const uploadProfileImage = async (
   userId: string,
   file: Express.Multer.File
@@ -248,9 +247,8 @@ export const uploadProfileImage = async (
   return updatedUser;
 };
 
-/**
- * Upload Logged In User Profile Image
- */
+
+// Upload Logged In User Profile Image
 export const uploadMyProfileImage = async (
   userId: string,
   file: Express.Multer.File

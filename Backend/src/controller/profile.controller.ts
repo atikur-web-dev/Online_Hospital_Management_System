@@ -7,9 +7,7 @@ import {
   uploadMyProfileImage,
 } from "../services/profile.service.js";
 
-/**
- * Get Logged In User Profile
- */
+// Get Logged In User Profile
 export const getProfile = async (
   req: Request,
   res: Response
@@ -35,9 +33,7 @@ export const getProfile = async (
   }
 };
 
-/**
- * Update Logged In User Profile
- */
+// Update Logged In User Profile
 export const updateProfile = async (
   req: Request,
   res: Response
@@ -64,9 +60,7 @@ export const updateProfile = async (
   }
 };
 
-/**
- * Upload Profile Image
- */
+// Upload Profile Image
 export const uploadProfileImage = async (
   req: Request,
   res: Response

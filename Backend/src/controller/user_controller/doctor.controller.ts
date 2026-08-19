@@ -6,9 +6,7 @@ import type {
 
 import * as doctorService from "../../services/Doctor/doctor.service.js";
 
-/**
- * Get All Doctors
- */
+// Get All Doctors
 export const getAllDoctors = async (
   req: Request,
   res: Response,
@@ -40,9 +38,7 @@ export const getAllDoctors = async (
   }
 };
 
-/**
- * Get Single Doctor By ID
- */
+// Get Single Doctor By ID
 export const getDoctor = async (
   req: Request,
   res: Response,
@@ -71,9 +67,7 @@ export const getDoctor = async (
   }
 };
 
-/**
- * Doctor Dashboard
- */
+// Doctor Dashboard
 export const getDashboard = async (
   req: Request,
   res: Response,
@@ -103,9 +97,7 @@ export const getDashboard = async (
   }
 };
 
-/**
- * Get Logged-in Doctor Schedule
- */
+// Get Logged-in Doctor Schedule
 export const getMySchedule = async (
   req: Request,
   res: Response,
@@ -135,9 +127,7 @@ export const getMySchedule = async (
   }
 };
 
-/**
- * Update Logged-in Doctor Schedule
- */
+// Update Logged-in Doctor Schedule
 export const updateMySchedule = async (
   req: Request,
   res: Response,
@@ -179,9 +169,7 @@ export const updateMySchedule = async (
   }
 };
 
-/**
- * Update Doctor Availability
- */
+// Update Doctor Availability
 export const updateAvailability = async (
   req: Request,
   res: Response,

@@ -8,10 +8,8 @@ import type {
 
 import * as departmentService from "../../services/Admin/department.service.js";
 
-// ============================================================
-// GET ALL DEPARTMENTS
-// ============================================================
 
+// GET ALL DEPARTMENTS
 export const getAllDepartments = async (
   _req: Request,
   res: Response,
@@ -31,10 +29,8 @@ export const getAllDepartments = async (
   }
 };
 
-// ============================================================
-// CREATE DEPARTMENT
-// ============================================================
 
+// CREATE DEPARTMENT
 export const createDepartment = async (
   req: Request,
   res: Response,
@@ -66,10 +62,7 @@ export const createDepartment = async (
   }
 };
 
-// ============================================================
 // UPDATE DEPARTMENT
-// ============================================================
-
 type DepartmentParams = {
   departmentId: string;
 };
@@ -128,10 +121,8 @@ export const updateDepartment = async (
   }
 };
 
-// ============================================================
-// TOGGLE DEPARTMENT STATUS
-// ============================================================
 
+// TOGGLE DEPARTMENT STATUS
 export const toggleDepartmentStatus = async (
   req: Request<DepartmentParams>,
   res: Response,

@@ -2,7 +2,7 @@
 import z from "zod";
 
 export const envSchema = z.object({
-  // ================= Node =================
+  //  Node
 
   NODE_ENV: z
     .enum(["development", "production"])
@@ -12,19 +12,19 @@ export const envSchema = z.object({
     .number()
     .default(5000),
 
-  // ================= Database =================
+  //  Database
 
   DATABASE_URL: z
     .string()
     .url(),
 
-  // ================= JWT =================
+  // JWT
 
   JWT_SECRET: z
     .string()
     .min(8),
 
-  // ================= Google OAuth =================
+  // Google OAuth
 
   GOOGLE_CLIENT_ID: z
     .string()
@@ -38,7 +38,7 @@ export const envSchema = z.object({
     .string()
     .url(),
 
-  // ================= GitHub OAuth =================
+  //  GitHub OAuth
 
   GITHUB_CLIENT_ID: z
     .string()
@@ -52,13 +52,13 @@ export const envSchema = z.object({
     .string()
     .url(),
 
-  // ================= Gemini =================
+  //  Gemini 
 
   GOOGLE_GEMINI_API_KEY: z
     .string()
     .min(1),
 
-  // ================= Cloudinary =================
+  // Cloudinary 
 
   CLOUDINARY_CLOUD_NAME: z
     .string()
@@ -72,7 +72,7 @@ export const envSchema = z.object({
     .string()
     .min(1),
 
-  // ================= SSLCommerz =================
+  // SSLCommerz 
 
   SSL_STORE_ID: z
     .string()
@@ -111,7 +111,7 @@ export const envSchema = z.object({
     .string()
     .url(),
 
-  // ================= SSLCommerz Frontend URLs =================
+  //  SSLCommerz Frontend URLs 
 
   SSL_SUCCESS_FRONTEND_URL: z
     .string()
@@ -125,7 +125,7 @@ export const envSchema = z.object({
     .string()
     .url(),
 
-  // ================= Redis =================
+  //  Redis
 
   REDIS_URL: z
     .string()
@@ -137,14 +137,12 @@ export const envSchema = z.object({
     .number()
     .default(300),
 
-  // ================= Resend =================
-
+  //  Resend 
   RESEND_API_KEY: z
     .string()
     .min(1),
 
-  // ================= Email Verification =================
-
+  //  Email Verification 
   EMAIL_VERIFICATION_SECRET: z
     .string()
     .min(8),
@@ -153,7 +151,7 @@ export const envSchema = z.object({
     .string()
     .default("10m"),
 
-  // ================= URLs =================
+  //  URLs 
 
   SERVER_URL: z
     .string()

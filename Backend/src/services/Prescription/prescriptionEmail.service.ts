@@ -7,8 +7,8 @@ import { NotFoundError } from "../../utils/errors/httpErrors.js";
 export async function sendPrescriptionToPatient(
   prescriptionId: string,
 ): Promise<string> {
-  // ================= Find Prescription =================
 
+  // Find Prescription 
   const prescription = await prisma.prescription.findUnique({
     where: {
       id: prescriptionId,
@@ -34,8 +34,7 @@ export async function sendPrescriptionToPatient(
     );
   }
 
-  // ================= Patient Email =================
-
+  //  Patient Email
   const patientEmail =
     prescription.appointment.patient.user.email;
 
@@ -46,21 +45,18 @@ export async function sendPrescriptionToPatient(
     );
   }
 
-  // ================= Names =================
-
+  //  Names 
   const patientName =
     prescription.appointment.patient.name;
 
   const doctorName =
     prescription.appointment.doctor.name;
 
-  // ================= Generate Secure Link =================
-
+  //  Generate Secure Link 
   const prescriptionLink =
     generatePrescriptionLink(prescription.id);
 
-  // ================= Email =================
-
+  // Email
   const html = prescriptionEmailTemplate({
     patientName,
     doctorName,

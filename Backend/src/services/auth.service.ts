@@ -39,8 +39,7 @@ export const registerUser = async (data: RegisterInput) => {
     consultationFee,
   } = data;
 
-  // ================= Check Existing User =================
-
+  // Check Existing User 
   const existingUser = await prisma.user.findUnique({
     where: {
       email,
@@ -51,13 +50,11 @@ export const registerUser = async (data: RegisterInput) => {
     throw new ConflictError({}, 'User already exists');
   }
 
-  // ================= Hash Password =================
-
+  //  Hash Password 
   const hashedPassword = await hashPassword(password);
 
   try {
-    // ================= Transaction =================
-
+    // Transaction 
     const user = await prisma.$transaction(async (tx) => {
       const createdUser = await tx.user.create({
         data: {
@@ -100,8 +97,7 @@ export const registerUser = async (data: RegisterInput) => {
       return createdUser;
     });
 
-    // ================= JWT =================
-
+    //  JWT
     const token = generateToken({
       id: user.id,
       email: user.email,
@@ -113,8 +109,7 @@ export const registerUser = async (data: RegisterInput) => {
       id: user.id,
     });
 
-    // ================= Store Refresh Token =================
-
+    // Store Refresh Token 
     await prisma.refreshToken.create({
       data: {
         userId: user.id,
@@ -123,8 +118,7 @@ export const registerUser = async (data: RegisterInput) => {
       },
     });
 
-    // ================= Send Verification Email =================
-
+    //  Send Verification Email 
     const verificationLink = generateVerificationLink(user.email);
 
     try {
@@ -137,8 +131,7 @@ export const registerUser = async (data: RegisterInput) => {
       console.error('Email sending failed:', error);
     }
 
-    // ================= Response =================
-
+    //  Response 
     return {
       user: {
         id: user.id,
@@ -250,7 +243,7 @@ export const loginUser = async (data: LoginInput) => {
   };
 };
 
-// ============ REFRESH TOKEN ============
+//  REFRESH TOKEN 
 export const refreshTokenService = async (refreshToken: string) => {
   try {
     // Verify JWT and get payload
@@ -316,14 +309,14 @@ export const refreshTokenService = async (refreshToken: string) => {
   }
 };
 
-// ============ LOGOUT ============
+//  LOGOUT 
 export const logoutUser = async (userId: string) => {
   await prisma.refreshToken.deleteMany({
     where: { userId },
   });
 };
 
-// ============ GET CURRENT USER ============
+// GET CURRENT USER 
 export const getMe = async (userId: string) => {
   const user = await prisma.user.findUnique({
     where: { id: userId },

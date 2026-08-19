@@ -11,10 +11,8 @@ type AdminParams = {
   adminId: string;
 };
 
-// ============================================================
-// CREATE NEW ADMIN
-// ============================================================
 
+// CREATE NEW ADMIN
 export const createAdmin = async (
   req: Request,
   res: Response,
@@ -52,10 +50,8 @@ export const createAdmin = async (
   }
 };
 
-// ============================================================
-// GET ALL ADMINS
-// ============================================================
 
+// GET ALL ADMINS
 export const getAllAdmins = async (
   _req: Request,
   res: Response,
@@ -74,10 +70,8 @@ export const getAllAdmins = async (
   }
 };
 
-// ============================================================
-// TOGGLE ADMIN STATUS
-// ============================================================
 
+// TOGGLE ADMIN STATUS
 export const toggleAdminStatus = async (
   req: Request<AdminParams>,
   res: Response,
@@ -110,10 +104,8 @@ export const toggleAdminStatus = async (
   }
 };
 
-// ============================================================
-// DELETE ADMIN
-// ============================================================
 
+// DELETE ADMIN
 export const deleteAdmin = async (
   req: Request<AdminParams>,
   res: Response,

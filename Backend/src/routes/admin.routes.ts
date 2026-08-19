@@ -4,10 +4,8 @@ import { authenticate } from "../middleware/auth.middleware.js";
 import { isAdmin } from "../middleware/admin.middleware.js";
 import { isActiveAdmin } from "../middleware/active-admin.middleware.js";
 
-// ============================================================
-// ADMIN CONTROLLERS
-// ============================================================
 
+// ADMIN CONTROLLERS
 import {
   getDashboard,
 } from "../controller/admin_controller/dashboard.controller.js";
@@ -19,19 +17,15 @@ import {
   deleteAdmin,
 } from "../controller/admin_controller/admin.controller.js";
 
-// ============================================================
-// PATIENT CONTROLLERS
-// ============================================================
 
+// PATIENT CONTROLLERS
 import {
   getAllPatients,
   deletePatient,
 } from "../controller/admin_controller/patient.controller.js";
 
-// ============================================================
-// DOCTOR CONTROLLERS
-// ============================================================
 
+// DOCTOR CONTROLLERS
 import {
   getAllDoctors,
   createDoctor,
@@ -40,10 +34,8 @@ import {
   deleteDoctor,
 } from "../controller/admin_controller/doctor.controller.js";
 
-// ============================================================
-// DEPARTMENT CONTROLLERS
-// ============================================================
 
+// DEPARTMENT CONTROLLERS
 import {
   getAllDepartments,
   createDepartment,
@@ -51,49 +43,33 @@ import {
   toggleDepartmentStatus,
 } from "../controller/admin_controller/department.controller.js";
 
-// ============================================================
-// PAYMENT CONTROLLERS
-// ============================================================
 
+// PAYMENT CONTROLLERS
 import {
   getAllPayments,
 } from "../controller/admin_controller/payment.controller.js";
 
 const router = Router();
 
-// ============================================================
-// ADMIN AUTHORIZATION
-// ============================================================
 
+// ADMIN AUTHORIZATION
 router.use(authenticate, isAdmin, isActiveAdmin);
 
-// ============================================================
 // ADMIN DASHBOARD
-// ============================================================
-
 router.get("/dashboard", getDashboard);
 
-// ============================================================
 // MANAGE PATIENTS
-// ============================================================
-
 router.get("/patients", getAllPatients);
 router.delete("/patients/:patientId", deletePatient);
 
-// ============================================================
 // MANAGE DOCTORS
-// ============================================================
-
 router.get("/doctors", getAllDoctors);
 router.post("/doctors", createDoctor);
 router.patch("/doctors/:doctorId", updateDoctor);
 router.patch("/doctors/:doctorId/toggle", toggleDoctorStatus);
 router.delete("/doctors/:doctorId", deleteDoctor);
 
-// ============================================================
 // MANAGE DEPARTMENTS
-// ============================================================
-
 router.get("/departments", getAllDepartments);
 router.post("/departments", createDepartment);
 router.patch("/departments/:departmentId", updateDepartment);
@@ -102,23 +78,15 @@ router.patch(
   toggleDepartmentStatus,
 );
 
-// ============================================================
 // MANAGE PAYMENTS
-// ============================================================
-
 router.get("/payments", getAllPayments);
 
-// ============================================================
 // MANAGE ADMINS
-// ============================================================
-
 router.get("/", getAllAdmins);
 router.post("/", createAdmin);
 router.patch("/:adminId/toggle", toggleAdminStatus);
 router.delete("/:adminId", deleteAdmin);
 
-// ============================================================
-// EXPORT ROUTER
-// ============================================================
+
 
 export default router;

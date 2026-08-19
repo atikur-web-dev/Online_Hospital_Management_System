@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 
-// ================= Register Validation =================
+//  Register Validation 
 
 export const registerSchema = z.object({
   // Common Fields
@@ -26,7 +26,7 @@ export const registerSchema = z.object({
 
   role: z.enum(["PATIENT", "DOCTOR"]),
 
-  // ================= Patient Fields =================
+  // Patient Fields 
 
   dateOfBirth: z.preprocess(
   (value) => (value === "" ? undefined : value),
@@ -40,7 +40,7 @@ export const registerSchema = z.object({
     .trim()
     .optional(),
 
-  // ================= Doctor Fields =================
+  //  Doctor Fields 
 
   specialization: z
     .string()
@@ -66,7 +66,7 @@ export const registerSchema = z.object({
     .optional(),
 });
 
-// ================= Login Validation =================
+// Login Validation 
 
 export const loginSchema = z.object({
   email: z.email("Invalid email address"),
@@ -76,7 +76,7 @@ export const loginSchema = z.object({
     .min(1, "Password is required"),
 });
 
-// ================= Refresh Token Validation =================
+//  Refresh Token Validation
 
 export const refreshTokenSchema = z.object({
   refreshToken: z
@@ -84,7 +84,7 @@ export const refreshTokenSchema = z.object({
     .min(1, "Refresh token is required"),
 });
 
-// ================= Email Verification =================
+// Email Verification 
 
 export const verifyEmailSchema = z.object({
   token: z
@@ -92,7 +92,7 @@ export const verifyEmailSchema = z.object({
     .min(1, "Verification token is required"),
 });
 
-// ================= Types =================
+//Types 
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;

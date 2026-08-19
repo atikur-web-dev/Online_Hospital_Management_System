@@ -10,10 +10,8 @@ import * as patientService from "../../services/Admin/patient.service.js";
 type PatientParams = {
   patientId: string;
 };
-// ============================================================
-// GET ALL PATIENTS
-// ============================================================
 
+// GET ALL PATIENTS
 export const getAllPatients = async (
   _req: Request,
   res: Response,
@@ -33,10 +31,7 @@ export const getAllPatients = async (
   }
 };
 
-// ============================================================
 // DEACTIVATE PATIENT
-// ============================================================
-
 export const deletePatient = async (
   req: Request<PatientParams>,
   res: Response,

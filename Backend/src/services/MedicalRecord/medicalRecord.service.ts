@@ -10,11 +10,7 @@ import {
   deleteImage,
 } from "../cloudinary.service.js";
 
-
-// ============================================================
 // Helper: Find Patient Profile
-// ============================================================
-
 const getPatientProfile = async (userId: string) => {
   const patient = await prisma.patientProfile.findUnique({
     where: {
@@ -30,10 +26,8 @@ const getPatientProfile = async (userId: string) => {
 };
 
 
-// ============================================================
-// Medical History
-// ============================================================
 
+// Medical History
 export const createMedicalHistory = async (
   userId: string,
   body: unknown,
@@ -144,11 +138,7 @@ export const deleteMedicalHistory = async (
   });
 };
 
-
-// ============================================================
 // Medical Reports
-// ============================================================
-
 export const uploadMedicalReport = async (
   userId: string,
   file: Express.Multer.File,
@@ -228,10 +218,8 @@ export const deleteMedicalReport = async (
 };
 
 
-// ============================================================
-// Get Patient Medical Records
-// ============================================================
 
+// Get Patient Medical Records
 export const getPatientMedicalRecords = async (
   userId: string,
 ) => {

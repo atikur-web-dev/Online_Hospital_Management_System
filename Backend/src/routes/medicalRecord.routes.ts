@@ -17,11 +17,6 @@ import { upload } from "../middleware/upload.middleware.js";
 
 const router = Router();
 
-
-// ============================================================
-// Patient Medical History
-// ============================================================
-
 // Create medical history
 router.post(
   "/history",
@@ -50,11 +45,6 @@ router.delete(
   deleteMedicalHistory,
 );
 
-
-// ============================================================
-// Patient Medical Reports
-// ============================================================
-
 // Upload medical report
 router.post(
   "/reports",
@@ -77,11 +67,7 @@ router.delete(
   deleteMedicalReport,
 );
 
-
-// ============================================================
 // Get Everything
-// ============================================================
-
 router.get(
   "/",
   authenticate,

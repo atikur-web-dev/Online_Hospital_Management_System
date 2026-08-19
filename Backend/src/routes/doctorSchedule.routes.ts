@@ -1,6 +1,4 @@
 // Backend/src/routes/doctorSchedule.routes.ts
-// Backend/src/routes/doctorSchedule.routes.ts
-
 import { Router } from "express";
 
 import {
@@ -12,10 +10,7 @@ import * as doctorScheduleController from "../controller/doctor_controller/docto
 
 const router = Router();
 
-/**
- * Get logged-in doctor's schedule
- * GET /api/doctor-schedule
- */
+// Get logged-in doctor's schedule
 router.get(
   "/",
   authenticate,
@@ -23,10 +18,7 @@ router.get(
   doctorScheduleController.getMySchedule,
 );
 
-/**
- * Update logged-in doctor's schedule
- * PUT /api/doctor-schedule
- */
+// Update logged-in doctor's schedule
 router.put(
   "/",
   authenticate,
@@ -34,10 +26,7 @@ router.put(
   doctorScheduleController.updateMySchedule,
 );
 
-/**
- * Update doctor availability
- * PATCH /api/doctor-schedule/availability
- */
+// Update doctor availability
 router.patch(
   "/availability",
   authenticate,

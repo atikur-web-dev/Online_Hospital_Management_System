@@ -1,15 +1,10 @@
 // Backend/src/services/Admin/dashboard.service.ts
 import prisma from "../../lib/prisma.js";
 
-// ============================================================
+
 // ADMIN DASHBOARD
-// ============================================================
-
 export const getDashboard = async () => {
-  // ----------------------------------------------------------
   // DATE RANGES
-  // ----------------------------------------------------------
-
   const now = new Date();
 
   // Today: 00:00 -> tomorrow 00:00
@@ -19,10 +14,7 @@ export const getDashboard = async () => {
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
-  // ----------------------------------------------------------
   // TODAY'S STATS
-  // ----------------------------------------------------------
-
   const [
     todayAppointments,
     todayPatientGroups,
@@ -84,10 +76,7 @@ export const getDashboard = async () => {
     }),
   ]);
 
-  // ----------------------------------------------------------
   // LAST 7 DAYS APPOINTMENT TREND
-  // ----------------------------------------------------------
-
   const appointmentTrend: {
     date: string;
     appointments: number;
@@ -115,10 +104,7 @@ export const getDashboard = async () => {
     });
   }
 
-  // ----------------------------------------------------------
   // LAST 6 MONTHS REVENUE + PATIENTS
-  // ----------------------------------------------------------
-
   const monthlyStats: {
     month: string;
     revenue: number;
@@ -153,8 +139,7 @@ export const getDashboard = async () => {
         },
       });
 
-    // Unique patients who had appointments
-    // during this month
+    // Unique patients who had appointments during this month
     const patientGroups =
       await prisma.appointment.groupBy({
         by: ["patientId"],
@@ -178,26 +163,18 @@ export const getDashboard = async () => {
     });
   }
 
-  // ----------------------------------------------------------
-  // RETURN DASHBOARD DATA
-  // ----------------------------------------------------------
 
+  // RETURN DASHBOARD DATA
   return {
     stats: {
       todayPatients: todayPatientGroups.length,
-
       todayAppointments,
-
       activeDoctors,
-
       pendingAppointments,
-
       todayRevenue:
         todayRevenue._sum.amount ?? 0,
     },
-
     appointmentTrend,
-
     monthlyStats,
   };
 };

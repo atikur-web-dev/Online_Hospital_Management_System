@@ -8,8 +8,8 @@ import { NotFoundError } from "../../utils/errors/httpErrors.js";
 export async function generatePrescriptionPdf(
   prescriptionId: string,
 ): Promise<Buffer> {
-  // ================= Find Prescription =================
 
+  //  Find Prescription 
   const prescription =
     await prisma.prescription.findUnique({
       where: {
@@ -37,8 +37,7 @@ export async function generatePrescriptionPdf(
     );
   }
 
-  // ================= Helpers =================
-
+  // Helpers
   const escapeHtml = (value: unknown): string => {
     return String(value ?? "")
       .replace(/&/g, "&amp;")
@@ -80,8 +79,7 @@ export async function generatePrescriptionPdf(
     );
   };
 
-  // ================= Names =================
-
+  //  Names 
   const patientName = escapeHtml(
     prescription.appointment.patient.name,
   );
@@ -103,8 +101,7 @@ export async function generatePrescriptionPdf(
         "Doctor",
     );
 
-  // ================= Prescription ID =================
-
+  //  Prescription ID 
   const prescriptionDisplayId =
     prescription.id
       ? parseInt(
@@ -117,8 +114,7 @@ export async function generatePrescriptionPdf(
           .padStart(6, "0")
       : "000000";
 
-  // ================= Medicines =================
-
+  //  Medicines 
   const medicinesHtml =
     prescription.medicines.length === 0
       ? `
@@ -188,8 +184,7 @@ export async function generatePrescriptionPdf(
           )
           .join("");
 
-  // ================= Tests =================
-
+  //  Tests 
   const testsHtml =
     prescription.tests.length === 0
       ? `
@@ -217,8 +212,7 @@ export async function generatePrescriptionPdf(
           )
           .join("");
 
-  // ================= HTML =================
-
+  //  HTML 
   const html = `
 <!DOCTYPE html>
 
@@ -865,8 +859,7 @@ body {
 </html>
 `;
 
-  // ================= Launch Chrome =================
-
+  // Launch Chrome 
   const browser = await puppeteer.launch({
     headless: true,
 

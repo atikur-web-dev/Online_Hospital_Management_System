@@ -122,10 +122,7 @@ export const createAppointment = async (
     throw new Error('Doctor is currently unavailable.');
   }
 
-  // ============================================================
   // Doctor Schedule Validation
-  // ============================================================
-
   const appointmentDateTime = new Date(appointmentAt);
 
   if (Number.isNaN(appointmentDateTime.getTime())) {

@@ -1,11 +1,7 @@
 // Backend/src/services/Admin/department.service.ts
-// Backend/src/services/Admin/department.service.ts
-
 import pool from "../../config/database.js";
 
-// ============================================================
 // GET ALL DEPARTMENTS
-// ============================================================
 
 export const getAllDepartments = async () => {
   const query = `
@@ -40,10 +36,8 @@ export const getAllDepartments = async () => {
   return result.rows;
 };
 
-// ============================================================
-// CREATE DEPARTMENT
-// ============================================================
 
+// CREATE DEPARTMENT
 export interface CreateDepartmentData {
   name: string;
   description?: string;
@@ -132,10 +126,8 @@ export const createDepartment = async (
   return result.rows[0];
 };
 
-// ============================================================
-// UPDATE DEPARTMENT
-// ============================================================
 
+// UPDATE DEPARTMENT
 export interface UpdateDepartmentData {
   name?: string;
   description?: string | null;
@@ -145,10 +137,8 @@ export const updateDepartment = async (
   departmentId: string,
   data: UpdateDepartmentData,
 ) => {
-  // ----------------------------------------------------------
-  // NORMALIZE INPUT
-  // ----------------------------------------------------------
 
+  // NORMALIZE INPUT
   const name =
     typeof data.name === "string"
       ? data.name.trim()
@@ -159,10 +149,8 @@ export const updateDepartment = async (
       ? data.description.trim()
       : data.description;
 
-  // ----------------------------------------------------------
-  // CHECK DEPARTMENT EXISTS
-  // ----------------------------------------------------------
 
+  // CHECK DEPARTMENT EXISTS
   const existingQuery = `
     SELECT
       id,
@@ -182,20 +170,15 @@ export const updateDepartment = async (
     throw new Error("Department not found.");
   }
 
-  // ----------------------------------------------------------
   // CHECK AT LEAST ONE FIELD
-  // ----------------------------------------------------------
-
   if (name === undefined && description === undefined) {
     throw new Error(
       "At least one field is required to update.",
     );
   }
 
-  // ----------------------------------------------------------
-  // CHECK DUPLICATE NAME
-  // ----------------------------------------------------------
 
+  // CHECK DUPLICATE NAME
   if (name !== undefined) {
     if (!name) {
       throw new Error(
@@ -223,10 +206,8 @@ export const updateDepartment = async (
     }
   }
 
-  // ----------------------------------------------------------
-  // BUILD UPDATE QUERY
-  // ----------------------------------------------------------
 
+  // BUILD UPDATE QUERY
   const fields: string[] = [];
   const values: unknown[] = [];
   let parameterIndex = 1;
@@ -249,10 +230,8 @@ export const updateDepartment = async (
 
   values.push(departmentId);
 
-  // ----------------------------------------------------------
-  // UPDATE
-  // ----------------------------------------------------------
 
+  // UPDATE
   const updateQuery = `
     UPDATE departments
     SET ${fields.join(", ")}
@@ -278,10 +257,8 @@ export const updateDepartment = async (
   return result.rows[0];
 };
 
-// ============================================================
-// TOGGLE DEPARTMENT STATUS
-// ============================================================
 
+// TOGGLE DEPARTMENT STATUS
 export const toggleDepartmentStatus = async (
   departmentId: string,
 ) => {

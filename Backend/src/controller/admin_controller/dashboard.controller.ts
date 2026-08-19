@@ -7,10 +7,8 @@ import type {
 
 import * as dashboardService from "../../services/Admin/dashboard.service.js";
 
-// ============================================================
-// ADMIN DASHBOARD
-// ============================================================
 
+// ADMIN DASHBOARD
 export const getDashboard = async (
   _req: Request,
   res: Response,

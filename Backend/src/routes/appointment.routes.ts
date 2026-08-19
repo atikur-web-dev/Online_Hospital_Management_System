@@ -11,10 +11,7 @@ import * as appointmentController from "../controller/user_controller/appointmen
 
 const router = Router();
 
-/**
- * Create Appointment
- * POST /api/v1/appointments
- */
+// Create Appointment
 router.post(
   "/",
   authenticate,
@@ -22,10 +19,7 @@ router.post(
   appointmentController.createAppointment,
 );
 
-/**
- * Get My Appointments
- * GET /api/v1/appointments/my
- */
+// Get My Appointments
 router.get(
   "/my",
   authenticate,
@@ -33,19 +27,13 @@ router.get(
   appointmentController.getMyAppointments,
 );
 
-/**
- * Get Doctor Booked Appointments
- * GET /api/v1/appointments/doctor/:doctorId/booked
- */
+// Get Doctor Booked Appointments
 router.get(
   "/doctor/:doctorId/booked",
   appointmentController.getDoctorBookedAppointments,
 );
 
-/**
- * Cancel Appointment
- * PATCH /api/v1/appointments/:id/cancel
- */
+// Cancel Appointment
 router.patch(
   "/:id/cancel",
   authenticate,
@@ -53,10 +41,7 @@ router.patch(
   appointmentController.cancelAppointment,
 );
 
-/**
- * Delete Appointment For Patient
- * PATCH /api/v1/appointments/:id/delete
- */
+// Delete Appointment For Patient
 router.patch(
   "/:id/delete",
   authenticate,

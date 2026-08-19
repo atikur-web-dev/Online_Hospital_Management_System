@@ -27,8 +27,8 @@ export const limiter = rateLimit({
 
 
 export const strictLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // ১ ঘন্টা
-    max: 10, // প্রতি IP থেকে ১০ রিকোয়েস্ট
+    windowMs: 60 * 60 * 1000, 
+    max: 10, 
     message: 'Too many authentication attempts, please try again after an hour.'
 });
 

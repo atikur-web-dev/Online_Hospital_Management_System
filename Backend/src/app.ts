@@ -29,7 +29,7 @@ dotenv.config();
 
 const app = express();
 
-// ================= Middleware =================
+//  Middleware 
 
 // CORS
 app.use(
@@ -80,8 +80,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
-// ================= Routes =================
-
+//  Routes 
 app.use("/api/v1/auth", authRoutes);
 app.use('/api/v1/admin', adminRoutes); 
 app.use("/api/v1/profile",profileRoutes);
@@ -107,8 +106,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
   });
 });
 
-// ================= 404 =================
-
+//  404 
 app.use((_req: Request, res: Response) => {
   return res.status(404).json({
     success: false,
@@ -117,7 +115,6 @@ app.use((_req: Request, res: Response) => {
 });
 
 // Error Handler 
-
 app.use(errorHandler);
 
 export default app;

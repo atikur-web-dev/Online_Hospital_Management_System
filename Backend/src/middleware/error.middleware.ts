@@ -14,9 +14,8 @@ export const errorHandler = (
 ) => {
   void _next;
 
-  // ===========================
+
   // Custom API Error
-  // ===========================
   if (err instanceof ApiError) {
     return res.status(err.statusCode).json({
       success: false,
@@ -28,9 +27,8 @@ export const errorHandler = (
     });
   }
 
-  // ===========================
+
   // Zod Validation Error
-  // ===========================
   if (err instanceof ZodError) {
     return res.status(422).json({
       success: false,
@@ -42,9 +40,8 @@ export const errorHandler = (
     });
   }
 
-  // ===========================
+
   // Prisma Errors
-  // ===========================
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {
       case "P2002":
@@ -74,9 +71,8 @@ export const errorHandler = (
     }
   }
 
-  // ===========================
+ 
   // Normal JS Error
-  // ===========================
   if (err instanceof Error) {
     return res.status(500).json({
       success: false,
@@ -88,9 +84,8 @@ export const errorHandler = (
     });
   }
 
-  // ===========================
+
   // Unknown Error
-  // ===========================
   return res.status(500).json({
     success: false,
     message: "Internal Server Error",

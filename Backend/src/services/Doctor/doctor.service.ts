@@ -96,9 +96,8 @@ export const getAllDoctors = async ({
     },
   };
 };
-/**
- * Get Single Doctor
- */
+
+// Get Single Doctor
 export const getDoctorById = async (doctorId: string) => {
   console.log("CHECKING DOCTOR ID:", doctorId);
 
@@ -161,9 +160,9 @@ export const getDoctorById = async (doctorId: string) => {
 
   return doctor;
 };
-/**
- * Doctor Dashboard
- */
+
+
+// Doctor Dashboard
 export const getDashboard = async (userId: string) => {
   // Find doctor profile
   const doctor = await prisma.doctorProfile.findUnique({

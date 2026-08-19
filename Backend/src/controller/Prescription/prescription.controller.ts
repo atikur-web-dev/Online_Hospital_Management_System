@@ -7,10 +7,8 @@ import { env } from '../../config/env.js';
 
 import { sendPrescriptionToPatient } from '../../services/Prescription/prescriptionEmail.service.js';
 
-// ============================================================
-// Send Prescription Email
-// ============================================================
 
+// Send Prescription Email
 export const sendPrescriptionEmailController = async (
   req: Request,
   res: Response,
@@ -41,17 +39,14 @@ export const sendPrescriptionEmailController = async (
   }
 };
 
-// ============================================================
-// Public Prescription View
-// ============================================================
 
+// Public Prescription View
 export const getPublicPrescription = async (req: Request, res: Response) => {
   try {
     const { token } = req.params;
 
-    // --------------------------------------------------------
+
     // Validate token parameter
-    // --------------------------------------------------------
 
     if (!token || Array.isArray(token)) {
       return res.status(400).send(`
@@ -96,9 +91,8 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
       `);
     }
 
-    // --------------------------------------------------------
+
     // Verify prescription JWT
-    // --------------------------------------------------------
 
     let decoded: {
       prescriptionId: string;
@@ -203,9 +197,8 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
       throw error;
     }
 
-    // --------------------------------------------------------
+   
     // Validate decoded payload
-    // --------------------------------------------------------
 
     if (!decoded?.prescriptionId) {
       return res.status(401).send(`
@@ -250,9 +243,8 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
       `);
     }
 
-    // --------------------------------------------------------
+   
     // Find prescription
-    // --------------------------------------------------------
 
     const prescription = await prisma.prescription.findUnique({
       where: {
@@ -272,10 +264,7 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
       },
     });
 
-    // --------------------------------------------------------
     // Prescription not found
-    // --------------------------------------------------------
-
     if (!prescription) {
       return res.status(404).send(`
         <!DOCTYPE html>
@@ -321,10 +310,8 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
       `);
     }
 
-    // --------------------------------------------------------
-    // Data
-    // --------------------------------------------------------
 
+    // Data
     const patient = prescription.appointment?.patient;
 
     const doctor = prescription.appointment?.doctor;
@@ -338,10 +325,7 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
 
     const prescriptionId = prescription.id;
 
-    // --------------------------------------------------------
     // Formatters
-    // --------------------------------------------------------
-
     const formatDate = (value: Date | string | null | undefined) => {
       if (!value) return '--';
 
@@ -364,27 +348,20 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
       });
     };
 
-    // --------------------------------------------------------
+   
     // Prescription Display ID
-    // --------------------------------------------------------
-
     const prescriptionDisplayId = prescriptionId
       ? parseInt(prescriptionId.replace(/\D/g, '').slice(-6) || '0', 10)
           .toString()
           .padStart(6, '0')
       : '000000';
 
-    // --------------------------------------------------------
     // Download URL
-    // --------------------------------------------------------
-
     const downloadUrl =
   `${env.SERVER_URL}/api/v1/prescriptions/public/${token}/download`;
 
-    // --------------------------------------------------------
-    // Medicines HTML
-    // --------------------------------------------------------
 
+    // Medicines HTML
     const medicinesHtml =
       prescription.medicines.length === 0
         ? `
@@ -446,10 +423,7 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
             )
             .join('');
 
-    // --------------------------------------------------------
     // Tests HTML
-    // --------------------------------------------------------
-
     const testsHtml =
       prescription.tests.length === 0
         ? `
@@ -479,10 +453,8 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
             )
             .join('');
 
-    // --------------------------------------------------------
+  
     // Follow-up
-    // --------------------------------------------------------
-
     const followUpHtml = prescription.followUpDate
       ? `
           <div class="follow-up">
@@ -497,10 +469,8 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
         `
       : '';
 
-    // --------------------------------------------------------
+   
     // Standalone HTML Page
-    // --------------------------------------------------------
-
     const html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -1220,14 +1190,10 @@ export const getPublicPrescription = async (req: Request, res: Response) => {
 </html>
 `;
 
-    // --------------------------------------------------------
+   
     // Send standalone HTML
-    // --------------------------------------------------------
-
     res.status(200);
-
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
 
     return res.send(html);
@@ -1286,10 +1252,8 @@ export const downloadPublicPrescription = async (
   try {
     const { token } = req.params;
 
-    // ============================================================
+   
     // Validate token
-    // ============================================================
-
     if (!token || Array.isArray(token)) {
       return res.status(400).json({
         success: false,
@@ -1297,10 +1261,8 @@ export const downloadPublicPrescription = async (
       });
     }
 
-    // ============================================================
+   
     // Verify JWT
-    // ============================================================
-
     let decoded: {
       prescriptionId: string;
     };
@@ -1330,10 +1292,8 @@ export const downloadPublicPrescription = async (
       throw error;
     }
 
-    // ============================================================
+   
     // Validate payload
-    // ============================================================
-
     if (!decoded?.prescriptionId) {
       return res.status(401).json({
         success: false,
@@ -1341,18 +1301,14 @@ export const downloadPublicPrescription = async (
       });
     }
 
-    // ============================================================
-    // Generate PDF
-    // ============================================================
 
+    // Generate PDF
     const pdf = await generatePrescriptionPdf(
       decoded.prescriptionId,
     );
 
-    // ============================================================
-    // Download response
-    // ============================================================
 
+    // Download response
     res.setHeader(
       "Content-Type",
       "application/pdf",

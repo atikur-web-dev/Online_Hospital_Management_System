@@ -5,11 +5,8 @@ import streamifier from "streamifier";
 
 import type { UploadApiResponse } from "cloudinary";
 
-/**
- * Upload image to Cloudinary.
- *
- * Used by profile image upload and other image-only uploads.
- */
+
+// Upload image to Cloudinary Used by profile image upload and other image-only uploads.
 export const uploadImage = async (
   file: Express.Multer.File,
   folder: string,
@@ -41,21 +38,7 @@ export const uploadImage = async (
   });
 };
 
-/**
- * Upload medical report file to Cloudinary.
- *
- * Images:
- * - JPG
- * - JPEG
- * - PNG
- * - WEBP
- *
- * PDF documents:
- * - PDF
- *
- * Images use resource_type "image".
- * PDF documents use resource_type "raw".
- */
+// Upload medical report file to Cloudinary.
 export const uploadMedicalFile = async (
   file: Express.Multer.File,
   folder: string,
@@ -93,12 +76,7 @@ export const uploadMedicalFile = async (
   });
 };
 
-/**
- * Delete an uploaded file from Cloudinary.
- *
- * Default resource type is "image".
- * Pass "raw" when deleting a PDF/document.
- */
+// Delete an uploaded file from Cloudinary.
 export const deleteImage = async (
   publicId: string,
   resourceType: "image" | "raw" = "image",

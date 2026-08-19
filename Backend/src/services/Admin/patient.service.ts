@@ -35,21 +35,14 @@ export const getAllPatients = async () => {
   return result.rows;
 };
 
-// ============================================================
 // DEACTIVATE PATIENT
-// ============================================================
-
-
 export const deletePatient = async (patientId: string) => {
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
 
-    // ----------------------------------------------------------
     // FIND PATIENT
-    // ----------------------------------------------------------
-
     const patientQuery = `
       SELECT
         pp.id,
@@ -78,10 +71,7 @@ export const deletePatient = async (patientId: string) => {
 
     const patient = patientResult.rows[0];
 
-    // ----------------------------------------------------------
     // DEACTIVATE USER ACCOUNT
-    // ----------------------------------------------------------
-
     await client.query(
       `
         UPDATE users
@@ -93,10 +83,8 @@ export const deletePatient = async (patientId: string) => {
       [patient.userId],
     );
 
-    // ----------------------------------------------------------
-    // COMMIT TRANSACTION
-    // ----------------------------------------------------------
 
+    // COMMIT TRANSACTION
     await client.query("COMMIT");
 
     return {

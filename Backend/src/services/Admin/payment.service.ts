@@ -1,11 +1,7 @@
 // Backend/src/services/Admin/payment.service.ts
 
 import pool from "../../config/database.js";
-
-// ============================================================
 // GET ALL PAYMENTS
-// ============================================================
-
 export const getAllPayments = async () => {
   const query = `
     SELECT

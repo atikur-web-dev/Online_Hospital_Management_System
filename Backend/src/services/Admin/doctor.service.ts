@@ -3,10 +3,8 @@
 import pool from "../../config/database.js";
 import { hashPassword } from "../../utils/bcrypt.js";
 
-// ============================================================
-// GET ALL DOCTORS
-// ============================================================
 
+// GET ALL DOCTORS
 export const getAllDoctors = async () => {
   const query = `
     SELECT
@@ -49,10 +47,8 @@ export const getAllDoctors = async () => {
   return result.rows;
 };
 
-// ============================================================
-// CREATE NEW DOCTOR
-// ============================================================
 
+// CREATE NEW DOCTOR
 export interface CreateDoctorData {
   email: string;
   password: string;
@@ -311,20 +307,15 @@ export const createDoctor = async (
   }
 };
 
-// ============================================================
-// DELETE / DEACTIVATE DOCTOR
-// ============================================================
 
+// DELETE / DEACTIVATE DOCTOR
 export const deleteDoctor = async (doctorId: string) => {
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
 
-    // ----------------------------------------------------------
     // FIND DOCTOR
-    // ----------------------------------------------------------
-
     const doctorQuery = `
       SELECT
         dp.id,
@@ -350,10 +341,8 @@ export const deleteDoctor = async (doctorId: string) => {
 
     const doctor = doctorResult.rows[0];
 
-    // ----------------------------------------------------------
-    // DEACTIVATE USER ACCOUNT
-    // ----------------------------------------------------------
 
+    // DEACTIVATE USER ACCOUNT
     await client.query(
       `
         UPDATE users
@@ -365,10 +354,8 @@ export const deleteDoctor = async (doctorId: string) => {
       [doctor.userId],
     );
 
-    // ----------------------------------------------------------
+  
     // MAKE DOCTOR UNAVAILABLE
-    // ----------------------------------------------------------
-
     await client.query(
       `
         UPDATE doctor_profiles
@@ -380,10 +367,7 @@ export const deleteDoctor = async (doctorId: string) => {
       [doctorId],
     );
 
-    // ----------------------------------------------------------
     // COMMIT
-    // ----------------------------------------------------------
-
     await client.query("COMMIT");
 
     return {
@@ -401,10 +385,8 @@ export const deleteDoctor = async (doctorId: string) => {
   }
 };
 
-// ============================================================
-// UPDATE DOCTOR DETAILS
-// ============================================================
 
+// UPDATE DOCTOR DETAILS
 export const updateDoctor = async (
   doctorId: string,
   data: Partial<CreateDoctorData> & { isAvailable?: boolean },
@@ -414,10 +396,8 @@ export const updateDoctor = async (
   try {
     await client.query("BEGIN");
 
-    // ----------------------------------------------------------
+ 
     // FIND DOCTOR
-    // ----------------------------------------------------------
-
     const doctorQuery = `
       SELECT id, "userId"
       FROM doctor_profiles
@@ -431,10 +411,7 @@ export const updateDoctor = async (
       throw new Error("Doctor not found.");
     }
 
-    // ----------------------------------------------------------
     // BUILD DYNAMIC UPDATE FOR DOCTOR PROFILE
-    // ----------------------------------------------------------
-
     const updates: string[] = [];
     const values: any[] = [];
     let valIdx = 1;
@@ -469,10 +446,7 @@ export const updateDoctor = async (
       await client.query(updateQuery, values);
     }
 
-    // ----------------------------------------------------------
     // FETCH UPDATED DOCTOR WITH USER DETAILS
-    // ----------------------------------------------------------
-
     const fetchQuery = `
       SELECT
         dp.id,
@@ -520,20 +494,16 @@ export const updateDoctor = async (
   }
 };
 
-// ============================================================
-// TOGGLE DOCTOR STATUS (BLOCK / UNBLOCK)
-// ============================================================
 
+// TOGGLE DOCTOR STATUS (BLOCK / UNBLOCK)
 export const toggleDoctorStatus = async (doctorId: string) => {
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
 
-    // ----------------------------------------------------------
-    // FIND DOCTOR
-    // ----------------------------------------------------------
 
+    // FIND DOCTOR
     const doctorQuery = `
       SELECT
         dp.id,
@@ -555,10 +525,8 @@ export const toggleDoctorStatus = async (doctorId: string) => {
     const doctor = doctorResult.rows[0];
     const newIsActive = !doctor.isActive;
 
-    // ----------------------------------------------------------
+  
     // UPDATE USER ACCOUNT
-    // ----------------------------------------------------------
-
     await client.query(
       `
         UPDATE users
@@ -570,10 +538,7 @@ export const toggleDoctorStatus = async (doctorId: string) => {
       [newIsActive, doctor.userId],
     );
 
-    // ----------------------------------------------------------
     // FETCH UPDATED DOCTOR DETAILS
-    // ----------------------------------------------------------
-
     const fetchQuery = `
       SELECT
         dp.id,

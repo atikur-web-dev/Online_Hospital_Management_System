@@ -20,9 +20,8 @@ import {
 import { emailVerificationService } from '../services/emailVerification.service.js';
 import { env } from '../config/env.js';
 
-// ==============================
+
 // Register
-// ==============================
 export const register = async (
   req: Request,
   res: Response,
@@ -58,16 +57,15 @@ res.cookie("refreshToken", result.refreshToken, {
 }
 };
 
-// ==============================
+
 // Login
-// ==============================
 export const login = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    console.log("========== LOGIN HIT ==========");
+   
 console.log(req.body);
     const payload = loginSchema.parse(req.body);
 
@@ -94,9 +92,8 @@ console.log(req.body);
   }
 };
 
-// ==============================
+
 // Refresh Token
-// ==============================
 export const refreshToken = async (
   req: Request,
   res: Response,
@@ -128,9 +125,8 @@ export const refreshToken = async (
   }
 };
 
-// ==============================
+
 // Logout
-// ==============================
 export const logout = async (
   req: Request,
   res: Response,
@@ -150,9 +146,8 @@ export const logout = async (
   }
 };
 
-// ==============================
+
 // Current User
-// ==============================
 export const me = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await getMe(req.user!.id);

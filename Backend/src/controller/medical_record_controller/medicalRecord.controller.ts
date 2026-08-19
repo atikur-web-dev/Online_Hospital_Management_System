@@ -8,10 +8,7 @@ import type {
 import * as medicalRecordService from "../../services/MedicalRecord/medicalRecord.service.js";
 
 
-// ============================================================
 // Medical History
-// ============================================================
-
 export const createMedicalHistory = async (
   req: Request,
   res: Response,
@@ -152,10 +149,8 @@ export const deleteMedicalHistory = async (
 };
 
 
-// ============================================================
-// Medical Reports
-// ============================================================
 
+// Medical Reports
 export const uploadMedicalReport = async (
   req: Request,
   res: Response,
@@ -262,10 +257,8 @@ export const deleteMedicalReport = async (
 };
 
 
-// ============================================================
-// All Medical Records
-// ============================================================
 
+// All Medical Records
 export const getMyMedicalRecords = async (
   req: Request,
   res: Response,

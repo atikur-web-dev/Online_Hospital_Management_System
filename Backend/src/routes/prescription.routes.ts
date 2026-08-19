@@ -21,10 +21,8 @@ import {
 
 const router = Router();
 
-// ============================================================
-// Create Prescription
-// ============================================================
 
+// Create Prescription
 router.post(
   "/",
   authenticate,
@@ -32,10 +30,8 @@ router.post(
   createPrescription,
 );
 
-// ============================================================
-// Get Prescription By ID
-// ============================================================
 
+// Get Prescription By ID
 router.get(
   "/:id",
   authenticate,
@@ -43,10 +39,7 @@ router.get(
   getPrescription,
 );
 
-// ============================================================
 // Update Prescription
-// ============================================================
-
 router.patch(
   "/:id",
   authenticate,
@@ -54,10 +47,8 @@ router.patch(
   updatePrescription,
 );
 
-// ============================================================
-// Send Prescription To Patient
-// ============================================================
 
+// Send Prescription To Patient
 router.post(
   "/:prescriptionId/send-email",
   authenticate,
@@ -65,25 +56,14 @@ router.post(
   sendPrescriptionEmailController,
 );
 
-// ============================================================
 // Public Prescription View
-// ============================================================
-// No authenticate / authorize here.
-// The JWT token itself provides access.
-// ============================================================
-
 router.get(
   "/public/view/:token",
   getPublicPrescription,
 );
 
-// ============================================================
-// Public Prescription Download
-// ============================================================
-// No authenticate / authorize here.
-// The JWT token itself provides access.
-// ============================================================
 
+// Public Prescription Download
 router.get(
   "/public/:token/download",
   downloadPublicPrescription,

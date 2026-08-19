@@ -7,10 +7,8 @@ import type {
 
 import * as paymentService from "../../services/Admin/payment.service.js";
 
-// ============================================================
-// GET ALL PAYMENTS
-// ============================================================
 
+// GET ALL PAYMENTS
 export const getAllPayments = async (
   _req: Request,
   res: Response,

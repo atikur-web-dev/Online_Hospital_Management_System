@@ -177,8 +177,7 @@ export const updatePrescription = async (
     );
   }
 
-  // Find prescription and make sure
-  // it belongs to this doctor's appointment
+  // Find prescription and make sure it belongs to this doctor's appointment
   const prescription =
     await prisma.prescription.findFirst({
       where: {

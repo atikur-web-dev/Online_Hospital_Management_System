@@ -1,15 +1,12 @@
 // Backend/src/middleware/upload.middleware.ts
 import multer from "multer";
 
-/**
- * Store file in memory
- * Files are uploaded directly to Cloudinary.
- */
+
+// Store file in memory
+// Files are uploaded directly to Cloudinary.
 const storage = multer.memoryStorage();
 
-/**
- * Allow medical report images and PDF documents.
- */
+// Allow medical report images and PDF documents.
 const fileFilter: multer.Options["fileFilter"] = (
   _req,
   file,
@@ -34,15 +31,13 @@ const fileFilter: multer.Options["fileFilter"] = (
   );
 };
 
-/**
- * Multer Upload Middleware
- */
+// Multer Upload Middleware
 export const upload = multer({
   storage,
 
   fileFilter,
 
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10 MB
+    fileSize: 10 * 1024 * 1024, 
   },
 });

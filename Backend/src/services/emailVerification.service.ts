@@ -18,7 +18,7 @@ export async function emailVerificationService(
 ): Promise<string> {
   let decoded: EmailVerificationTokenPayload;
 
-  // ================= Verify Token =================
+  //  Verify Token 
   try {
     const verified = jwt.verify(
       token,
@@ -44,7 +44,7 @@ export async function emailVerificationService(
     throw new ValidationError({}, 'Invalid verification link');
   }
 
-  // ================= Find User =================
+  //  Find User 
   const user = await prisma.user.findUnique({
     where: {
       email: decoded.email,
@@ -55,12 +55,12 @@ export async function emailVerificationService(
     throw new NotFoundError({}, 'User not found');
   }
 
-  // ================= Already Verified =================
+  //  Already Verified 
   if (user.isEmailVerified) {
     return 'User is already verified';
   }
 
-  // ================= Update Verification =================
+  // Update Verification 
   console.log("Before update:", user.isEmailVerified);
   await prisma.user.update({
     where: {

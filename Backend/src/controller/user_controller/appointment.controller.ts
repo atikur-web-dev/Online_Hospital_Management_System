@@ -3,9 +3,7 @@ import type { Request, Response, NextFunction } from 'express';
 import * as appointmentService from '../../services/Appointment/appointment.service.js';
 import { createAppointmentSchema } from '../../validators/appointment.validator.js';
 
-/**
- * Create Appointment
- */
+// Create Appointment
 export const createAppointment = async (
   req: Request,
   res: Response,
@@ -36,9 +34,7 @@ export const createAppointment = async (
   }
 };
 
-/**
- * Get My Appointments
- */
+// Get My Appointments
 export const getMyAppointments = async (
   req: Request,
   res: Response,
@@ -145,9 +141,7 @@ export const deleteAppointmentForPatient = async (
   }
 };
 
-/**
- * Get Doctor Booked Appointments
- */
+// Get Doctor Booked Appointments
 export const getDoctorBookedAppointments = async (
   req: Request,
   res: Response,

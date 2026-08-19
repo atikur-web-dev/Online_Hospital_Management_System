@@ -1,5 +1,4 @@
 // Backend/src/middleware/active-admin.middleware.ts
-// Backend/src/middleware/active-admin.middleware.ts
 
 import type { Request, Response, NextFunction } from "express";
 import pool from "../config/database.js";
