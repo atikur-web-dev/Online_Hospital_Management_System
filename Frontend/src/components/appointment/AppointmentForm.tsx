@@ -34,6 +34,27 @@ const DAYS = [
   "Saturday",
 ];
 
+const getLocalDateInputValue = () => {
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+const getNextMinuteTime = () => {
+  const now = new Date();
+
+  now.setMinutes(now.getMinutes() + 1);
+
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+
+  return `${hours}:${minutes}`;
+};
+
 const AppointmentForm = ({
   doctorId,
   schedules,
@@ -78,6 +99,13 @@ const AppointmentForm = ({
           new Date(`${appointmentDate}T00:00:00`).getDay(),
       )
     : undefined;
+
+  const today = getLocalDateInputValue();
+
+  const minimumAppointmentTime =
+    appointmentDate === today
+      ? getNextMinuteTime()
+      : selectedSchedule?.startTime;
 
   /**
    * Get booked times for selected date
@@ -220,16 +248,24 @@ const AppointmentForm = ({
       return;
     }
 
+    const appointmentAt = new Date(`${appointmentDate}T${appointmentTime}`);
+
+    if (appointmentAt <= new Date()) {
+      toast.error(
+        "Appointment time must be in the future. Please choose a later time.",
+      );
+
+      return;
+    }
+
     try {
       setLoading(true);
 
-      const appointmentAt = new Date(
-        `${appointmentDate}T${appointmentTime}`,
-      ).toISOString();
+      const appointmentAtIso = appointmentAt.toISOString();
 
       await createAppointment({
         doctorId,
-        appointmentAt,
+        appointmentAt: appointmentAtIso,
         problem: problem.trim() || undefined,
         medicalHistoryIds: selectedMedicalHistoryIds,
         medicalReportIds: selectedMedicalReportIds,
@@ -276,7 +312,7 @@ const AppointmentForm = ({
         <input
           type="date"
           value={appointmentDate}
-          min={new Date().toISOString().split("T")[0]}
+          min={today}
           onChange={(e) => {
             setAppointmentDate(e.target.value);
             setAppointmentTime("");
@@ -294,8 +330,7 @@ const AppointmentForm = ({
 
         {selectedSchedule && (
           <p className="mt-2 text-sm text-emerald-600">
-            Available: {selectedSchedule.startTime} -{" "}
-            {selectedSchedule.endTime}
+            Available: {selectedSchedule.startTime} - {selectedSchedule.endTime}
           </p>
         )}
       </div>
@@ -309,7 +344,7 @@ const AppointmentForm = ({
         <input
           type="time"
           value={appointmentTime}
-          min={selectedSchedule?.startTime}
+          min={minimumAppointmentTime}
           max={selectedSchedule?.endTime}
           onChange={(e) => setAppointmentTime(e.target.value)}
           disabled={!selectedSchedule || loading}
@@ -378,12 +413,8 @@ const AppointmentForm = ({
                     >
                       <input
                         type="checkbox"
-                        checked={selectedMedicalHistoryIds.includes(
-                          history.id,
-                        )}
-                        onChange={() =>
-                          toggleMedicalHistory(history.id)
-                        }
+                        checked={selectedMedicalHistoryIds.includes(history.id)}
+                        onChange={() => toggleMedicalHistory(history.id)}
                         disabled={loading}
                         className="mt-1 h-4 w-4 accent-emerald-600"
                       />
@@ -402,9 +433,7 @@ const AppointmentForm = ({
                         {history.diagnosedAt && (
                           <p className="text-xs text-gray-500 mt-1">
                             Diagnosed:{" "}
-                            {new Date(
-                              history.diagnosedAt,
-                            ).toLocaleDateString()}
+                            {new Date(history.diagnosedAt).toLocaleDateString()}
                           </p>
                         )}
                       </div>
@@ -433,12 +462,8 @@ const AppointmentForm = ({
                     >
                       <input
                         type="checkbox"
-                        checked={selectedMedicalReportIds.includes(
-                          report.id,
-                        )}
-                        onChange={() =>
-                          toggleMedicalReport(report.id)
-                        }
+                        checked={selectedMedicalReportIds.includes(report.id)}
+                        onChange={() => toggleMedicalReport(report.id)}
                         disabled={loading}
                         className="mt-1 h-4 w-4 accent-emerald-600"
                       />
@@ -457,9 +482,7 @@ const AppointmentForm = ({
                         <p className="text-xs text-gray-500 mt-1">
                           Uploaded:{" "}
                           {report.createdAt
-                            ? new Date(
-                                report.createdAt,
-                              ).toLocaleDateString()
+                            ? new Date(report.createdAt).toLocaleDateString()
                             : "Unknown"}
                         </p>
                       </div>
@@ -492,9 +515,7 @@ const AppointmentForm = ({
           type="submit"
           fullWidth
           isLoading={
-            loading ||
-            loadingBookedAppointments ||
-            loadingMedicalRecords
+            loading || loadingBookedAppointments || loadingMedicalRecords
           }
         >
           Confirm Appointment
