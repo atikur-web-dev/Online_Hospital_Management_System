@@ -79,7 +79,7 @@ function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ================= NAVBAR ================= */}
+      {/* NAVBAR */}
 
       {!hideNavbar && (
         <Navbar
@@ -89,10 +89,10 @@ function Layout() {
         />
       )}
 
-      {/* ================= ROUTES ================= */}
+      {/* ROUTES */}
 
       <Routes>
-        {/* ================= PUBLIC ================= */}
+        {/* PUBLIC */}
 
         <Route path="/" element={<Home />} />
 
@@ -154,20 +154,14 @@ function Layout() {
           }
         />
 
-        {/* ================= PUBLIC PRESCRIPTION ================= */}
-
-        {/* 
-          IMPORTANT:
-          This route is NOT protected.
-          The JWT token inside the URL is verified by the backend.
-        */}
+        {/*  PUBLIC PRESCRIPTION */}
 
         <Route
           path="/prescription/view/:token"
           element={<PublicPrescriptionView />}
         />
 
-        {/* ================= PATIENT ================= */}
+        {/*  PATIENT  */}
 
         <Route
           path="/appointments"
@@ -196,7 +190,7 @@ function Layout() {
           }
         />
 
-        {/* ================= DOCTOR ================= */}
+        {/*  DOCTOR  */}
 
         <Route
           path="/doctor/dashboard"
@@ -252,7 +246,7 @@ function Layout() {
           }
         />
 
-        {/* ================= PAYMENT ================= */}
+        {/*  PAYMENT */}
 
         <Route path="/payment/success" element={<PaymentSuccess />} />
 
@@ -261,7 +255,7 @@ function Layout() {
         <Route path="/payment/cancel" element={<PaymentCancel />} />
       </Routes>
 
-      {/* ================= TOASTER ================= */}
+      {/* TOASTER  */}
 
       <Toaster
         position="top-right"

@@ -22,9 +22,7 @@ export interface PrescriptionFormData {
   followUpDate: string | null;
 }
 
-/**
- * Backend response structure
- */
+//Backend response structure
 export interface PrescriptionMedicineResponse {
   id: string;
   prescriptionId: string;
