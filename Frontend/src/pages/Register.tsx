@@ -70,8 +70,8 @@ export default function Register() {
   };
 
   const handleGoogleSignup = () => {
-    window.location.href = "http://localhost:5001/api/v1/auth/google";
-  };
+  window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+};
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
