@@ -8,7 +8,7 @@ import {
 } from '../validators/profile.validator.js';
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
-import type { UserRole } from '../generated/prisma/index.js';
+import type { UserRole } from '../generated/prisma/client.js';
 import { uploadImage, deleteImage } from './cloudinary.service.js';
 
 // Get Logged In User Profile
