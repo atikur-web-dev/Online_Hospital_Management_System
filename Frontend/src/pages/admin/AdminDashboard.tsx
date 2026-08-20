@@ -26,10 +26,8 @@ import useAdminDashboard from "../../hooks/useAdminDashboard";
 const AdminDashboard = () => {
   const { dashboard, loading, error, fetchDashboard } = useAdminDashboard();
 
-  // ============================================================
+ 
   // LOADING
-  // ============================================================
-
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -93,10 +91,8 @@ const AdminDashboard = () => {
     );
   }
 
-  // ============================================================
+  
   // ERROR
-  // ============================================================
-
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4">
@@ -112,10 +108,8 @@ const AdminDashboard = () => {
     );
   }
 
-  // ============================================================
-  // NO DATA
-  // ============================================================
 
+  // NO DATA
   if (!dashboard) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -127,10 +121,8 @@ const AdminDashboard = () => {
   const { stats } = dashboard;
   const appointmentTrend = dashboard.appointmentTrend ?? [];
 
-  // ============================================================
-  // STAT CARDS
-  // ============================================================
 
+  // STAT CARDS
   const statCards = [
     {
       title: "Today's Patients",
@@ -169,17 +161,13 @@ const AdminDashboard = () => {
     },
   ];
 
-  // ============================================================
-  // RENDER
-  // ============================================================
 
+  // RENDER
   return (
     <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        {/* ================================================== */}
+        
         {/* HEADER */}
-        {/* ================================================== */}
-
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
             Admin Dashboard
@@ -188,10 +176,8 @@ const AdminDashboard = () => {
           <p className="mt-1 text-gray-500">Welcome back, Admin.</p>
         </div>
 
-        {/* ================================================== */}
+    
         {/* STAT CARDS */}
-        {/* ================================================== */}
-
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
           {statCards.map((card) => {
             const Icon = card.icon;
@@ -224,10 +210,8 @@ const AdminDashboard = () => {
           })}
         </div>
 
-        {/* ================================================== */}
+       
         {/* APPOINTMENT TREND */}
-        {/* ================================================== */}
-
         <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-6">
           {/* Chart Header */}
           <div className="mb-6">
@@ -303,10 +287,8 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* ================================================== */}
+       
         {/* MONTHLY STATISTICS */}
-        {/* ================================================== */}
-
         <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-6">
           <div className="mb-6">
             <h2 className="text-lg font-bold text-gray-800">

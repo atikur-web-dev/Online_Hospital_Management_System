@@ -34,9 +34,8 @@ const AdminDoctors = () => {
     removeDoctor,
   } = useAdminDoctors();
 
-  // ============================================================
+ 
   // DEPARTMENTS LIST FOR DROPDOWNS
-  // ============================================================
   const [departments, setDepartments] = useState<AdminDepartment[]>([]);
   useEffect(() => {
     const loadDepartments = async () => {
@@ -50,9 +49,8 @@ const AdminDoctors = () => {
     loadDepartments();
   }, []);
 
-  // ============================================================
+
   // FORM & MODAL STATES
-  // ============================================================
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
 
@@ -75,9 +73,8 @@ const AdminDoctors = () => {
   const [actionDoctorId, setActionDoctorId] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
-  // ============================================================
+
   // MODAL ACTIONS
-  // ============================================================
   const openCreateModal = () => {
     setEditingDoctorId(null);
     setEmail("");
@@ -120,9 +117,8 @@ const AdminDoctors = () => {
     setFormError(null);
   };
 
-  // ============================================================
+
   // SUBMIT FORM
-  // ============================================================
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -193,9 +189,8 @@ const AdminDoctors = () => {
     }
   };
 
-  // ============================================================
+
   // TOGGLE STATUS & DEACTIVATE
-  // ============================================================
   const handleToggleStatus = async (doctorId: string) => {
     try {
       setActionDoctorId(doctorId);
@@ -221,9 +216,7 @@ const AdminDoctors = () => {
     }
   };
 
-  // ============================================================
   // SEARCH FILTERING
-  // ============================================================
   const filteredDoctors = doctors.filter((doc) => {
     const query = searchQuery.toLowerCase();
     return (
@@ -234,9 +227,8 @@ const AdminDoctors = () => {
     );
   });
 
-  // ============================================================
+
   // SKELETON LOADING
-  // ============================================================
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -274,9 +266,8 @@ const AdminDoctors = () => {
     );
   }
 
-  // ============================================================
+
   // ERROR STATE
-  // ============================================================
   if (error) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -302,15 +293,13 @@ const AdminDoctors = () => {
     );
   }
 
-  // ============================================================
+
   // COMPONENT RENDER
-  // ============================================================
   return (
     <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        {/* ================================================== */}
+       
         {/* HEADER */}
-        {/* ================================================== */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Manage Doctors</h1>
@@ -325,9 +314,8 @@ const AdminDoctors = () => {
           </button>
         </div>
 
-        {/* ================================================== */}
+        
         {/* SUMMARY CARDS */}
-        {/* ================================================== */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
             <div className="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center">
@@ -358,9 +346,8 @@ const AdminDoctors = () => {
           </div>
         </div>
 
-        {/* ================================================== */}
+       
         {/* SEARCH AND TABLE */}
-        {/* ================================================== */}
         <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           {/* Search Header */}
           <div className="p-5 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -553,9 +540,8 @@ const AdminDoctors = () => {
         </div>
       </div>
 
-      {/* ====================================================== */}
+     
       {/* ADD / EDIT DOCTOR MODAL */}
-      {/* ====================================================== */}
       {isFormOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 overflow-y-auto">
           <div className="w-full max-w-2xl rounded-2xl bg-white shadow-xl my-8">

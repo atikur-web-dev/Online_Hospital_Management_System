@@ -17,10 +17,8 @@ const PublicPrescriptionView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ============================================================
-  // Load Public Prescription
-  // ============================================================
 
+  // Load Public Prescription
   useEffect(() => {
     const loadPrescription = async () => {
       if (!token) {
@@ -65,10 +63,8 @@ const PublicPrescriptionView = () => {
     loadPrescription();
   }, [token]);
 
-  // ============================================================
+  
   // Loading
-  // ============================================================
-
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100">
@@ -83,10 +79,8 @@ const PublicPrescriptionView = () => {
     );
   }
 
-  // ============================================================
+ 
   // Error
-  // ============================================================
-
   if (error || !prescription) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100 px-5">
@@ -112,15 +106,11 @@ const PublicPrescriptionView = () => {
     );
   }
 
-  // ============================================================
+ 
   // Prescription
-  // ============================================================
-
   return (
     <div className="min-h-screen bg-gray-100 py-8 print:bg-white print:py-0">
-      {/* ======================================================
-          Top Action Bar
-      ======================================================= */}
+      {/*  Top Action Bar */}
 
       <div className="mx-auto mb-6 flex w-full max-w-5xl justify-end px-5 print:hidden">
         <button
@@ -134,9 +124,7 @@ const PublicPrescriptionView = () => {
         </button>
       </div>
 
-      {/* ======================================================
-          Prescription Document
-      ======================================================= */}
+      {/*  Prescription Document*/}
 
       <main className="mx-auto w-full max-w-5xl px-5 print:max-w-none print:px-0">
         <PrescriptionDocument prescription={prescription} />

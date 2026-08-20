@@ -13,10 +13,8 @@ import useAdminPayments from "../../hooks/useAdminPayments";
 const AdminPayments = () => {
   const { payments, loading, error, fetchPayments } = useAdminPayments();
 
-  // ============================================================
+  
   // LOADING
-  // ============================================================
-
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -45,10 +43,8 @@ const AdminPayments = () => {
     );
   }
 
-  // ============================================================
-  // ERROR
-  // ============================================================
 
+  // ERROR
   if (error) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -79,17 +75,13 @@ const AdminPayments = () => {
     );
   }
 
-  // ============================================================
-  // RENDER
-  // ============================================================
 
+  // RENDER
   return (
     <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        {/* ================================================== */}
+       
         {/* HEADER */}
-        {/* ================================================== */}
-
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
@@ -110,10 +102,8 @@ const AdminPayments = () => {
           </div>
         </div>
 
-        {/* ================================================== */}
+        
         {/* PAYMENT TABLE */}
-        {/* ================================================== */}
-
         <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           {/* Table Header */}
 
@@ -128,7 +118,6 @@ const AdminPayments = () => {
           </div>
 
           {/* Empty State */}
-
           {payments.length === 0 ? (
             <div className="py-16 flex flex-col items-center justify-center text-center">
               <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center">
@@ -146,10 +135,8 @@ const AdminPayments = () => {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-275">
-                {/* ================================================== */}
+                
                 {/* TABLE HEAD */}
-                {/* ================================================== */}
-
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-100">
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -182,10 +169,8 @@ const AdminPayments = () => {
                   </tr>
                 </thead>
 
-                {/* ================================================== */}
+                
                 {/* TABLE BODY */}
-                {/* ================================================== */}
-
                 <tbody className="divide-y divide-gray-100">
                   {payments.map((payment) => (
                     <tr
@@ -213,7 +198,6 @@ const AdminPayments = () => {
                       </td>
 
                       {/* Patient */}
-
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <UserRound className="w-4 h-4 text-gray-400" />
@@ -233,7 +217,6 @@ const AdminPayments = () => {
                       </td>
 
                       {/* Doctor */}
-
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <Stethoscope className="w-4 h-4 text-gray-400" />
@@ -253,7 +236,6 @@ const AdminPayments = () => {
                       </td>
 
                       {/* Appointment */}
-
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <CalendarDays className="w-4 h-4 text-gray-400" />
@@ -276,7 +258,6 @@ const AdminPayments = () => {
                       </td>
 
                       {/* Amount */}
-
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1.5">
                           <CircleDollarSign className="w-4 h-4 text-emerald-600" />
@@ -291,7 +272,6 @@ const AdminPayments = () => {
                       </td>
 
                       {/* Status */}
-
                       <td className="px-6 py-4">
                         <span
                           className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
@@ -321,7 +301,6 @@ const AdminPayments = () => {
                       </td>
 
                       {/* Paid At */}
-
                       <td className="px-6 py-4">
                         <span className="text-sm text-gray-600">
                           {payment.paidAt

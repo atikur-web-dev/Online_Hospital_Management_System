@@ -42,10 +42,8 @@ const DoctorAppointments = () => {
     fetchAppointments,
   } = useDoctorAppointment();
 
-  // ============================================================
-  // Appointment Action States
-  // ============================================================
 
+  // Appointment Action States
   const [confirmingId, setConfirmingId] =
     useState<string | null>(null);
 
@@ -58,33 +56,25 @@ const DoctorAppointments = () => {
   const [deletingId, setDeletingId] =
     useState<string | null>(null);
 
-  // ============================================================
+ 
   // Search
-  // ============================================================
+ const [search, setSearch] = useState("");
 
-  const [search, setSearch] = useState("");
-
-  // ============================================================
+ 
   // Delete Confirmation
-  // ============================================================
-
   const [modalAppointment, setModalAppointment] =
     useState<Appointment | null>(null);
 
-  // ============================================================
+  
   // Medical Records
-  // ============================================================
-
   const [medicalRecordsAppointment, setMedicalRecordsAppointment] =
     useState<AppointmentDetails | null>(null);
 
   const [medicalRecordsLoading, setMedicalRecordsLoading] =
     useState(false);
 
-  // ============================================================
-  // Filter Appointments
-  // ============================================================
 
+  // Filter Appointments
   const filteredAppointments = useMemo(() => {
     if (!search.trim()) {
       return appointments;
@@ -112,10 +102,8 @@ const DoctorAppointments = () => {
     );
   }, [appointments, search]);
 
-  // ============================================================
+  
   // Statistics
-  // ============================================================
-
   const totalAppointments =
     appointments.length;
 
@@ -143,10 +131,8 @@ const DoctorAppointments = () => {
         appointment.status === "CANCELLED",
     ).length;
 
-  // ============================================================
-  // Confirm Appointment
-  // ============================================================
 
+  // Confirm Appointment
   const handleConfirm = async (
     id: string,
   ) => {
@@ -174,10 +160,8 @@ const DoctorAppointments = () => {
     }
   };
 
-  // ============================================================
-  // Complete Appointment
-  // ============================================================
 
+  // Complete Appointment
   const handleComplete = async (
     id: string,
   ) => {
@@ -224,10 +208,8 @@ const DoctorAppointments = () => {
     }
   };
 
-  // ============================================================
-  // Cancel Appointment
-  // ============================================================
 
+  // Cancel Appointment
   const handleCancel = async (
     id: string,
   ) => {
@@ -255,10 +237,8 @@ const DoctorAppointments = () => {
     }
   };
 
-  // ============================================================
-  // Delete / Archive Appointment
-  // ============================================================
 
+  // Delete / Archive Appointment
   const handleDeletePermanently = (
     id: string,
   ) => {
@@ -311,25 +291,7 @@ const DoctorAppointments = () => {
       }
     };
 
-  // ============================================================
-  // View Medical Records
-  // ============================================================
-  //
-  // IMPORTANT:
-  // We do NOT use the appointment from the list directly here.
-  //
-  // Instead we call:
-  //
-  // GET /doctor/appointments/:id
-  //
-  // because the detailed endpoint returns:
-  //
-  // - medicalHistories
-  // - medicalReports
-  // - prescription details
-  //
-  // ============================================================
-
+ 
   const handleViewMedicalReports = async (
     id: string,
   ) => {
@@ -356,26 +318,21 @@ const DoctorAppointments = () => {
     }
   };
 
-  // ============================================================
-  // Close Medical Records Modal
-  // ============================================================
 
+  // Close Medical Records Modal
   const handleCloseMedicalRecords = () => {
     setMedicalRecordsAppointment(null);
   };
 
-  // ============================================================
+ 
   // Loading State
-  // ============================================================
 
   if (loading) {
     return <LoadingScreen />;
   }
 
-  // ============================================================
-  // Error State
-  // ============================================================
 
+  // Error State
   if (error) {
     return (
       <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-emerald-50/50 flex items-center justify-center p-4">
@@ -407,10 +364,8 @@ const DoctorAppointments = () => {
     );
   }
 
-  // ============================================================
-  // Main UI
-  // ============================================================
 
+  // Main UI
   return (
     <>
       <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-emerald-50/50">
@@ -512,9 +467,7 @@ const DoctorAppointments = () => {
         </div>
       </div>
 
-      {/* ========================================================
-          Permanent Delete Confirmation
-          ======================================================== */}
+      {/*  Permanent Delete Confirmation */}
 
       <ConfirmationModal
         isOpen={
@@ -535,9 +488,7 @@ const DoctorAppointments = () => {
         }
       />
 
-      {/* ========================================================
-          Medical Records Modal
-          ======================================================== */}
+      {/* Medical Records Modal */}
 
       {medicalRecordsAppointment && (
     <MedicalReportsModal

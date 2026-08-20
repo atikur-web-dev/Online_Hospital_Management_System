@@ -23,10 +23,8 @@ const AdminDepartments = () => {
     toggleStatus,
   } = useAdminDepartments();
 
-  // ============================================================
-  // FORM STATE
-  // ============================================================
 
+  // FORM STATE
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const [editingDepartmentId, setEditingDepartmentId] =
@@ -44,10 +42,8 @@ const AdminDepartments = () => {
   const [formError, setFormError] =
     useState<string | null>(null);
 
-  // ============================================================
-  // OPEN CREATE FORM
-  // ============================================================
 
+  // OPEN CREATE FORM
   const openCreateForm = () => {
     setEditingDepartmentId(null);
     setName("");
@@ -56,10 +52,8 @@ const AdminDepartments = () => {
     setIsFormOpen(true);
   };
 
-  // ============================================================
-  // OPEN EDIT FORM
-  // ============================================================
 
+  // OPEN EDIT FORM
   const openEditForm = (
     departmentId: string,
   ) => {
@@ -80,10 +74,8 @@ const AdminDepartments = () => {
     setIsFormOpen(true);
   };
 
-  // ============================================================
-  // CLOSE FORM
-  // ============================================================
 
+  // CLOSE FORM
   const closeForm = () => {
     if (saving) {
       return;
@@ -96,10 +88,8 @@ const AdminDepartments = () => {
     setFormError(null);
   };
 
-  // ============================================================
-  // SUBMIT FORM
-  // ============================================================
 
+  // SUBMIT FORM
   const handleSubmit = async (
     e: React.FormEvent,
   ) => {
@@ -148,10 +138,8 @@ const AdminDepartments = () => {
     }
   };
 
-  // ============================================================
-  // TOGGLE STATUS
-  // ============================================================
 
+  // TOGGLE STATUS
   const handleToggleStatus = async (
     departmentId: string,
   ) => {
@@ -169,10 +157,8 @@ const AdminDepartments = () => {
     }
   };
 
-  // ============================================================
-  // LOADING
-  // ============================================================
 
+  // LOADING
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -212,10 +198,8 @@ const AdminDepartments = () => {
     );
   }
 
-  // ============================================================
+ 
   // ERROR
-  // ============================================================
-
   if (error) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -248,18 +232,14 @@ const AdminDepartments = () => {
     );
   }
 
-  // ============================================================
+ 
   // RENDER
-  // ============================================================
-
   return (
     <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
 
-        {/* ================================================== */}
+       
         {/* HEADER */}
-        {/* ================================================== */}
-
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
@@ -280,10 +260,8 @@ const AdminDepartments = () => {
           </button>
         </div>
 
-        {/* ================================================== */}
+     
         {/* SUMMARY */}
-        {/* ================================================== */}
-
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
             <div className="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center">
@@ -338,10 +316,8 @@ const AdminDepartments = () => {
           </div>
         </div>
 
-        {/* ================================================== */}
+        
         {/* DEPARTMENT TABLE */}
-        {/* ================================================== */}
-
         <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
           <div className="px-5 sm:px-6 py-5 border-b border-gray-100">
@@ -530,10 +506,8 @@ const AdminDepartments = () => {
         </div>
       </div>
 
-      {/* ====================================================== */}
+ 
       {/* CREATE / EDIT MODAL */}
-      {/* ====================================================== */}
-
       {isFormOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-lg rounded-2xl bg-white shadow-xl">

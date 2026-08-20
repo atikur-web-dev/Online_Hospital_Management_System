@@ -193,7 +193,7 @@ const About = () => {
           </div>
 
           <div className="relative">
-            <div className="bg-gradient-to-br from-emerald-50 to-white rounded-3xl p-8 shadow-xl border border-gray-100">
+            <div className="bg-linear-to-br from-emerald-50 to-white rounded-3xl p-8 shadow-xl border border-gray-100">
               <div className="grid gap-4">
                 <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
                   <div className="flex items-center gap-3 mb-2">
@@ -252,7 +252,7 @@ const About = () => {
               return (
                 <div 
                   key={value.name} 
-                  className="group bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 text-center"
+                  className="group bg-linear-to-br from-gray-50 to-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 text-center"
                 >
                   <div className={`inline-flex p-4 ${value.bgColor} rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300`}>
                     <Icon className={`w-8 h-8 ${value.iconColor}`} />
@@ -308,7 +308,7 @@ const About = () => {
 
       {/* CTA Section */}
       <section className="max-w-7xl mx-auto px-4 pb-16">
-        <div className="bg-gradient-to-r from-emerald-700 to-emerald-600 rounded-3xl p-10 md:p-14 text-center text-white relative overflow-hidden">
+        <div className="bg-linear-to-r from-emerald-700 to-emerald-600 rounded-3xl p-10 md:p-14 text-center text-white relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-300 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-400 rounded-full blur-3xl" />

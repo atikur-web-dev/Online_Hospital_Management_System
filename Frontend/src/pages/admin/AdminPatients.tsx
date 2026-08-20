@@ -50,10 +50,7 @@ const AdminPatients = () => {
     );
   });
 
-  // ============================================================
   // LOADING SKELETON
-  // ============================================================
-
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -82,10 +79,8 @@ const AdminPatients = () => {
     );
   }
 
-  // ============================================================
-  // ERROR
-  // ============================================================
 
+  // ERROR
   if (error) {
     return (
       <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -118,18 +113,13 @@ const AdminPatients = () => {
     );
   }
 
-  // ============================================================
   // RENDER
-  // ============================================================
-
   return (
     <main className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
 
-        {/* ================================================== */}
+  
         {/* HEADER */}
-        {/* ================================================== */}
-
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
@@ -153,10 +143,8 @@ const AdminPatients = () => {
           </div>
         </div>
 
-        {/* ================================================== */}
+    
         {/* PATIENT TABLE */}
-        {/* ================================================== */}
-
         <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
           {/* Table Header with Search */}
@@ -200,7 +188,7 @@ const AdminPatients = () => {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[1000px]">
+              <table className="w-full min-w-250">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-100">
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">

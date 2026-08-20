@@ -141,7 +141,7 @@ const Doctors = () => {
         </div>
       </section>
 
-      {/* ==================== SEARCH & FILTER SECTION ==================== */}
+      {/* SEARCH & FILTER SECTION  */}
       <div className="max-w-7xl mx-auto px-4 -mt-6 relative z-10">
         <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100">
           <div className="grid gap-3 md:grid-cols-2">
@@ -212,7 +212,7 @@ const Doctors = () => {
         </div>
       </div>
 
-      {/* ==================== DOCTOR GRID SECTION ==================== */}
+      {/* DOCTOR GRID SECTION  */}
       <section className="max-w-7xl mx-auto px-4 py-8 md:py-12">
         {/* Section Header */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
