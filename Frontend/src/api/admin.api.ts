@@ -1,11 +1,8 @@
 // Frontend/src/api/admin.api.ts
-
 import api from "./axios";
 
-// ============================================================
-// ADMIN DASHBOARD TYPES
-// ============================================================
 
+// ADMIN DASHBOARD TYPES
 export interface AdminDashboardStats {
   todayPatients: number;
   todayAppointments: number;
@@ -37,20 +34,16 @@ export interface AdminDashboardResponse {
   data: AdminDashboardData;
 }
 
-// ============================================================
-// GET ADMIN DASHBOARD
-// ============================================================
 
+// GET ADMIN DASHBOARD
 export const getAdminDashboard = async (): Promise<AdminDashboardResponse> => {
   const response = await api.get<AdminDashboardResponse>("/admin/dashboard");
 
   return response.data;
 };
 
-// ============================================================
-// ADMIN PATIENTS
-// ============================================================
 
+// ADMIN PATIENTS
 export interface AdminPatient {
   id: string;
   name: string;
@@ -86,10 +79,8 @@ export const getAllPatients = async (): Promise<AdminPatientsResponse> => {
   return response.data;
 };
 
-// ============================================================
-// ADMIN DEPARTMENTS
-// ============================================================
 
+// ADMIN DEPARTMENTS
 export interface AdminDepartment {
   id: string;
   name: string;
@@ -122,9 +113,7 @@ export interface UpdateDepartmentPayload {
   description?: string | null;
 }
 
-/**
- * Get all departments
- */
+// Get all departments
 export const getAllDepartments =
   async (): Promise<AdminDepartmentsResponse> => {
     const response =
@@ -133,9 +122,7 @@ export const getAllDepartments =
     return response.data;
   };
 
-/**
- * Create department
- */
+//Create department
 export const createDepartment = async (
   data: CreateDepartmentPayload,
 ): Promise<AdminDepartmentResponse> => {
@@ -147,9 +134,7 @@ export const createDepartment = async (
   return response.data;
 };
 
-/**
- * Update department
- */
+// Update department
 export const updateDepartment = async (
   departmentId: string,
   data: UpdateDepartmentPayload,
@@ -162,9 +147,7 @@ export const updateDepartment = async (
   return response.data;
 };
 
-/**
- * Toggle department status
- */
+// Toggle department status
 export const toggleDepartmentStatus = async (
   departmentId: string,
 ): Promise<AdminDepartmentResponse> => {
@@ -175,10 +158,8 @@ export const toggleDepartmentStatus = async (
   return response.data;
 };
 
-// ============================================================
-// ADMIN DOCTORS
-// ============================================================
 
+// ADMIN DOCTORS
 export interface AdminDoctor {
   id: string;
   name: string;
@@ -246,18 +227,14 @@ export interface UpdateDoctorPayload {
   isAvailable?: boolean;
 }
 
-/**
- * Get all doctors
- */
+// Get all doctors
 export const getAllDoctors = async (): Promise<AdminDoctorsResponse> => {
   const response = await api.get<AdminDoctorsResponse>("/admin/doctors");
 
   return response.data;
 };
 
-/**
- * Create doctor
- */
+// Create doctor
 export const createDoctor = async (
   data: CreateDoctorPayload,
 ): Promise<AdminDoctorResponse> => {
@@ -266,9 +243,7 @@ export const createDoctor = async (
   return response.data;
 };
 
-/**
- * Update doctor
- */
+// Update doctor
 export const updateDoctor = async (
   doctorId: string,
   data: UpdateDoctorPayload,
@@ -281,9 +256,7 @@ export const updateDoctor = async (
   return response.data;
 };
 
-/**
- * Toggle doctor status
- */
+// Toggle doctor status
 export const toggleDoctorStatus = async (
   doctorId: string,
 ): Promise<AdminDoctorResponse> => {
@@ -294,9 +267,7 @@ export const toggleDoctorStatus = async (
   return response.data;
 };
 
-/**
- * Delete / deactivate doctor
- */
+// Delete / deactivate doctor
 export const deleteDoctor = async (
   doctorId: string,
 ): Promise<AdminDoctorResponse> => {
@@ -307,10 +278,8 @@ export const deleteDoctor = async (
   return response.data;
 };
 
-// ============================================================
-// ADMIN PAYMENTS
-// ============================================================
 
+// ADMIN PAYMENTS
 export interface AdminPayment {
   id: string;
 
@@ -344,18 +313,14 @@ export interface AdminPaymentsResponse {
   data: AdminPayment[];
 }
 
-/**
- * Get all payments
- */
+// Get all payments
 export const getAllPayments = async (): Promise<AdminPaymentsResponse> => {
   const response = await api.get<AdminPaymentsResponse>("/admin/payments");
 
   return response.data;
 };
 
-/**
- * Deactivate / Block patient
- */
+// Deactivate / Block patient
 export const deletePatient = async (patientId: string): Promise<any> => {
   const response = await api.delete<any>(`/admin/patients/${patientId}`);
   return response.data;

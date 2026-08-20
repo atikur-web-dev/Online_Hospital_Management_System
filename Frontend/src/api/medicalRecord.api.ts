@@ -10,10 +10,8 @@ import type {
   CreateMedicalReportPayload,
 } from "../types/medicalRecord.types";
 
-// ============================================================
-// Medical History
-// ============================================================
 
+// Medical History
 export const createMedicalHistory = async (
   data: CreateMedicalHistoryPayload,
 ) => {
@@ -57,10 +55,8 @@ export const deleteMedicalHistory = async (
   return response.data;
 };
 
-// ============================================================
-// Medical Reports
-// ============================================================
 
+// Medical Reports
 export const uploadMedicalReport = async (
   file: File,
   data: CreateMedicalReportPayload,
@@ -107,10 +103,8 @@ export const deleteMedicalReport = async (
   return response.data;
 };
 
-// ============================================================
-// All Medical Records
-// ============================================================
 
+// All Medical Records
 export const getMyMedicalRecords =
   async (): Promise<MedicalRecords> => {
     const response = await api.get(

@@ -6,9 +6,7 @@ import type {
   PrescriptionResponse,
 } from "../types/prescription";
 
-/**
- * Create Prescription
- */
+// Create Prescription
 export const createPrescription = async (
   data: PrescriptionFormData,
 ) => {
@@ -19,9 +17,7 @@ export const createPrescription = async (
   }>("/prescriptions", data);
 };
 
-/**
- * Get Prescription By ID
- */
+// Get Prescription By ID
 export const getPrescription = async (
   prescriptionId: string,
 ) => {
@@ -31,9 +27,7 @@ export const getPrescription = async (
   }>(`/prescriptions/${prescriptionId}`);
 };
 
-/**
- * Update Prescription
- */
+// Update Prescription
 export const updatePrescription = async (
   prescriptionId: string,
   data: Partial<

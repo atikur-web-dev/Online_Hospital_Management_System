@@ -9,18 +9,14 @@ import type {
   AdminProfile,
 } from "../types/profile.types";
 
-/**
- * Get Logged In User Profile
- */
+// Get Logged In User Profile
 export const getProfile = async (): Promise<Profile> => {
   const response = await api.get("/profile/me");
 
   return response.data.data;
 };
 
-/**
- * Update Logged In User Profile
- */
+// Update Logged In User Profile
 export const updateProfile = async (
   data:
     | Partial<PatientProfile>
@@ -35,9 +31,7 @@ export const updateProfile = async (
   return response.data.data;
 };
 
-/**
- * Upload Profile Image
- */
+// Upload Profile Image
 export const uploadProfileImage = async (
   image: File
 ): Promise<string> => {

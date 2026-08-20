@@ -24,9 +24,7 @@ export const getMyDoctorSchedule = async () => {
   return response.data;
 };
 
-/**
- * Update logged-in doctor's schedule
- */
+// Update logged-in doctor's schedule
 export const updateMyDoctorSchedule = async (
   schedules: DoctorSchedule[],
 ) => {
@@ -37,9 +35,7 @@ export const updateMyDoctorSchedule = async (
   return response.data;
 };
 
-/**
- * Update doctor availability
- */
+// Update doctor availability
 export const updateDoctorAvailability = async (
   isAvailable: boolean,
 ) => {
