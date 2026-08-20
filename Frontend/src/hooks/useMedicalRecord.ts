@@ -35,11 +35,7 @@ const useMedicalRecord = () => {
 
   const [reportLoading, setReportLoading] = useState(false);
 
-  /**
-   * ============================================================
-   * Fetch Medical Histories
-   * ============================================================
-   */
+// Fetch Medical Histories
   const fetchMedicalHistories = useCallback(async () => {
     try {
       setHistoryLoading(true);
@@ -62,11 +58,7 @@ const useMedicalRecord = () => {
     }
   }, []);
 
-  /**
-   * ============================================================
-   * Fetch Medical Reports
-   * ============================================================
-   */
+  // Fetch Medical Reports
   const fetchMedicalReports = useCallback(async () => {
     try {
       setReportLoading(true);
@@ -89,11 +81,7 @@ const useMedicalRecord = () => {
     }
   }, []);
 
-  /**
-   * ============================================================
-   * Fetch All Medical Records
-   * ============================================================
-   */
+  // Fetch All Medical Records
   const fetchMedicalRecords = useCallback(async () => {
     try {
       setLoading(true);
@@ -107,11 +95,7 @@ const useMedicalRecord = () => {
     }
   }, [fetchMedicalHistories, fetchMedicalReports]);
 
-  /**
-   * ============================================================
-   * Create Medical History
-   * ============================================================
-   */
+  // Create Medical History
   const addMedicalHistory = async (data: {
     condition: string;
     details?: string;
@@ -147,11 +131,7 @@ const useMedicalRecord = () => {
     }
   };
 
-  /**
-   * ============================================================
-   * Update Medical History
-   * ============================================================
-   */
+  // Update Medical History
   const editMedicalHistory = async (
     historyId: string,
     data: {
@@ -193,11 +173,7 @@ const useMedicalRecord = () => {
     }
   };
 
-  /**
-   * ============================================================
-   * Delete Medical History
-   * ============================================================
-   */
+ // Delete Medical History
   const removeMedicalHistory = async (
     historyId: string,
   ) => {
@@ -233,11 +209,7 @@ const useMedicalRecord = () => {
     }
   };
 
-  /**
-   * ============================================================
-   * Upload Medical Report
-   * ============================================================
-   */
+  // Upload Medical Report
   const addMedicalReport = async (
     file: File,
     data: {
@@ -278,11 +250,7 @@ const useMedicalRecord = () => {
     }
   };
 
-  /**
-   * ============================================================
-   * Delete Medical Report
-   * ============================================================
-   */
+  // Delete Medical Report
   const removeMedicalReport = async (
     reportId: string,
   ) => {
@@ -318,11 +286,7 @@ const useMedicalRecord = () => {
     }
   };
 
-  /**
-   * ============================================================
-   * Initial Load
-   * ============================================================
-   */
+  // Initial Load
   useEffect(() => {
     fetchMedicalRecords();
   }, [fetchMedicalRecords]);

@@ -24,10 +24,8 @@ const useAdminDepartments = () => {
 
   const [error, setError] = useState<string | null>(null);
 
-  // ============================================================
-  // FETCH DEPARTMENTS
-  // ============================================================
 
+  // FETCH DEPARTMENTS
   const fetchDepartments = useCallback(async () => {
     try {
       setLoading(true);
@@ -51,10 +49,8 @@ const useAdminDepartments = () => {
     }
   }, []);
 
-  // ============================================================
+  
   // CREATE DEPARTMENT
-  // ============================================================
-
   const addDepartment = useCallback(
     async (
       data: CreateDepartmentPayload,
@@ -81,10 +77,8 @@ const useAdminDepartments = () => {
     [],
   );
 
-  // ============================================================
-  // UPDATE DEPARTMENT
-  // ============================================================
 
+  // UPDATE DEPARTMENT
   const editDepartment = useCallback(
     async (
       departmentId: string,
@@ -118,10 +112,8 @@ const useAdminDepartments = () => {
     [],
   );
 
-  // ============================================================
-  // TOGGLE DEPARTMENT STATUS
-  // ============================================================
 
+  // TOGGLE DEPARTMENT STATUS
   const toggleStatus = useCallback(
     async (departmentId: string) => {
       try {
@@ -151,18 +143,14 @@ const useAdminDepartments = () => {
     [],
   );
 
-  // ============================================================
-  // INITIAL LOAD
-  // ============================================================
 
+  // INITIAL LOAD
   useEffect(() => {
     fetchDepartments();
   }, [fetchDepartments]);
 
-  // ============================================================
-  // RETURN
-  // ============================================================
 
+  // RETURN
   return {
     departments,
     loading,

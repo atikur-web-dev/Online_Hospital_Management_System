@@ -17,7 +17,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="col-span-1 md:col-span-1">
             <Link to="/" className="flex items-center gap-2">
-              <div className="bg-gradient-to-br from-emerald-600 to-emerald-500 p-2.5 rounded-xl shadow-lg shadow-emerald-200">
+              <div className="bg-linear-to-br from-emerald-600 to-emerald-500 p-2.5 rounded-xl shadow-lg shadow-emerald-200">
                 <Heart className="w-7 h-7 text-white" />
               </div>
               <span className="text-3xl font-bold text-emerald-800 tracking-tight">

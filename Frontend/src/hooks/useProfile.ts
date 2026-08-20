@@ -26,9 +26,7 @@ export const useProfile = () => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   * Fetch Profile
-   */
+  // Fetch Profile
   const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
@@ -46,9 +44,7 @@ export const useProfile = () => {
     }
   }, []);
 
-  /**
-   * Update Profile
-   */
+  // Update Profile
   const updateMyProfile = async (
     body: UpdateProfileData
   ) => {
@@ -73,9 +69,7 @@ export const useProfile = () => {
     }
   };
 
-  /**
-   * Upload Avatar
-   */
+  // Upload Avatar
   const uploadAvatar = async (image: File) => {
   try {
     setUploading(true);

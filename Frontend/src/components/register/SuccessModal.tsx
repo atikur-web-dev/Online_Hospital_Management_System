@@ -1,1 +1,0 @@
-// Frontend/src/components/register/SuccessModal.tsx

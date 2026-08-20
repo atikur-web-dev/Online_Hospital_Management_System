@@ -46,9 +46,7 @@ export const usePrescription = () => {
     null,
   );
 
-  /**
-   * Create Prescription
-   */
+  // Create Prescription
   const create = async (data: PrescriptionFormData): Promise<string | null> => {
     try {
       setLoading(true);
@@ -84,9 +82,7 @@ export const usePrescription = () => {
     }
   };
 
-  /**
-   * Get Prescription By ID
-   */
+  // Get Prescription By ID
   const fetchById = useCallback(
     async (prescriptionId: string): Promise<boolean> => {
       try {
@@ -120,9 +116,7 @@ export const usePrescription = () => {
     [],
   );
 
-  /**
-   * Update Prescription
-   */
+// Update Prescription
   const update = async (
     prescriptionId: string,
     data: Partial<Omit<PrescriptionFormData, "appointmentId">>,

@@ -21,10 +21,8 @@ const useAdminPayments = () => {
   const [error, setError] =
     useState<string | null>(null);
 
-  // ============================================================
-  // FETCH PAYMENTS
-  // ============================================================
 
+  // FETCH PAYMENTS
   const fetchPayments = useCallback(async () => {
     try {
       setLoading(true);
@@ -49,17 +47,11 @@ const useAdminPayments = () => {
     }
   }, []);
 
-  // ============================================================
-  // INITIAL LOAD
-  // ============================================================
 
+  // INITIAL LOAD
   useEffect(() => {
     fetchPayments();
   }, [fetchPayments]);
-
-  // ============================================================
-  // RETURN
-  // ============================================================
 
   return {
     payments,

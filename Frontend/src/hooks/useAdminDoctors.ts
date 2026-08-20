@@ -16,10 +16,8 @@ const useAdminDoctors = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ============================================================
-  // FETCH DOCTORS
-  // ============================================================
 
+  // FETCH DOCTORS
   const fetchDoctors = useCallback(async () => {
     try {
       setLoading(true);
@@ -35,10 +33,8 @@ const useAdminDoctors = () => {
     }
   }, []);
 
-  // ============================================================
+ 
   // CREATE DOCTOR
-  // ============================================================
-
   const addDoctor = useCallback(async (data: CreateDoctorPayload) => {
     try {
       const response = await createDoctor(data);
@@ -73,10 +69,8 @@ const useAdminDoctors = () => {
     }
   }, [fetchDoctors]);
 
-  // ============================================================
-  // UPDATE DOCTOR
-  // ============================================================
 
+  // UPDATE DOCTOR
   const editDoctor = useCallback(async (doctorId: string, data: UpdateDoctorPayload) => {
     try {
       const response = await updateDoctor(doctorId, data);
@@ -90,10 +84,8 @@ const useAdminDoctors = () => {
     }
   }, []);
 
-  // ============================================================
+ 
   // TOGGLE ACCOUNT STATUS (ACTIVE / INACTIVE)
-  // ============================================================
-
   const toggleStatus = useCallback(async (doctorId: string) => {
     try {
       const response = await toggleDoctorStatus(doctorId);
@@ -107,10 +99,8 @@ const useAdminDoctors = () => {
     }
   }, []);
 
-  // ============================================================
-  // SUSPEND / DEACTIVATE DOCTOR
-  // ============================================================
 
+  // SUSPEND / DEACTIVATE DOCTOR
   const removeDoctor = useCallback(async (doctorId: string) => {
     try {
       const response = await deleteDoctor(doctorId);
@@ -124,18 +114,13 @@ const useAdminDoctors = () => {
     }
   }, []);
 
-  // ============================================================
+ 
   // INITIAL LOAD
-  // ============================================================
-
   useEffect(() => {
     fetchDoctors();
   }, [fetchDoctors]);
 
-  // ============================================================
-  // RETURN
-  // ============================================================
-
+  
   return {
     doctors,
     loading,

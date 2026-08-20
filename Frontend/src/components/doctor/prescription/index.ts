@@ -1,1 +1,0 @@
-// Frontend/src/components/doctor/prescription/index.ts

@@ -21,10 +21,8 @@ const useAdminDashboard = () => {
   const [error, setError] =
     useState<string | null>(null);
 
-  // ============================================================
+  
   // FETCH ADMIN DASHBOARD
-  // ============================================================
-
   const fetchDashboard = useCallback(async () => {
     try {
       setLoading(true);
@@ -49,18 +47,13 @@ const useAdminDashboard = () => {
     }
   }, []);
 
-  // ============================================================
-  // INITIAL LOAD
-  // ============================================================
 
+  // INITIAL LOAD
   useEffect(() => {
     fetchDashboard();
   }, [fetchDashboard]);
 
-  // ============================================================
   // RETURN
-  // ============================================================
-
   return {
     dashboard,
     loading,

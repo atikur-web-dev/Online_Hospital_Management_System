@@ -9,7 +9,7 @@ interface MedicalReportFormProps {
   onCancel?: () => void;
 }
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; 
 
 const ALLOWED_FILE_TYPES = [
   "image/jpeg",
