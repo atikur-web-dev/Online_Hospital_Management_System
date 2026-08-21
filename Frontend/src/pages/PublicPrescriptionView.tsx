@@ -17,7 +17,6 @@ const PublicPrescriptionView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
   // Load Public Prescription
   useEffect(() => {
     const loadPrescription = async () => {
@@ -31,24 +30,20 @@ const PublicPrescriptionView = () => {
         const response = await fetch(
           `${
             import.meta.env.VITE_API_BASE_URL
-          }/prescriptions/public/${encodeURIComponent(token)}`,
+          }/prescriptions/public/view/${encodeURIComponent(token)}`,
         );
 
         const result = await response.json();
 
         if (!response.ok || !result.success) {
           throw new Error(
-            result.message ||
-              "Failed to load prescription.",
+            result.message || "Failed to load prescription.",
           );
         }
 
         setPrescription(result.data);
       } catch (err) {
-        console.error(
-          "PUBLIC PRESCRIPTION LOAD ERROR:",
-          err,
-        );
+        console.error("PUBLIC PRESCRIPTION LOAD ERROR:", err);
 
         setError(
           err instanceof Error
@@ -63,7 +58,6 @@ const PublicPrescriptionView = () => {
     loadPrescription();
   }, [token]);
 
-  
   // Loading
   if (loading) {
     return (
@@ -79,7 +73,6 @@ const PublicPrescriptionView = () => {
     );
   }
 
- 
   // Error
   if (error || !prescription) {
     return (
@@ -94,8 +87,7 @@ const PublicPrescriptionView = () => {
           </h1>
 
           <p className="mt-2 text-sm leading-6 text-gray-500">
-            {error ||
-              "The prescription could not be loaded."}
+            {error || "The prescription could not be loaded."}
           </p>
 
           <p className="mt-4 text-xs text-gray-400">
@@ -106,12 +98,10 @@ const PublicPrescriptionView = () => {
     );
   }
 
- 
   // Prescription
   return (
     <div className="min-h-screen bg-gray-100 py-8 print:bg-white print:py-0">
-      {/*  Top Action Bar */}
-
+      {/* Top Action Bar */}
       <div className="mx-auto mb-6 flex w-full max-w-5xl justify-end px-5 print:hidden">
         <button
           type="button"
@@ -119,13 +109,11 @@ const PublicPrescriptionView = () => {
           className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 active:scale-[0.98]"
         >
           <Download className="h-4 w-4" />
-
           Download Prescription
         </button>
       </div>
 
-      {/*  Prescription Document*/}
-
+      {/* Prescription Document */}
       <main className="mx-auto w-full max-w-5xl px-5 print:max-w-none print:px-0">
         <PrescriptionDocument prescription={prescription} />
       </main>
