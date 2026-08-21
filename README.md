@@ -47,9 +47,15 @@ Before running the project locally, copy the provided `.env.example` file to `.e
 
 ## Demo Note
 
-For the easiest way to explore the Patient module, use Google Login. This allows you to access the patient-side features without depending on the email verification flow.
+For the easiest way to explore the **Patient module**, use **Google Login**. This allows you to access the patient-side features without depending on the email verification flow.
 
-> Email-based features, including email verification and prescription email notifications, depend on the configured Resend service. These features may not be available in every environment, while the core hospital management functionality can still be explored normally.
+> **Email-based features:** The application uses **Resend** for transactional emails. In the deployed demo environment, email delivery may not be available for arbitrary email addresses.
+
+- **Manual Patient Registration:** A verification email is required before the patient can log in. If the verification email is not delivered, the account cannot be used for login.
+- **Prescription Email:** Doctors can create prescriptions normally, but sending a prescription notification requires a working email delivery configuration and may not work for arbitrary patient email addresses in the deployed demo.
+- **Google Login:** Recommended for exploring the Patient module without requiring email verification.
+
+> These email-related limitations do not affect the core hospital management functionality. The application can still be explored through Google Login and the available demo accounts.
 
 ## Demo Accounts
 
