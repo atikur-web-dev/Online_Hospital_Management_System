@@ -2,6 +2,17 @@
 
 A full-stack hospital management system that connects **Patients, Doctors, and Administrators** through a single web platform.
 
+## Important Setup
+
+Before running the project locally, copy the provided `.env.example` file to `.env` and configure the required environment variables.
+
+- **Backend:** Copy `Backend/.env.example` → `Backend/.env`
+- **Frontend:** Copy `Frontend/.env.example` → `Frontend/.env`
+
+> **Important:** A valid **Resend API Key** must be configured in the Backend `.env` for email verification and prescription email notifications to work properly.
+
+> Never commit your actual `.env` file or any private API keys, passwords, database credentials, or secrets to GitHub.
+
 ## What Can You Do?
 
 ### Patient
@@ -39,6 +50,7 @@ A full-stack hospital management system that connects **Patients, Doctors, and A
 ### Admin
 
 **Email:** `atikuradmin@gmail.com`  
+
 **Password:** `atikur123`
 
 ### Doctor
@@ -48,11 +60,13 @@ Two doctor accounts are available for testing:
 **Doctor 1**
 
 **Email:** `doctor1@example.com`  
+
 **Password:** `doctor123`
 
 **Doctor 2**
 
 **Email:** `doctor2@example.com`  
+
 **Password:** `doctor123`
 
 > Additional doctor accounts and their credentials are available in the seeded database (`prisma/seed.ts`).
@@ -69,15 +83,19 @@ You can either:
 ## How to Explore
 
 **New Visitor:**  
+
 Browse doctors → choose a doctor → view profile & availability → register/login → book an appointment.
 
 **Patient:**  
+
 Login → Doctors → select doctor → choose date/time → optionally share medical records → confirm appointment → make payment.
 
 **Doctor:**  
+
 Login → Dashboard → manage schedule, appointments, patient records and prescriptions.
 
 **Admin:**  
+
 Login with the demo admin account → Dashboard → manage the hospital system.
 
 ## Test Payment
@@ -87,8 +105,11 @@ The project uses **SSLCommerz Sandbox** for appointment payments.
 When testing the payment flow, use the following sandbox card details:
 
 **Card Number:** `4111111111111111`  
+
 **Expiry:** `12/26`  
+
 **CVC:** `111`  
+
 **Verification Code:** `111111`
 
 > These credentials are for **sandbox/testing purposes only** and do not represent a real payment card.
