@@ -16,5 +16,6 @@ export const generatePrescriptionLink = (
     },
   );
 
-  return `${env.SERVER_URL}/api/v1/prescriptions/public/view/${token}`;
+  return `${env.CLIENT_URL}/prescription/view/${token}`;
 };
+
