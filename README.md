@@ -1,6 +1,6 @@
 # Online Hospital Management System
 
-A full-stack hospital management system that connects Patients, Doctors, and Administrators through a single web platform.
+A full-stack hospital management system that connects **Patients, Doctors, and Administrators** through a single web platform.
 
 ## What Can You Do?
 
@@ -24,6 +24,7 @@ A full-stack hospital management system that connects Patients, Doctors, and Adm
 - View shared patient medical records
 - Complete appointments
 - Create and manage digital prescriptions
+- Send prescriptions to patients via email
 
 ### Admin
 
@@ -42,7 +43,19 @@ A full-stack hospital management system that connects Patients, Doctors, and Adm
 
 ### Doctor
 
-Use any doctor account from the seeded database (`prisma/seed.ts`) and its corresponding password.
+Two doctor accounts are available for testing:
+
+**Doctor 1**
+
+**Email:** `doctor1@example.com`  
+**Password:** `doctor123`
+
+**Doctor 2**
+
+**Email:** `doctor2@example.com`  
+**Password:** `doctor123`
+
+> Additional doctor accounts and their credentials are available in the seeded database (`prisma/seed.ts`).
 
 ### Patient
 
@@ -55,7 +68,7 @@ You can either:
 
 ## How to Explore
 
-**New visitor:**  
+**New Visitor:**  
 Browse doctors → choose a doctor → view profile & availability → register/login → book an appointment.
 
 **Patient:**  
@@ -80,10 +93,26 @@ When testing the payment flow, use the following sandbox card details:
 
 > These credentials are for **sandbox/testing purposes only** and do not represent a real payment card.
 
+## Email Notifications
+
+The system uses **Resend** for sending transactional emails, including prescription notifications and email verification.
+
+> **Note:** Emails may occasionally be delivered to the **Spam/Junk** folder depending on the recipient's email provider. If an expected email does not appear in the inbox, please check the Spam/Junk folder.
+
+## Deployment Note
+
+The frontend is deployed on **Vercel** and the backend is deployed on **Render**.
+
+> Since the backend is hosted on a cloud service, the first request after a period of inactivity may take slightly longer due to **cold-start/server wake-up latency**. Subsequent requests should generally respond faster.
+
 ## Tech Stack
 
-**Frontend:** React, TypeScript, Vite, Tailwind CSS  
-**Backend:** Node.js, Express.js, TypeScript  
-**Database:** PostgreSQL, Prisma ORM  
-**Authentication:** JWT, Google OAuth, Email Verification  
+**Frontend:** React, TypeScript, Vite, Tailwind CSS
+
+**Backend:** Node.js, Express.js, TypeScript
+
+**Database:** PostgreSQL, Prisma ORM
+
+**Authentication:** JWT, Google OAuth, Email Verification
+
 **Other:** Redis, Cloudinary, Resend, SSLCommerz
