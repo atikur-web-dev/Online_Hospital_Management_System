@@ -2,6 +2,8 @@
 
 A full-stack hospital management system that connects **Patients, Doctors, and Administrators** through a single web platform.
 
+[Live Demo](https://online-hospital-management-system-one.vercel.app/)
+
 ## Important Setup
 
 Before running the project locally, copy the provided `.env.example` file to `.env` and configure the required environment variables.
