@@ -45,6 +45,12 @@ Before running the project locally, copy the provided `.env.example` file to `.e
 - Monitor appointments and payments
 - View registered users and account status
 
+## Demo Note
+
+For the easiest way to explore the Patient module, use Google Login. This allows you to access the patient-side features without depending on the email verification flow.
+
+> Email-based features, including email verification and prescription email notifications, depend on the configured Resend service. These features may not be available in every environment, while the core hospital management functionality can still be explored normally.
+
 ## Demo Accounts
 
 ### Admin
@@ -79,6 +85,7 @@ You can either:
 - Continue with **Google Login**
 
 > For manual registration, email verification is required before login.
+
 
 ## How to Explore
 
